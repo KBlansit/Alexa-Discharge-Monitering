@@ -8,10 +8,14 @@ from flask_ask import Ask, statement, question, session
 app = Flask(__name__)
 ask = Ask(app, '/')
 
-@ask.intent('HelloIntent')
-def hello(firstname):
-    speech_text = "Hello %s" % firstname
-    return statement(speech_text).simple_card('Hello', speech_text)
+@ask.launch
+def welcome_msg():
+    speech_text = "Welcome to the discharge monitering application.\
+    Is this Kevin or his caretaker?"
+    return question(speech_text)
+
+@ask.intent("CareTakerIntent")
+def
 
 if __name__ == '__main__':
     app.run()

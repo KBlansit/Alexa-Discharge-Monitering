@@ -1,0 +1,13 @@
+{
+    "intents": [{
+        "intent": "UserIntent",
+        "slots": [{
+            "name": "firstname",
+            "type": "AMAZON.US_FIRST_NAME",
+        }]
+    }, {
+        "intent": "YesIntent"
+    }, {
+        "intent": "NoIntent"
+    }]
+}
