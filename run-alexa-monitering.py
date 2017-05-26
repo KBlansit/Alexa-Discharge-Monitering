@@ -17,7 +17,7 @@ question2 = "Question two"
 question3 = "Question three"
 
 # append to session
-session = [question1, question2, question3]
+session.attributes['question_lst'] = [question1, question2, question3]
 
 # define welcome message
 @ask.launch
@@ -30,14 +30,15 @@ def welcome_msg():
 
 # First level of question
 # define intents
-@ask.intent("CareTakerIntent")
-def verify_user():
-    # set curr_user as caretaker
-    curr_user = "CARE_TAKER"
+@ask.intent("NextIntent")
+def loop_through_questions():
 
-    # confirmation that we're talking about the correct person
-
-    return question(speech_text)
+    # test the length of the list
+    if len(session.attributes['question_lst'].pop()):
+        question_text = session.attributes['question_lst'].pop()
+        return question(speech_text)
+    else:
+        return statement("No more questions!")
 
 if __name__ == '__main__':
     app.run()
