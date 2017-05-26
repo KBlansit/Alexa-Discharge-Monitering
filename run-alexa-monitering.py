@@ -11,6 +11,14 @@ ask = Ask(app, '/')
 # define current user
 curr_user = None
 
+#HACK
+question1 = "Question one"
+question2 = "Question two"
+question3 = "Question three"
+
+# append to session
+session = [question1, question2, question3]
+
 # define welcome message
 @ask.launch
 def welcome_msg():
@@ -23,13 +31,11 @@ def welcome_msg():
 # First level of question
 # define intents
 @ask.intent("CareTakerIntent")
-def fever_question():
+def verify_user():
     # set curr_user as caretaker
     curr_user = "CARE_TAKER"
 
     # confirmation that we're talking about the correct person
-    speech_text = "Alright, can we confirm the person we're monitering today?\
-    I current see that we're going over Kevin. Is this correct?"
 
     return question(speech_text)
 
