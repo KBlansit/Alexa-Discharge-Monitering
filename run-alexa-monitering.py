@@ -16,12 +16,12 @@ question1 = "Question one"
 question2 = "Question two"
 question3 = "Question three"
 
-# append to session
-session.attributes['question_lst'] = [question1, question2, question3]
-
 # define welcome message
 @ask.launch
 def welcome_msg():
+    # append to session to initialize
+    session.attributes['question_lst'] = [question1, question2, question3]
+
     # make welcome message
     speech_text = "Welcome to the discharge monitering application.\
     Is this Kevin or his caretaker?"
@@ -34,9 +34,9 @@ def welcome_msg():
 def loop_through_questions():
 
     # test the length of the list
-    if len(session.attributes['question_lst'].pop()):
+    if len(session.attributes['question_lst']):
         question_text = session.attributes['question_lst'].pop()
-        return question(speech_text)
+        return question(question_text)
     else:
         return statement("No more questions!")
 
