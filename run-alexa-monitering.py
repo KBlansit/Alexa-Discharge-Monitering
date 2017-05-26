@@ -1,26 +1,18 @@
 #!/usr/bin/env python
 
 # load libraries
-from flask import Flask
+from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
 
 # flask initialize
 app = Flask(__name__)
 ask = Ask(app, '/')
 
-# define current user
-curr_user = None
-
-#HACK
-question1 = "Question one"
-question2 = "Question two"
-question3 = "Question three"
-
 # define welcome message
 @ask.launch
 def welcome_msg():
     # append to session to initialize
-    session.attributes['question_lst'] = [question1, question2, question3]
+    session.attributes['question_lst'] =
 
     # make welcome message
     speech_text = "Welcome to the discharge monitering application.\
@@ -32,7 +24,6 @@ def welcome_msg():
 # define intents
 @ask.intent("NextIntent")
 def loop_through_questions():
-
     # test the length of the list
     if len(session.attributes['question_lst']):
         question_text = session.attributes['question_lst'].pop()
