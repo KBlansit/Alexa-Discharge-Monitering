@@ -1,32 +1,32 @@
-- welcome_text: Welcome to the discharge monitering application. We're going
-  to ask some private questions. Is it okay to proceed?
-- user_identification: I wanted to confirm if this was Kevin, or a care taker
-  for Kevin.
+- welcome_text: "Welcome to the discharge monitering application. We're going
+  to ask some private questions. Is it okay to proceed?"
+- user_identification: "I wanted to confirm if this was Kevin, or a care taker
+  for Kevin."
 
 # care taker questions
-- care_taker_person_confirmation: Alright, can we confirm the person we're
-  monitering today? I current see that we're going over Kevin. Is this correct?
-- care_taker_moving_question: Has Kevin been able to move around today?
-- care_taker_eating_question: Has Kevin been able to eat any food today?
-- care_taker_drinking_question: Has Kevin drank any fluids today?
-- care_taker_pain_control_question: Is Kevin in much pain today?
-- care_taker_medication_question: Has Kevin been taking his pain medication?
-- care_taker_urination_question: Has Kevin been able to urinate?
-- care_taker_urine_color_question: What is the color of the urine?
-- care_taker_status_question: Is Kevin feeling any better than yesterday?
+- care_taker_person_confirmation: "Alright, can we confirm the person we're
+  monitering today? I current see that we're going over Kevin. Is this correct?"
+- care_taker_moving_question: "Has Kevin been able to move around today?"
+- care_taker_eating_question: "Has Kevin been able to eat any food today?"
+- care_taker_drinking_question: "Has Kevin drank any fluids today?"
+- care_taker_pain_control_question: "Is Kevin in much pain today?"
+- care_taker_medication_question: "Has Kevin been taking his pain medication?"
+- care_taker_urination_question: "Has Kevin been able to urinate?"
+- care_taker_urine_color_question: "What is the color of the urine?"
+- care_taker_status_question: "Is Kevin feeling any better than yesterday?"
 
 # patient patient questions
-- patient_person_confirmation: Hope you're feeling alright. I wanted to start by
-verifying that this is the correct person... I see that you're Kevin, correct?
-- patient_moving_question: Have you been able to get up much today?
-- patient_eating_question: Have you been able to keep down food much today?
-- patient_drinking_question: Have you been able to drink any fluids today?
-- patient_pain_control_question: Have you had much pain today?
-- patient_medication_question: Have you been taking all of your pain medications?
-- patient_urination_question: Have you been urinating regularly?
-- patient_urine_color_question: What is the color of your urine?
-- patient_status_question: Are you feeling better than yesterday?
+- patient_person_confirmation: "Hope you're feeling alright. I wanted to start by
+verifying that this is the correct person... I see that you're Kevin, correct?"
+- patient_moving_question: "Have you been able to get up much today?"
+- patient_eating_question: "Have you been able to keep down food much today?"
+- patient_drinking_question: "Have you been able to drink any fluids today?"
+- patient_pain_control_question: "Have you had much pain today?"
+- patient_medication_question: "Have you been taking all of your pain medications?"
+- patient_urination_question: "Have you been urinating regularly?"
+- patient_urine_color_question: "What is the color of your urine?"
+- patient_status_question: "Are you feeling better than yesterday?"
 
 # end statement
-- end_statement: Alright, thanks! I will send a note to your surgeon and we'll
-  contact you if we need any more information.
+- end_statement: "Alright, thanks! I will send a note to your surgeon and we'll
+  contact you if we need any more information."
