@@ -19,7 +19,7 @@ application_text:
     moving_question:
       care_taker:
         ["Has Kevin been able to move around today?"]
-      pateint:
+      patient:
         ["Have you been able to get up much today?"]
       linkId:
         "mobility"
@@ -28,7 +28,7 @@ application_text:
     eating_question:
       care_taker:
         ["Has Kevin been able to eat any food today?"]
-      pateint:
+      patient:
         ["Have you been able to keep down food much today?"]
       linkId:
         "eating"
@@ -55,12 +55,12 @@ application_text:
     medication_question:
       care_taker:
         ["Has Kevin been taking his pain medication?"]
-      pateint:
+      patient:
         ["Have you been taking all of your pain medications?"]
       linkId:
         "painMedicans"
       text:
-        "Patient has been taking pain medications"
+        "patient has been taking pain medications"
     urination_question:
       care_taker:
         ["Has Kevin been able to urinate?"]
@@ -69,7 +69,7 @@ application_text:
       linkId:
         "urination"
       text:
-        "Patient has problems urinating"
+        "patient has problems urinating"
     urine_color_question:
       care_taker:
         ["What is the color of the urine?"]
@@ -78,7 +78,7 @@ application_text:
       linkId:
         "urineColor"
       text:
-        "Patient reports problem color in urine"
+        "patient reports problem color in urine"
     status_question:
       care_taker:
         ["Is Kevin feeling any better than yesterday?"]
@@ -87,7 +87,7 @@ application_text:
       linkId:
         "status"
       text:
-        "Patient feels better than previous day"
+        "patient feels better than previous day"
     end_statement:
       care_taker:
         ["Thank you for your input on the care for Kevin. We'll be sending this
@@ -96,7 +96,9 @@ application_text:
         ["Alright, thanks! I will send a note to your surgeon and we'll contact
         you if we need any more information."]
 application_settings:
-  master_questerion_ordering:
+ hard_assertion_questions:
+     - "person_confirmation"
+ master_questerion_ordering:
   - "person_confirmation"
   - "moving_question"
   - "eating_question"

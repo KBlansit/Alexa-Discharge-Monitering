@@ -28,7 +28,7 @@ class QuestionNode:
             # update node
             curr_node = curr_node.child_node
 
-        return rslt_lst
+        return rslt_lst[::-1]
 
     def __str__(self):
         return name

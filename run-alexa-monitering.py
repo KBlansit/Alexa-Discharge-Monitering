@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
 # load libraries
+import yaml
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
 
 # load user defined libraries
-from src.utilities import load_questions
+from src.utilities import load_questions, critical_questions
 
 # flask initialize
 app = Flask(__name__)
@@ -23,10 +24,18 @@ LIST_OF_QS = [
     "pain_control_question",
 ]
 
+# functions
+def initialize_generic_intent(type):
+    # assert that user is either a care_taker or patient
+    if user not in ["care_taker", "patient"]:
+        raise AssertionError("Must be either a care_taker or patient")
+
 # define welcome message
 @ask.launch
 def welcome_msg():
-
+    """
+    initial hook for alexa program
+    """
     # make welcome message
     speech_text = "Welcome to the discharge monitering application.\
     Is this Kevin or his caretaker?"
@@ -36,12 +45,31 @@ def welcome_msg():
 # either define question list either for patients or care taker
 @ask.intent("PatientIntent")
 def set_patient_session():
-    # append to session to initialize
-    session.attributes['question_lst'] =\
-        load_questions(SETTNGS_PATH, "patient", LIST_OF_QS)
+    # load data
+    try:
+        with open(SETTNGS_PATH, "r") as f:
+            data = yaml.load(f)
+    except IOError:
+        raise IOError("Cannot locate path: " + str(path))
+
+    # set session variables
+    # set question information
+    session.attributes['question_ids'] = LIST_OF_QS
+    session.attributes['crit_qs'] = critical_questions(data, LIST_OF_QS)
+    session.attributes['question_lst'] = load_questions(data, "patient", LIST_OF_QS)
+    session.attributes['crit'] = "NON_CRIT"
+
+    # set user level information
     session.attributes['response_recorder'] = 'self'
 
+
+    # test if there's any more questions left
     if len(session.attributes['question_lst']):
+        # set a hard stop warning to session
+        if session.attributes['question_ids'].pop in session.attributes['crit_qs']:
+            session.attributes['crit'] = "CRIT"
+
+        # determine question text
         question_text = session.attributes['question_lst'].pop()
         return question(question_text)
 
