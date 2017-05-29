@@ -25,7 +25,7 @@ LIST_OF_QS = [
 ]
 
 # functions
-def initialize_generic_intent(user):
+def initialize_session_parameters(user):
     # assert that user is either a care_taker or patient
     if user not in ["care_taker", "patient"]:
         raise AssertionError("Must be either a care_taker or patient")
@@ -45,7 +45,12 @@ def initialize_generic_intent(user):
     session.attributes['crit'] = "non-critical"
 
     # set user level information
-    session.attributes['response_recorder'] = 'self'
+    session.attributes['response_recorder'] = user
+
+def question_iteration(intent_type=None):
+    # if critical question is answered no, then end
+    if session.attributes['crit'] is "CRIT" and intent_type is "no":
+        return statement("Hmmm... something appears to be wrong")
 
     # test if there's any more questions left
     if len(session.attributes['question_lst']):
@@ -64,7 +69,7 @@ def welcome_msg():
     initial hook for alexa program
     """
     # make welcome message
-    speech_text = "Welcome to the discharge monitering application.\
+    speech_text = "Welcome to the discharge monitoring application.\
     Is this Kevin or his caretaker?"
 
     return question(speech_text)
@@ -72,29 +77,22 @@ def welcome_msg():
 # either define question list either for patients or care taker
 @ask.intent("PatientIntent")
 def set_patient_session():
-    return initialize_generic_intent("patient")
+    initialize_session_parameters("patient")
+    return question_iteration()
 
 @ask.intent("CareTakerIntent")
 def set_patient_session():
-    pass
+    initialize_session_parameters("care_taker")
+    return question_iteration()
 
 # response to questions
 @ask.intent("YesIntent")
 def yes_response():
-    # test the length of the list
-    if len(session.attributes['question_lst']):
-        question_text = session.attributes['question_lst'].pop()
-        return question(question_text)
-    else:
-        return statement("No more questions!")
+    return question_iteration("yes")
 
-@ask.intent("YesIntent")
+@ask.intent("NoIntent")
 def no_response():
-    if len(session.attributes['question_lst']):
-        question_text = session.attributes['question_lst'].pop()
-        return question(question_text)
-    else:
-        return statement("No more questions!")
+    return question_iteration("no")
 
 if __name__ == '__main__':
     app.run()
