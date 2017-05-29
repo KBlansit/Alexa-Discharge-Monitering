@@ -1,13 +1,18 @@
 #!/usr/bin/env python
 
 # load libraries
+import sys
 import json
 import yaml
 import unittest
 import requests
 
+# go up a directory to see project root dir
+sys.path.append("..")
+
 # load user defined libraries
 from src.utilities import load_questions
+
 
 class TestQuestionsStructure(unittest.TestCase):
 
@@ -17,7 +22,7 @@ class TestQuestionsStructure(unittest.TestCase):
         """
 
         # load data
-        path = "resources/application_settings.yaml"
+        path = "../resources/application_settings.yaml"
         try:
             with open(path, "r") as f:
                 data = yaml.load(f)
@@ -37,7 +42,7 @@ class TestQuestionsStructure(unittest.TestCase):
         """
 
         # test
-        path = "resources/application_settings.yaml"
+        path = "../resources/application_settings.yaml"
         users = ["care_taker", "patient"]
         for i in users:
             load_questions(path, i)
@@ -52,15 +57,39 @@ class TestFHIRQuestionnaireResponse(unittest.TestCase):
         """
         # define path and get response
         path = 'http://fhirtest.uhn.ca/baseDstu3/QuestionnaireResponse/SMART-PROMs-84-QR5/_history/1?_format=json'
-        result = requests.get(path).json()
+        json_dict = requests.get(path).json()
 
-        # assertions
-        # assert items exists
+        # assert that resourceType is valid
+        self.assertIn("resourceType", json_dict.keys())
+        self.assertEqual(json_dict["resourceType"], "QuestionnaireResponse")
 
+        # assert has id
+        self.assertIn("id", json_dict.keys())
 
+        # assert has questionaire reference
+        self.assertIn("questionnaire", json_dict.keys())
+        self.assertIn("reference", json_dict["questionnaire"])
+        self.assertIn("display", json_dict["questionnaire"])
 
+        # assert status is completed
+        self.assertIn("status", json_dict.keys())
+        self.assertEqual("completed", json_dict["status"])
 
-        pass
+        # assert linked to patient
+        self.assertIn("subject", json_dict.keys())
+        self.assertIn("reference", json_dict["subject"])
+        self.assertIn("display", json_dict["subject"])
+
+        # assert encounter reference
+        self.assertIn("context", json_dict.keys())
+        self.assertIn("reference", json_dict["context"])
+
+        # assert that item is valid and populated
+        self.assertIn("item", json_dict.keys())
+        for i in json_dict["item"]:
+            self.assertIn("linkId", i)
+            self.assertIn("text", i)
+            self.assertIn("answer", i)
 
 if __name__ == "__main__":
     unittest.main()
