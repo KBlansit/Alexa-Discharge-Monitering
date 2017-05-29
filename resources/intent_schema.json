@@ -1,8 +1,18 @@
 {
   "intents": [
     {
-      "intent": "NextIntent"
+      "intent": "NoIntent"
     },
+    {
+      "intent": "YesIntent"
+    },
+    {
+      "intent": "CareTakerIntent"
+    },
+    {
+      "intent": "PatientIntent"
+    },
+
     {
       "intent": "AMAZON.HelpIntent"
     },
