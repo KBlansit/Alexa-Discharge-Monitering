@@ -25,10 +25,37 @@ LIST_OF_QS = [
 ]
 
 # functions
-def initialize_generic_intent(type):
+def initialize_generic_intent(user):
     # assert that user is either a care_taker or patient
     if user not in ["care_taker", "patient"]:
         raise AssertionError("Must be either a care_taker or patient")
+
+    # load data
+    try:
+        with open(SETTNGS_PATH, "r") as f:
+            data = yaml.load(f)
+    except IOError:
+        raise IOError("Cannot locate path: " + str(path))
+
+    # set session variables
+    # set question information
+    session.attributes['question_ids'] = LIST_OF_QS
+    session.attributes['crit_qs'] = critical_questions(data, LIST_OF_QS)
+    session.attributes['question_lst'] = load_questions(data, user, LIST_OF_QS)
+    session.attributes['crit'] = "non-critical"
+
+    # set user level information
+    session.attributes['response_recorder'] = 'self'
+
+    # test if there's any more questions left
+    if len(session.attributes['question_lst']):
+        # set a hard stop warning to session
+        if session.attributes['question_ids'].pop in session.attributes['crit_qs']:
+            session.attributes['crit'] = "CRIT"
+
+        # determine question text
+        question_text = session.attributes['question_lst'].pop()
+        return question(question_text)
 
 # define welcome message
 @ask.launch
@@ -45,33 +72,7 @@ def welcome_msg():
 # either define question list either for patients or care taker
 @ask.intent("PatientIntent")
 def set_patient_session():
-    # load data
-    try:
-        with open(SETTNGS_PATH, "r") as f:
-            data = yaml.load(f)
-    except IOError:
-        raise IOError("Cannot locate path: " + str(path))
-
-    # set session variables
-    # set question information
-    session.attributes['question_ids'] = LIST_OF_QS
-    session.attributes['crit_qs'] = critical_questions(data, LIST_OF_QS)
-    session.attributes['question_lst'] = load_questions(data, "patient", LIST_OF_QS)
-    session.attributes['crit'] = "NON_CRIT"
-
-    # set user level information
-    session.attributes['response_recorder'] = 'self'
-
-
-    # test if there's any more questions left
-    if len(session.attributes['question_lst']):
-        # set a hard stop warning to session
-        if session.attributes['question_ids'].pop in session.attributes['crit_qs']:
-            session.attributes['crit'] = "CRIT"
-
-        # determine question text
-        question_text = session.attributes['question_lst'].pop()
-        return question(question_text)
+    return initialize_generic_intent("patient")
 
 @ask.intent("CareTakerIntent")
 def set_patient_session():
