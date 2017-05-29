@@ -13,7 +13,6 @@ sys.path.append("..")
 # load user defined libraries
 from src.utilities import load_questions
 
-
 class TestQuestionsStructure(unittest.TestCase):
 
     def test_question_list_valid(self):
@@ -47,7 +46,7 @@ class TestQuestionsStructure(unittest.TestCase):
         for i in users:
             load_questions(path, i)
 
-class TestFHIRQuestionnaireResponse(unittest.TestCase):
+class TestFHIRStructure(unittest.TestCase):
 
     def test_positive_control_Questionnaire_response_format(self):
         """
