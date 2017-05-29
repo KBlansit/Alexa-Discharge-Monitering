@@ -12,7 +12,16 @@ app = Flask(__name__)
 ask = Ask(app, '/')
 
 # define global vars
-SETTNGS_PATH = "resources/application_text.yaml"
+SETTNGS_PATH = "resources/application_settings.yaml"
+
+# temporary vars for testing and design
+LIST_OF_QS = [
+    "person_confirmation",
+    "moving_question",
+    "eating_question",
+    "drinking_question",
+    "pain_control_question",
+]
 
 # define welcome message
 @ask.launch
@@ -28,14 +37,17 @@ def welcome_msg():
 @ask.intent("PatientIntent")
 def set_patient_session():
     # append to session to initialize
-    session.attributes['question_lst'] = load_questions(SETTNGS_PATH, "patient")
+    session.attributes['question_lst'] =\
+        load_questions(SETTNGS_PATH, "patient", LIST_OF_QS)
     session.attributes['response_recorder'] = 'self'
+
+    if len(session.attributes['question_lst']):
+        question_text = session.attributes['question_lst'].pop()
+        return question(question_text)
 
 @ask.intent("CareTakerIntent")
 def set_patient_session():
-    # append to session to initialize
-    session.attributes['question_lst'] = load_questions(SETTNGS_PATH, "care_taker")
-    session.attributes['response_recorder'] = 'care_taker'
+    pass
 
 # response to questions
 @ask.intent("YesIntent")

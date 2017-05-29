@@ -13,6 +13,7 @@
       "intent": "PatientIntent"
     },
 
+
     {
       "intent": "AMAZON.HelpIntent"
     },
@@ -21,6 +22,12 @@
     },
     {
       "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.ResumeIntent"
+    },
+    {
+      "intent": "AMAZON.PauseIntent"
     }
   ]
 }

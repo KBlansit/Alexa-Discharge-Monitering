@@ -1,21 +1,34 @@
 #!/usr/bin/env python
 
-class QuestionNode:
-    def __init__(self, question=None, child_node=None):
-        # set either parameters or defaults
-        if question is None:
-            self.question = None
-        else:
-            self.question = question
+# load libraries
+import random
 
-        if child_node is None:
-            self.child = None
-        else:
-            self.child = child_node
+class QuestionNode:
+    def __init__(self, question_lst=None, child_node=None, name=None):
+
+        # set parameters
+        self.question_lst = question_lst
+        self.child_node = child_node
+        self.name = name
+
+    def to_list(self, curr_questions):
+        """
+        transforms the linked list into a flat list and chooses questions
+        """
+
+        # use to bootstrap vars
+        rslt_lst = []
+        curr_node = self
+
+        # iterate until there no children left
+        while curr_node.child_node is not None:
+            # add question to list
+            rslt_lst.append(random.choice(curr_node.question_lst))
+
+            # update node
+            curr_node = curr_node.child_node
+
+        return rslt_lst
 
     def __str__(self):
-        if type(self.question) == list:
-            for i in self.question:
-                return i + "\n"
-            else:
-                return self.question
+        return name

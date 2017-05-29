@@ -7,7 +7,7 @@ import yaml
 from Questionaire import QuestionNode
 
 # define utility functions
-def load_questions(path, user):
+def load_questions(path, user, curr_questions):
     # assert that user is either a care_taker or patient
     if user not in ["care_taker", "patient"]:
         raise AssertionError("Must be either a care_taker or patient")
@@ -30,4 +30,4 @@ def load_questions(path, user):
         node = QuestionNode(question_text[i][user], child_node=node)
 
     # return linked list
-    return node
+    return node.to_list(curr_questions)

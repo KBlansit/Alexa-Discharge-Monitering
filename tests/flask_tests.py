@@ -90,5 +90,17 @@ class TestFHIRStructure(unittest.TestCase):
             self.assertIn("text", i)
             self.assertIn("answer", i)
 
+class TestAlexaServer(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def test_run_server(self):
+        pass
+
+    def test_(self):
+        pass
+
+    def tearDown(self):
+        pass
 if __name__ == "__main__":
     unittest.main()

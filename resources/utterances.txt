@@ -1,1 +1,10 @@
-NextIntent next
+YesIntent yes
+NoIntent no
+
+CareTakerIntent care taker
+CareTakerIntent this is his caretaker
+CareTakerIntent this is her caretaker
+
+PatientIntent this is Kevin
+PatientIntent this is the patient
+PatientIntent patient
