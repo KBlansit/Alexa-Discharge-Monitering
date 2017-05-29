@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 # load libraries
+import json
 import unittest
+import requests
 
 # load user defined libraries
 from src.utilities import load_questions
@@ -18,6 +20,27 @@ class TestQuestionsStructure(unittest.TestCase):
         users = ["care_taker", "patient"]
         for i in users:
             self.questions = load_questions(path, i)
+
+class TestFHIRQuestionnaireResponse(unittest.TestCase):
+
+    def test_positive_control_Questionnaire_response_format(self):
+        """
+        positive control for validation
+        NOTE:
+            must be connected to internet
+        """
+        # define path and get response
+        path = 'http://fhirtest.uhn.ca/baseDstu3/QuestionnaireResponse/SMART-PROMs-84-QR5/_history/1?_format=json'
+        result = requests.get(path).json()
+
+        # assertions
+        # assert items exists
+
+
+
+        import pdb; pdb.set_trace()
+
+        pass
 
 if __name__ == "__main__":
     unittest.main()

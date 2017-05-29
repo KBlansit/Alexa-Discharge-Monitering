@@ -21,41 +21,73 @@ application_text:
         ["Has Kevin been able to move around today?"]
       pateint:
         ["Have you been able to get up much today?"]
+      linkId:
+        "mobility"
+      text:
+        "problems walking or moving around"
     eating_question:
       care_taker:
         ["Has Kevin been able to eat any food today?"]
       pateint:
         ["Have you been able to keep down food much today?"]
+      linkId:
+        "eating"
+      text:
+        "problems eating or keeping down solid food"
     drinking_question:
       care_taker:
         ["Has Kevin drank any fluids today?"]
       patient:
         ["Have you been able to drink any fluids today?"]
+      linkId:
+        "liquids"
+      text:
+        "problems drinking or keeping down liquids"
     pain_control_question:
       care_taker:
         ["Is Kevin in much pain today?"]
       patient:
         ["Have you had much pain today?"]
+      linkId:
+        "pain"
+      text:
+        "problems controlling or managing pain"
     medication_question:
       care_taker:
         ["Has Kevin been taking his pain medication?"]
       pateint:
         ["Have you been taking all of your pain medications?"]
+      linkId:
+        "painMedicans"
+      text:
+        "Patient has been taking pain medications"
     urination_question:
       care_taker:
         ["Has Kevin been able to urinate?"]
       patient:
         ["Have you been urinating regularly?"]
+      linkId:
+        "urination"
+      text:
+        "Patient has problems urinating"
     urine_color_question:
       care_taker:
         ["What is the color of the urine?"]
       patient:
         ["What is the color of your urine?"]
+      linkId:
+        "urineColor"
+      text:
+        "Patient reports problem color in urine"
     status_question:
       care_taker:
         ["Is Kevin feeling any better than yesterday?"]
       patient:
         ["Are you feeling better than yesterday?"]
+      linkId:
+        "status"
+      text:
+        "Patient feels better than previous day"
     end_statement:
       care_taker:
         ["Thank you for your input on the care for Kevin. We'll be sending this
