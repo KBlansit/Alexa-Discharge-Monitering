@@ -18,36 +18,36 @@ application_text:
         the correct person... I see that you're Kevin, correct?"]
     moving_question:
       caretaker:
-        ["Has Kevin been able to move around today?"]
+        ["Has Kevin been able to move around?"]
       patient:
-        ["Have you been able to get up much today?"]
+        ["Have you been able to get up much?"]
       linkId:
         "mobility"
       text:
         "problems walking or moving around"
     eating_question:
       caretaker:
-        ["Has Kevin been able to eat any food today?"]
+        ["Has Kevin been able to eat any food?"]
       patient:
-        ["Have you been able to keep down food much today?"]
+        ["Have you been able to keep down food much?"]
       linkId:
         "eating"
       text:
         "problems eating or keeping down solid food"
     drinking_question:
       caretaker:
-        ["Has Kevin drank any fluids today?"]
+        ["Has Kevin drank any fluids?"]
       patient:
-        ["Have you been able to drink any fluids today?"]
+        ["Have you been able to drink any fluids?"]
       linkId:
         "liquids"
       text:
         "problems drinking or keeping down liquids"
     pain_control_question:
       caretaker:
-        ["Is Kevin in much pain today?"]
+        ["Is Kevin in much pain?"]
       patient:
-        ["Have you had much pain today?"]
+        ["Have you had much pain?"]
       linkId:
         "pain"
       text:
