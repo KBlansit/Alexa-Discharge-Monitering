@@ -10,14 +10,14 @@ application_text:
   question_text:
     # defined questions
     person_confirmation:
-      care_taker:
+      caretaker:
         ["Alright, can we confirm the person we're monitering today? I current
         see that we're going over Kevin. Is this correct?"]
       patient:
         ["Hope you're feeling alright. I wanted to start by verifying this is
         the correct person... I see that you're Kevin, correct?"]
     moving_question:
-      care_taker:
+      caretaker:
         ["Has Kevin been able to move around today?"]
       patient:
         ["Have you been able to get up much today?"]
@@ -26,7 +26,7 @@ application_text:
       text:
         "problems walking or moving around"
     eating_question:
-      care_taker:
+      caretaker:
         ["Has Kevin been able to eat any food today?"]
       patient:
         ["Have you been able to keep down food much today?"]
@@ -35,7 +35,7 @@ application_text:
       text:
         "problems eating or keeping down solid food"
     drinking_question:
-      care_taker:
+      caretaker:
         ["Has Kevin drank any fluids today?"]
       patient:
         ["Have you been able to drink any fluids today?"]
@@ -44,7 +44,7 @@ application_text:
       text:
         "problems drinking or keeping down liquids"
     pain_control_question:
-      care_taker:
+      caretaker:
         ["Is Kevin in much pain today?"]
       patient:
         ["Have you had much pain today?"]
@@ -53,7 +53,7 @@ application_text:
       text:
         "problems controlling or managing pain"
     medication_question:
-      care_taker:
+      caretaker:
         ["Has Kevin been taking his pain medication?"]
       patient:
         ["Have you been taking all of your pain medications?"]
@@ -62,7 +62,7 @@ application_text:
       text:
         "patient has been taking pain medications"
     urination_question:
-      care_taker:
+      caretaker:
         ["Has Kevin been able to urinate?"]
       patient:
         ["Have you been urinating regularly?"]
@@ -71,7 +71,7 @@ application_text:
       text:
         "patient has problems urinating"
     urine_color_question:
-      care_taker:
+      caretaker:
         ["What is the color of the urine?"]
       patient:
         ["What is the color of your urine?"]
@@ -80,7 +80,7 @@ application_text:
       text:
         "patient reports problem color in urine"
     status_question:
-      care_taker:
+      caretaker:
         ["Is Kevin feeling any better than yesterday?"]
       patient:
         ["Are you feeling better than yesterday?"]
@@ -89,7 +89,7 @@ application_text:
       text:
         "patient feels better than previous day"
     end_statement:
-      care_taker:
+      caretaker:
         ["Thank you for your input on the care for Kevin. We'll be sending this
         information to his surgeon."]
       patient:

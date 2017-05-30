@@ -7,7 +7,7 @@
       "intent": "YesIntent"
     },
     {
-      "intent": "CareTakerIntent"
+      "intent": "CaretakerIntent"
     },
     {
       "intent": "PatientIntent"

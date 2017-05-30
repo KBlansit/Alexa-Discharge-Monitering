@@ -37,12 +37,12 @@ class TestQuestionsStructure(unittest.TestCase):
 
     def test_question_loader(self):
         """
-        Tests that both patient and care_taker can be used for all questions
+        Tests that both patient and caretaker can be used for all questions
         """
 
         # test
         path = "../resources/application_settings.yaml"
-        users = ["care_taker", "patient"]
+        users = ["caretaker", "patient"]
         for i in users:
             load_questions(path, i)
 

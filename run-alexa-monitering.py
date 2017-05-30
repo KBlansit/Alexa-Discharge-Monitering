@@ -26,9 +26,12 @@ LIST_OF_QS = [
 
 # functions
 def initialize_session_parameters(user):
-    # assert that user is either a care_taker or patient
-    if user not in ["care_taker", "patient"]:
-        raise AssertionError("Must be either a care_taker or patient")
+    """
+    initializes session parameters for either the patienr or caretaker user
+    """
+    # assert that user is either a caretaker or patient
+    if user not in ["caretaker", "patient"]:
+        raise AssertionError("Must be either a caretaker or patient")
 
     # load data
     try:
@@ -74,15 +77,15 @@ def welcome_msg():
 
     return question(speech_text)
 
-# either define question list either for patients or care taker
+# either define question list either for patients or caretaker
 @ask.intent("PatientIntent")
 def set_patient_session():
     initialize_session_parameters("patient")
     return question_iteration()
 
-@ask.intent("CareTakerIntent")
+@ask.intent("CaretakerIntent")
 def set_patient_session():
-    initialize_session_parameters("care_taker")
+    initialize_session_parameters("caretaker")
     return question_iteration()
 
 # response to questions
