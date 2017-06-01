@@ -60,6 +60,7 @@ class TestQuestionsStructure(unittest.TestCase):
         except IOError:
             raise IOError("Cannot locate path: " + str(path))
 
+        # test both
         for i in users:
             load_questions(data, i, LIST_OF_QS)
 
