@@ -12,6 +12,8 @@ sys.path.append("..")
 
 # load user defined libraries
 from src.utilities import load_questions
+from src.fhir_validators import validate_encounter, validate_example_questionnaire,\
+    validate_example_questionnaire_response
 
 class TestQuestionsStructure(unittest.TestCase):
 
@@ -48,47 +50,32 @@ class TestQuestionsStructure(unittest.TestCase):
 
 class TestFHIRStructure(unittest.TestCase):
 
-    def test_positive_control_Questionnaire_response_format(self):
+    def test_positive_control_Questionnaire_Response_format(self):
         """
         positive control for validation
         NOTE:
             must be connected to internet
         """
-        # define path and get response
-        path = 'http://fhirtest.uhn.ca/baseDstu3/QuestionnaireResponse/SMART-PROMs-84-QR5/_history/1?_format=json'
-        json_dict = requests.get(path).json()
+        # open file
+        with open('example_fhir/example_Questionnaire_Response.json', 'r') as f:
+            data = json.load(f)
 
-        # assert that resourceType is valid
-        self.assertIn("resourceType", json_dict.keys())
-        self.assertEqual(json_dict["resourceType"], "QuestionnaireResponse")
+        # run through validator
+        validate_example_questionnaire_response(data)
 
-        # assert has id
-        self.assertIn("id", json_dict.keys())
 
-        # assert has questionaire reference
-        self.assertIn("questionnaire", json_dict.keys())
-        self.assertIn("reference", json_dict["questionnaire"])
-        self.assertIn("display", json_dict["questionnaire"])
+    def test_positive_control_Questionnaire_format(self):
+        """
+        positive control for validation
+        NOTE:
+            must be connected to internet
+        """
+        # open file
+        with open('example_fhir/example_Questionnaire.json', 'r') as f:
+            data = json.load(f)
 
-        # assert status is completed
-        self.assertIn("status", json_dict.keys())
-        self.assertEqual("completed", json_dict["status"])
-
-        # assert linked to patient
-        self.assertIn("subject", json_dict.keys())
-        self.assertIn("reference", json_dict["subject"])
-        self.assertIn("display", json_dict["subject"])
-
-        # assert encounter reference
-        self.assertIn("context", json_dict.keys())
-        self.assertIn("reference", json_dict["context"])
-
-        # assert that item is valid and populated
-        self.assertIn("item", json_dict.keys())
-        for i in json_dict["item"]:
-            self.assertIn("linkId", i)
-            self.assertIn("text", i)
-            self.assertIn("answer", i)
+        # run through validator
+        validate_example_questionnaire(data)
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):
