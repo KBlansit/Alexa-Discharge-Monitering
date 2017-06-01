@@ -40,27 +40,29 @@ def initialize_session_parameters(user):
     except IOError:
         raise IOError("Cannot locate path: " + str(path))
 
-    # set session variables
     # set question information
-    session.attributes['question_ids'] = LIST_OF_QS
-    session.attributes['crit_qs'] = critical_questions(data, LIST_OF_QS)
     session.attributes['question_lst'] = load_questions(data, user, LIST_OF_QS)
-    session.attributes['crit'] = "non-critical"
 
-    # set user level information
+    # set user recorder information
     session.attributes['response_recorder'] = user
 
-def question_iteration(intent_type=None):
+    # set critical to false
+    session.attributes['crit'] = False
+
+def question_iteration(intent_type=None, critical_question=False):
+    """
+    used to iterate through questions
+    """
+
     # if critical question is answered no, then end
-    if session.attributes['crit'] is "CRIT" and intent_type is "no":
+    if session.attributes['crit'] and intent_type is "no":
         return statement("Hmmm... something appears to be wrong")
+
+    # set critical question
+    session.attributes['crit'] = critical_question
 
     # test if there's any more questions left
     if len(session.attributes['question_lst']):
-        # set a hard stop warning to session
-        if session.attributes['question_ids'].pop in session.attributes['crit_qs']:
-            session.attributes['crit'] = "CRIT"
-
         # determine question text
         question_text = session.attributes['question_lst'].pop()
         return question(question_text)
@@ -81,12 +83,12 @@ def welcome_msg():
 @ask.intent("PatientIntent")
 def set_patient_session():
     initialize_session_parameters("patient")
-    return question_iteration()
+    return question_iteration(critical_question=True)
 
 @ask.intent("CaretakerIntent")
 def set_patient_session():
     initialize_session_parameters("caretaker")
-    return question_iteration()
+    return question_iteration(critical_question=True)
 
 # response to questions
 @ask.intent("YesIntent")
@@ -96,6 +98,10 @@ def yes_response():
 @ask.intent("NoIntent")
 def no_response():
     return question_iteration("no")
+
+@ask.session_ended
+def session_ended():
+    return "{}", 200
 
 if __name__ == '__main__':
     app.run()
