@@ -11,7 +11,7 @@ import requests
 sys.path.append("..")
 
 # load user defined libraries
-from src.utilities import load_questions
+from src.utilities import load_questions, extract_questionnaire_questions
 from src.fhir_validators import validate_encounter, validate_example_questionnaire,\
     validate_example_questionnaire_response
 
@@ -113,6 +113,21 @@ class TestFHIRStructure(unittest.TestCase):
 
         # run through validator
         validate_example_questionnaire(data)
+
+        # extract questions
+        extract_questionnaire_questions(data)
+
+        LIST_OF_QS = [
+            "Person Confirmation",
+            "Mobility",
+            "Currently Eating",
+            "Currently Drinking",
+            "Currently Taking Pain Medications",
+        ]
+
+        # assert same
+        self.assertItemsEqual(extract_questionnaire_questions(data), LIST_OF_QS)
+
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):

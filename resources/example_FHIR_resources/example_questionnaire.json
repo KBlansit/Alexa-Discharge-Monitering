@@ -30,7 +30,7 @@
       "type": "choice"
     },
     {
-      "linkId": "Currently taking pain medications",
+      "linkId": "Currently Taking Pain Medications",
       "text": "is the patient currently taking their pain medications?",
       "type": "choice"
     }
