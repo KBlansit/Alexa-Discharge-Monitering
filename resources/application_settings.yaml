@@ -20,7 +20,7 @@ application_text:
       caretaker:
         ["Has Kevin been able to move around?"]
       patient:
-        ["Have you been able to get up much?"]
+        ["Have you been able to move around today"]
       linkId:
         "mobility"
       text:
@@ -29,7 +29,7 @@ application_text:
       caretaker:
         ["Has Kevin been able to eat any food?"]
       patient:
-        ["Have you been able to keep down food much?"]
+        ["Have you been able to keep down food?"]
       linkId:
         "eating"
       text:
@@ -105,7 +105,7 @@ application_settings:
   - "Currently Drinking"
   - "Pain Control"
   - "Currently Taking Pain Medications"
-  - "Currently Urinating"
-  - "Urine Color"
+  #- "Currently Urinating"
+  #- "Urine Color"
   - "Feeling Better Than Previous Day"
   - "end_statement"
