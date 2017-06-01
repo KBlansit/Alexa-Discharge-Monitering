@@ -22,7 +22,6 @@ def validate_example_questionnaire(data):
         assert "linkId" in i
         assert "text" in i
         assert "type" in i
-        assert "options" in i
 
 def validate_example_questionnaire_response(data):
     """

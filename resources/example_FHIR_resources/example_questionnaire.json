@@ -1,0 +1,38 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "Example_1",
+
+  "identifier": [
+    {
+      "use": "official",
+      "system": "none"
+    }
+  ],
+  "item": [
+    {
+      "linkId": "Person Confirmation",
+      "text": "confirmation that the user is correct",
+      "type": "choice"
+    },
+    {
+      "linkId": "Mobility",
+      "text": "what is the current mobility status?",
+      "type": "choice"
+    },
+    {
+      "linkId": "Currently Eating",
+      "text": "is the patient currently eating?",
+      "type": "choice"
+    },
+    {
+      "linkId": "Currently Drinking",
+      "text": "is the patient currently drinking?",
+      "type": "choice"
+    },
+    {
+      "linkId": "Currently taking pain medications",
+      "text": "is the patient currently taking their pain medications?",
+      "type": "choice"
+    }
+  ]
+}

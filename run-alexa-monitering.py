@@ -17,11 +17,11 @@ SETTNGS_PATH = "resources/application_settings.yaml"
 
 # temporary vars for testing and design
 LIST_OF_QS = [
-    "person_confirmation",
-    "moving_question",
-    "eating_question",
-    "drinking_question",
-    "pain_control_question",
+    "Person Confirmation",
+    "Mobility",
+    "Currently Eating",
+    "Currently Drinking",
+    "Currently Taking Pain Medications",
 ]
 
 # functions

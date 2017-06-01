@@ -9,14 +9,14 @@ application_text:
 
   question_text:
     # defined questions
-    person_confirmation:
+    "Person Confirmation":
       caretaker:
         ["Alright, can we confirm the person we're monitering today? I current
         see that we're going over Kevin. Is this correct?"]
       patient:
         ["Hope you're feeling alright. I wanted to start by verifying this is
         the correct person... I see that you're Kevin, correct?"]
-    moving_question:
+    "Mobility":
       caretaker:
         ["Has Kevin been able to move around?"]
       patient:
@@ -25,7 +25,7 @@ application_text:
         "mobility"
       text:
         "problems walking or moving around"
-    eating_question:
+    "Currently Eating":
       caretaker:
         ["Has Kevin been able to eat any food?"]
       patient:
@@ -34,7 +34,7 @@ application_text:
         "eating"
       text:
         "problems eating or keeping down solid food"
-    drinking_question:
+    "Currently Drinking":
       caretaker:
         ["Has Kevin drank any fluids?"]
       patient:
@@ -43,7 +43,7 @@ application_text:
         "liquids"
       text:
         "problems drinking or keeping down liquids"
-    pain_control_question:
+    "Pain Control":
       caretaker:
         ["Is Kevin in much pain?"]
       patient:
@@ -52,7 +52,7 @@ application_text:
         "pain"
       text:
         "problems controlling or managing pain"
-    medication_question:
+    "Currently Taking Pain Medications":
       caretaker:
         ["Has Kevin been taking his pain medication?"]
       patient:
@@ -61,7 +61,7 @@ application_text:
         "painMedicans"
       text:
         "patient has been taking pain medications"
-    urination_question:
+    "Currently Urinating":
       caretaker:
         ["Has Kevin been able to urinate?"]
       patient:
@@ -70,7 +70,7 @@ application_text:
         "urination"
       text:
         "patient has problems urinating"
-    urine_color_question:
+    "Urine Color":
       caretaker:
         ["What is the color of the urine?"]
       patient:
@@ -79,7 +79,7 @@ application_text:
         "urineColor"
       text:
         "patient reports problem color in urine"
-    status_question:
+    "Feeling Better Than Previous Day":
       caretaker:
         ["Is Kevin feeling any better than yesterday?"]
       patient:
@@ -99,13 +99,13 @@ application_settings:
  hard_assertion_questions:
      - "person_confirmation"
  master_questerion_ordering:
-  - "person_confirmation"
-  - "moving_question"
-  - "eating_question"
-  - "drinking_question"
-  - "pain_control_question"
-  - "medication_question"
-  - "urination_question"
-  - "urine_color_question"
-  - "status_question"
+  - "Person Confirmation"
+  - "Mobility"
+  - "Currently Eating"
+  - "Currently Drinking"
+  - "Pain Control"
+  - "Currently Taking Pain Medications"
+  - "Currently Urinating"
+  - "Urine Color"
+  - "Feeling Better Than Previous Day"
   - "end_statement"

@@ -71,7 +71,8 @@ class TestFHIRStructure(unittest.TestCase):
         positive control for QuestionnaireResponse
         """
         # open file
-        with open('example_fhir/example_Questionnaire_Response.json', 'r') as f:
+        path = 'example_fhir/example_Questionnaire_Response.json'
+        with open(path, 'r') as f:
             data = json.load(f)
 
         # run through validator
@@ -82,7 +83,8 @@ class TestFHIRStructure(unittest.TestCase):
         positive control for Questionnaire
         """
         # open file
-        with open('example_fhir/example_Questionnaire.json', 'r') as f:
+        path = 'example_fhir/example_Questionnaire.json'
+        with open(path, 'r') as f:
             data = json.load(f)
 
         # run through validator
@@ -93,11 +95,24 @@ class TestFHIRStructure(unittest.TestCase):
         positive control for Questionnaire
         """
         # open file
-        with open('example_fhir/example_Encounter.json', 'r') as f:
+        path = 'example_fhir/example_Encounter.json'
+        with open(path, 'r') as f:
             data = json.load(f)
 
         # run through validator
         validate_encounter(data)
+
+    def test_Questionnaire_JSON(self):
+        """
+        control for QuestionnaireResponse
+        """
+        # open file
+        path = '../resources/example_FHIR_resources/example_questionnaire.json'
+        with open(path, 'r') as f:
+            data = json.load(f)
+
+        # run through validator
+        validate_example_questionnaire(data)
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):
