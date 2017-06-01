@@ -1,5 +1,13 @@
 YesIntent yes
+YesIntent yep
+YesIntent mmhmmm
+YesIntent I think so
+YesIntent sure
+
 NoIntent no
+NoIntent nah
+NoIntent I don't think so
+
 
 CaretakerIntent caretaker
 CaretakerIntent this is his caretaker

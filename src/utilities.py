@@ -9,8 +9,8 @@ from Questionaire import QuestionNode
 # define utility functions
 def load_questions(data, user, curr_questions):
     # assert that user is either a care_taker or patient
-    if user not in ["care_taker", "patient"]:
-        raise AssertionError("Must be either a care_taker or patient")
+    if user not in ["caretaker", "patient"]:
+        raise AssertionError("Must be either a caretaker or patient")
 
     # define basic queries
     questions = data['application_settings']['master_questerion_ordering']

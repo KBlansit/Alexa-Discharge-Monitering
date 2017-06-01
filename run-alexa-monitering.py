@@ -48,6 +48,7 @@ def initialize_session_parameters(user):
 
     # set critical to false
     session.attributes['crit'] = False
+    print session.attributes['crit']
 
 def question_iteration(intent_type=None, critical_question=False):
     """
