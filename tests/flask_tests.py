@@ -68,9 +68,7 @@ class TestFHIRStructure(unittest.TestCase):
 
     def test_positive_control_Questionnaire_Response_format(self):
         """
-        positive control for validation
-        NOTE:
-            must be connected to internet
+        positive control for QuestionnaireResponse
         """
         # open file
         with open('example_fhir/example_Questionnaire_Response.json', 'r') as f:
@@ -79,12 +77,9 @@ class TestFHIRStructure(unittest.TestCase):
         # run through validator
         validate_example_questionnaire_response(data)
 
-
     def test_positive_control_Questionnaire_format(self):
         """
-        positive control for validation
-        NOTE:
-            must be connected to internet
+        positive control for Questionnaire
         """
         # open file
         with open('example_fhir/example_Questionnaire.json', 'r') as f:
@@ -92,6 +87,17 @@ class TestFHIRStructure(unittest.TestCase):
 
         # run through validator
         validate_example_questionnaire(data)
+
+    def test_positive_control_Encounter_format(self):
+        """
+        positive control for Questionnaire
+        """
+        # open file
+        with open('example_fhir/example_Encounter.json', 'r') as f:
+            data = json.load(f)
+
+        # run through validator
+        validate_encounter(data)
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):

@@ -64,3 +64,9 @@ def validate_encounter(data):
     """
     validates json data to questionnaire
     """
+    # validate resource type
+    assert "resourceType" in data.keys()
+    assert data["resourceType"] == "Encounter"
+
+    # validate has id
+    assert "id" in data.keys()
