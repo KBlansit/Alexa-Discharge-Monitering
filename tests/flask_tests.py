@@ -41,12 +41,27 @@ class TestQuestionsStructure(unittest.TestCase):
         """
         Tests that both patient and caretaker can be used for all questions
         """
+        LIST_OF_QS = [
+            "person_confirmation",
+            "moving_question",
+            "eating_question",
+            "drinking_question",
+            "pain_control_question",
+        ]
 
         # test
         path = "../resources/application_settings.yaml"
         users = ["caretaker", "patient"]
+
+        # load data
+        try:
+            with open(path, "r") as f:
+                data = yaml.load(f)
+        except IOError:
+            raise IOError("Cannot locate path: " + str(path))
+
         for i in users:
-            load_questions(path, i)
+            load_questions(data, i, LIST_OF_QS)
 
 class TestFHIRStructure(unittest.TestCase):
 
