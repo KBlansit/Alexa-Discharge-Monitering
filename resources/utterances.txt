@@ -13,6 +13,7 @@ CaretakerIntent caretaker
 CaretakerIntent this is his caretaker
 CaretakerIntent this is her caretaker
 
+PatientIntent Kevin
 PatientIntent this is Kevin
 PatientIntent this is the patient
 PatientIntent patient
