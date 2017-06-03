@@ -95,17 +95,30 @@ application_text:
       patient:
         ["Alright, thanks! I will send a note to your surgeon and we'll contact
         you if we need any more information."]
+  educational_text:
+    "MASTECTOMY":
+      "EFFECTS OF SURGERY":
+        text:
+          "After surgery, the breast may be scarred or be a different shape or \
+          size than before surgery. The area around the surgical site may become \
+          hardened. If lymph nodes were removed, or affected, lymphedema which is \
+          a swelling of the arm, may occur. This is a life-long risk."
+      "WOUNG CARE":
+        text:
+          "Please make sure to moniter your wound"
 application_settings:
- hard_assertion_questions:
-     - "person_confirmation"
- master_questerion_ordering:
-  - "Person Confirmation"
-  - "Mobility"
-  - "Currently Eating"
-  - "Currently Drinking"
-  - "Pain Control"
-  - "Currently Taking Pain Medications"
-  #- "Currently Urinating"
-  #- "Urine Color"
-  - "Feeling Better Than Previous Day"
-  - "end_statement"
+  educational_content_not_found:
+    "Hmmm, we weren't able to find the answer the question you're trying to ask."
+  hard_assertion_questions:
+    - "person_confirmation"
+  master_questerion_ordering:
+    - "Person Confirmation"
+    - "Mobility"
+    - "Currently Eating"
+    - "Currently Drinking"
+    - "Pain Control"
+    - "Currently Taking Pain Medications"
+    #- "Currently Urinating"
+    #- "Urine Color"
+    - "Feeling Better Than Previous Day"
+    - "end_statement"
