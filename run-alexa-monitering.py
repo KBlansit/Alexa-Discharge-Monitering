@@ -54,11 +54,19 @@ def initialize_session_parameters(user):
 
     # set critical to false
     session.attributes['crit'] = False
+    session.attributes['initialized'] = True
 
 def question_iteration(intent_type=None, critical_question=False):
     """
     used to iterate through questions
     """
+
+    # assert initialized
+    if not hasattr(session.attributes, 'initialized'):
+        raise AssertionError("Used an utterance before initialization")
+
+    if not session.attributes['initialized']:
+        raise AssertionError("Used an utterance before initialization")
 
     # if critical question is answered no, then end
     if session.attributes['crit'] and intent_type is "no":
