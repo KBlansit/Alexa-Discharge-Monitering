@@ -14,10 +14,22 @@ ask = Ask(app, '/')
 
 # define global vars
 SETTNGS_PATH = "resources/application_settings.yaml"
+VALID_USERS = [
+    'patient',
+    'caretaker',
+]
+SESSION_STATES = [
+    'USER_IDENTIFICATION',
+    'PERSON_CONFIRMATION',
+    'SCREENING_CONSENT',
+    'SCREENING_QUESTIONS',
+    ]
 
-# temporary vars for testing and design
+# HACK
+# needs to be replaced with database linkage
+PREVIOUSLY_PERFORMED_SCREENING = False
+SESSION_PROCEDURE = "ILEOSTOMY"
 LIST_OF_QS = [
-    "Person Confirmation",
     "Mobility",
     "Currently Eating",
     "Currently Drinking",
@@ -27,12 +39,12 @@ LIST_OF_QS = [
 ]
 
 # functions
-def initialize_session_parameters(user):
+def initialize_questions(user):
     """
     initializes session parameters for either the patienr or caretaker user
     """
     # assert that user is either a caretaker or patient
-    if user not in ["caretaker", "patient"]:
+    if user not in VALID_USERS:
         raise AssertionError("Must be either a caretaker or patient")
 
     # load data
@@ -50,9 +62,11 @@ def initialize_session_parameters(user):
 
     # set critical to false
     session.attributes['crit'] = False
-    session.attributes['initialized'] = True
 
-def question_iteration(intent_type=None, critical_question=False):
+def consent_for_screening():
+    pass
+
+def screening_question_iteration(intent_type=None, critical_question=False):
     """
     used to iterate through questions
     """
@@ -80,6 +94,26 @@ def question_iteration(intent_type=None, critical_question=False):
         return statement("Great! I'll send these results to your doctor, and will\
                          contact you if there's any more information we need.")
 
+def educational_response(educational_request):
+    """
+    """
+    # load data
+    try:
+        with open(SETTNGS_PATH, "r") as f:
+            data = yaml.load(f)
+    except IOError:
+        raise IOError("Cannot locate path: " + str(path))
+
+    # subset data
+    procedure_data = data['application_text']['educational_text'][SESSION_PROCEDURE]
+
+    # check if key is in dict
+    if educational_request in procedure_data.keys():
+        educational_response_text = procedure_data[educational_request]
+    else:
+        return question(data['application_settings']['educational_content_not_found'])
+
+
 # define welcome message
 @ask.launch
 def welcome_msg():
@@ -90,7 +124,16 @@ def welcome_msg():
     speech_text = "Welcome to the discharge monitoring application.\
     Is this Kevin or his caretaker?"
 
+    # set state
+    session.attributes['session_state'] = 'USER_IDENTIFICATION'
+
+    # return question of speech
     return question(speech_text)
+
+# educational_intents
+@ask.intent("QuestionWoundCareIntent")
+def wound_care_education():
+    pass
 
 # either define question list either for patients or caretaker
 @ask.intent("PatientIntent")

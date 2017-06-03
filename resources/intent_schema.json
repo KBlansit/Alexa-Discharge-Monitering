@@ -6,6 +6,14 @@
     {
       "intent": "YesIntent"
     },
+
+    {
+      "intent": "QuestionWoundCareIntent"
+    },
+    {
+      "intent": "QuestionEffectSurgery"
+    },
+
     {
       "intent": "CaretakerIntent"
     },
