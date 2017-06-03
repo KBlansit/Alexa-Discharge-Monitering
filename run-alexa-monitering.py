@@ -48,10 +48,6 @@ def initialize_session_parameters(user):
     # set user recorder information
     session.attributes['response_recorder'] = user
 
-    # initialize end statement
-    #print data['application_text']['end_statement']
-    #session.attributes['end_statement'] = data['application_text']['end_statement'][user][0]
-
     # set critical to false
     session.attributes['crit'] = False
     session.attributes['initialized'] = True
