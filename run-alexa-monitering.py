@@ -22,6 +22,7 @@ VALID_USERS = [
 SESSION_STATES = [
     'USER_IDENTIFICATION',
     'PERSON_CONFIRMATION',
+    'SCREENING_OR_EDU',
     'SCREENING_CONSENT',
     'SCREENING_QUESTIONS',
     ]
@@ -41,6 +42,9 @@ LIST_OF_QS = [
 
 # functions
 def question_and_answer():
+    # assert that state is valid
+    assert session.attributes['session_state'] in SESSION_STATES
+
     # load data
     try:
         with open(SETTNGS_PATH, "r") as f:
@@ -50,16 +54,32 @@ def question_and_answer():
 
     # determine state
     if session.attributes['session_state'] == 'USER_IDENTIFICATION':
-
         # set session state
         session.attributes['session_state'] = "PERSON_CONFIRMATION"
 
         # return text
         user = session.attributes['user']
         rslt_lst = data['application_text']['question_text']['Person Confirmation'][user]
+
         return question(random.choice(rslt_lst))
 
     elif session.attributes['session_state'] == 'PERSON_CONFIRMATION':
+        # determine response
+        if not session.attributes['bool_response']:
+
+            # return text
+            rslt_lst = data['application_text']['introduction_text']['failed_user_confirmation']
+
+            return statement(rslt_lst)
+
+        else:
+            # set session state
+            session.attributes['session_state'] = "SCREENING_OR_EDU"
+
+            # return text
+            rslt_lst = data['application_text']['introduction_text']['ask_screening_or_edu']
+
+            return statement(rslt_lst)
 
     elif session.attributes['session_state'] == 'SCREENING_CONSENT':
         pass
@@ -178,11 +198,17 @@ def set_patient_session():
 # response to questions
 @ask.intent("YesIntent")
 def yes_response():
-    return question_iteration("yes")
+    # set answer level parameter
+    session.attributes['bool_response'] = True
+
+    return question_and_answer()
 
 @ask.intent("NoIntent")
 def no_response():
-    return question_iteration("no")
+    # set answer level parameter
+    session.attributes['bool_response'] = False
+
+    return question_and_answer()
 
 # educational_intents
 @ask.intent("QuestionWoundCareIntent")

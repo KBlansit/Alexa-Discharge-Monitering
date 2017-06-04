@@ -2,10 +2,15 @@ application_text:
   introduction_text:
     welcome_text:
       "Welcome to the discharge monitering application. We're going
-      to ask some private questions. Is it okay to proceed?"
+        to ask some private questions. Is it okay to proceed?"
     user_identification:
       "I wanted to confirm if this was Kevin, or a care taker
-      for Kevin."
+        for Kevin."
+    failed_user_confirmation:
+      "Hmm... something went wrong"
+    ask_screening_or_edu:
+      "Great. I have you confirmed. You can now ask questions about your surgery \
+        or start the screening application."
   question_text:
     # defined questions
     "Person Confirmation":
