@@ -39,6 +39,30 @@ LIST_OF_QS = [
 ]
 
 # functions
+def question_and_answer():
+    # load data
+    try:
+        with open(SETTNGS_PATH, "r") as f:
+            data = yaml.load(f)
+    except IOError:
+        raise IOError("Cannot locate path: " + str(path))
+
+    # determine state
+    if session.attributes['session_state'] == 'USER_IDENTIFICATION':
+
+        # set session state
+        session.attributes['session_state'] = "PERSON_CONFIRMATION"
+
+        # return text
+        return question(data['application_text']['introduction_text']['user_identification'])
+
+    elif session.attributes['session_state'] == 'PERSON_CONFIRMATION':
+        pass
+    elif session.attributes['session_state'] == 'SCREENING_CONSENT':
+        pass
+    elif session.attributes['session_state'] == 'SCREENING_QUESTIONS':
+        pass
+
 def initialize_questions(user):
     """
     initializes session parameters for either the patienr or caretaker user
@@ -113,7 +137,6 @@ def educational_response(educational_request):
     else:
         return question(data['application_settings']['educational_content_not_found'])
 
-
 # define welcome message
 @ask.launch
 def welcome_msg():
@@ -121,30 +144,28 @@ def welcome_msg():
     initial hook for alexa program
     """
     # make welcome message
-    speech_text = "Welcome to the discharge monitoring application.\
+    reply_text = "Welcome to the discharge monitoring application.\
     Is this Kevin or his caretaker?"
 
     # set state
     session.attributes['session_state'] = 'USER_IDENTIFICATION'
 
     # return question of speech
-    return question(speech_text)
-
-# educational_intents
-@ask.intent("QuestionWoundCareIntent")
-def wound_care_education():
-    pass
+    return question(reply_text)
 
 # either define question list either for patients or caretaker
 @ask.intent("PatientIntent")
 def set_patient_session():
-    initialize_session_parameters("patient")
-    return question_iteration(critical_question=True)
+
+    # set patient level parameter
+    session.attributes['user'] = 'patient'
+
+    # let question and state flow through custom question
+    return question_and_answer()
 
 @ask.intent("CaretakerIntent")
 def set_patient_session():
-    initialize_session_parameters("caretaker")
-    return question_iteration(critical_question=True)
+    pass
 
 # response to questions
 @ask.intent("YesIntent")
@@ -154,6 +175,11 @@ def yes_response():
 @ask.intent("NoIntent")
 def no_response():
     return question_iteration("no")
+
+# educational_intents
+@ask.intent("QuestionWoundCareIntent")
+def wound_care_education():
+    pass
 
 @ask.session_ended
 def session_ended():
