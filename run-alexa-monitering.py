@@ -83,6 +83,8 @@ def question_and_answer():
 
     elif session.attributes['session_state'] == 'SCREENING_CONSENT':
         pass
+    elif session.attributes['session_state'] == 'SCREENING_CONSENT':
+        pass
     elif session.attributes['session_state'] == 'SCREENING_QUESTIONS':
         pass
 
@@ -156,9 +158,26 @@ def educational_response(educational_request):
 
     # check if key is in dict
     if educational_request in procedure_data.keys():
-        educational_response_text = procedure_data[educational_request]
+        educational_response_text = procedure_data[educational_request]['text']
+
+        # prompt if screening not already done for screening
+        # might be nice to add a MCMC model to this to ask after n edu requests
+        if not PREVIOUSLY_PERFORMED_SCREENING:
+            # set state to confirmation mode
+            session.attributes['session_state'] = "PERSON_CONFIRMATION"
+
+            # ask for consent to screen
+            additional_text = data['application_text']['introduction_text']['prompt_for_screening']
+
+        else:
+            # ask for consent to screen
+            additional_text = data['application_text']['introduction_text']['additional_edu_prompt']
+
+        return question(educational_response_text + "..." + additional_text)
+
     else:
-        return question(data['application_settings']['educational_content_not_found'])
+        # else return that we cannot find the specific question
+        return question(data['introduction_text']['educational_content_not_found'])
 
 # define welcome message
 @ask.launch
@@ -176,9 +195,9 @@ def welcome_msg():
     # return question of speech
     return question(reply_text)
 
-# either define question list either for patients or caretaker
+# set user for either patient or care taker
 @ask.intent("PatientIntent")
-def set_patient_session():
+def set_user_session():
 
     # set patient level parameter
     session.attributes['user'] = 'patient'
@@ -187,7 +206,7 @@ def set_patient_session():
     return question_and_answer()
 
 @ask.intent("CaretakerIntent")
-def set_patient_session():
+def set_user_session():
 
     # set patient level parameter
     session.attributes['user'] = 'caretaker'
@@ -213,7 +232,7 @@ def no_response():
 # educational_intents
 @ask.intent("QuestionWoundCareIntent")
 def wound_care_education():
-    pass
+    return educational_response("WOUND CARE")
 
 @ask.session_ended
 def session_ended():

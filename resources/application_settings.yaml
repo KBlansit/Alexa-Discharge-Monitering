@@ -11,6 +11,13 @@ application_text:
     ask_screening_or_edu:
       "Great. I have you confirmed. You can now ask questions about your surgery \
         or start the screening application."
+    educational_content_not_found:
+      "Hmmm, we weren't able to find the answer the question you're trying to ask.\
+        Is there something else I can help answer"
+    prompt_for_screening:
+      "Would now be a good time to ask some question about how you're recovering?"
+    additional_edu_prompt:
+      "Is there anything else you would like to know about your surgery?"
   question_text:
     # defined questions
     "Person Confirmation":
@@ -118,9 +125,6 @@ application_text:
           text:
             "Still requires content wound care"
 application_settings:
-  educational_content_not_found:
-    "Hmmm, we weren't able to find the answer the question you're trying to ask.\
-     Is there something else I can help answer"
   hard_assertion_questions:
     - "person_confirmation"
   question_lists:
