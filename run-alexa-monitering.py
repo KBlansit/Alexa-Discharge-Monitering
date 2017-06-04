@@ -2,6 +2,7 @@
 
 # load libraries
 import yaml
+import random
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
 
@@ -54,7 +55,9 @@ def question_and_answer():
         session.attributes['session_state'] = "PERSON_CONFIRMATION"
 
         # return text
-        return question(data['application_text']['introduction_text']['user_identification'])
+        user = session.attributes['user']
+        rslt_lst = data['application_text']['question_text']['Person Confirmation'][user]
+        return question(random.choice(rslt_lst))
 
     elif session.attributes['session_state'] == 'PERSON_CONFIRMATION':
         pass
