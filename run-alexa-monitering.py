@@ -60,7 +60,7 @@ def question_and_answer():
         return question(random.choice(rslt_lst))
 
     elif session.attributes['session_state'] == 'PERSON_CONFIRMATION':
-        pass
+
     elif session.attributes['session_state'] == 'SCREENING_CONSENT':
         pass
     elif session.attributes['session_state'] == 'SCREENING_QUESTIONS':
@@ -168,7 +168,12 @@ def set_patient_session():
 
 @ask.intent("CaretakerIntent")
 def set_patient_session():
-    pass
+
+    # set patient level parameter
+    session.attributes['user'] = 'caretaker'
+
+    # let question and state flow through custom question
+    return question_and_answer()
 
 # response to questions
 @ask.intent("YesIntent")

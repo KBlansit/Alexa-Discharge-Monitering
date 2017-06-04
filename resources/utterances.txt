@@ -8,12 +8,13 @@ NoIntent no
 NoIntent nah
 NoIntent I don't think so
 
-QuestionWoundCareIntent what are my instructions for after surgery?
-QuestionWoundCareIntent how do I take care of my wound?
+QuestionWoundCareIntent what are my instructions for after surgery
+QuestionWoundCareIntent how do I take care of my wound
 
 QuestionEffectSurgery what are the long term effects of this surgery
 
 CaretakerIntent caretaker
+CaretakerIntent care taker
 CaretakerIntent this is his caretaker
 CaretakerIntent this is her caretaker
 
