@@ -268,6 +268,20 @@ def no_response():
 
     return question_and_answer()
 
+@ask.intent("ScreeningIntent")
+def screening_response():
+    if session.attributes['session_state'] == 'SCREENING_OR_EDU':
+        # intialize questions
+        initialize_questions()
+
+        # set session state to question screening
+        session.attributes['session_state'] = 'SCREENING_QUESTIONS'
+
+        return screening_question_iteration()
+
+    else:
+        return statement("hmm... cannot do that right now")
+
 # educational_intents
 @ask.intent("QuestionWoundCareIntent")
 def wound_care_education():
