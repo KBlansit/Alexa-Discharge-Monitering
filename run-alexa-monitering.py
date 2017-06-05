@@ -7,7 +7,7 @@ from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
 
 # load user defined libraries
-from src.utilities import load_questions, critical_questions
+from src.utilities import load_questions
 
 # flask initialize
 app = Flask(__name__)
@@ -65,16 +65,8 @@ def question_and_answer():
 
     elif session.attributes['session_state'] == 'PERSON_CONFIRMATION':
         # determine response
-        if not session.attributes['bool_response']:
-            # reset bool_response
-            session.attributes['bool_response'] = None
-
-            # return text
-            rslt_lst = data['application_text']['introduction_text']['failed_user_confirmation']
-
-            return statement(rslt_lst)
-
-        else:
+        # if yes resoponse
+        if session.attributes['bool_response']:
             # reset bool_response
             session.attributes['bool_response'] = None
 
@@ -86,20 +78,53 @@ def question_and_answer():
 
             return question(rslt_lst)
 
+        # if no resoponse
+        elif not session.attributes['bool_response']:
+            # reset bool_response
+            session.attributes['bool_response'] = None
+
+            # return text
+            rslt_lst = data['application_text']['introduction_text']['failed_user_confirmation']
+
+            return statement(rslt_lst)
+        # otherwise raise error
+        else:
+            # reset bool_response
+            session.attributes['bool_response'] = None
+
+            raise AssertionError('Had trouble understanding what the response was')
+
     elif session.attributes['session_state'] == 'SCREENING_CONSENT':
-        pass
+        # determine response
+        # if yes response
+        if session.attributes['bool_response']:
+            # reset bool_response
+            session.attributes['bool_response'] = None
+
+            # intialize questions
+            initialize_questions()
+
+            # set session state to question screening
+            session.attributes['session_state'] = 'SCREENING_QUESTIONS'
+
+        if not session.attributes['bool_response']:
+            # reset bool_response
+            session.attributes['bool_response'] = None
+
+        # otherwise raise error
+        else:
+            # reset bool_response
+            session.attributes['bool_response'] = None
+
+            raise AssertionError('Had trouble understanding what the response was')
 
     elif session.attributes['session_state'] == 'SCREENING_QUESTIONS':
         pass
 
-def initialize_questions(user):
+def initialize_questions():
     """
     initializes session parameters for either the patienr or caretaker user
     """
-    # assert that user is either a caretaker or patient
-    if user not in VALID_USERS:
-        raise AssertionError("Must be either a caretaker or patient")
-
     # load data
     try:
         with open(SETTNGS_PATH, "r") as f:
@@ -107,14 +132,13 @@ def initialize_questions(user):
     except IOError:
         raise IOError("Cannot locate path: " + str(path))
 
+    user = session.attributes['user']
+
     # set question information
-    session.attributes['question_lst'] = load_questions(data, user, LIST_OF_QS)
+    session.attributes['question_lst'] = load_questions(data, user, SESSION_PROCEDURE)
 
     # set user recorder information
     session.attributes['response_recorder'] = user
-
-    # set critical to false
-    session.attributes['crit'] = False
 
 def consent_for_screening():
     pass

@@ -31,7 +31,7 @@ class TestQuestionsStructure(unittest.TestCase):
             raise IOError("Cannot locate path: " + str(path))
 
         # define basic queries
-        questions = data['application_settings']['master_questerion_ordering']
+        questions = data['application_settings']['question_lists']['ILEOSTOMY']
         question_text = data['application_text']['question_text']
 
         for i in questions:
@@ -62,7 +62,7 @@ class TestQuestionsStructure(unittest.TestCase):
 
         # test both
         for i in users:
-            load_questions(data, i, LIST_OF_QS)
+            load_questions(data, i, 'ILEOSTOMY')
 
 class TestFHIRStructure(unittest.TestCase):
 

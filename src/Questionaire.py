@@ -11,7 +11,7 @@ class QuestionNode:
         self.child_node = child_node
         self.name = name
 
-    def to_list(self, curr_questions):
+    def to_list(self):
         """
         transforms the linked list into a flat list and chooses questions
         """
