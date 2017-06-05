@@ -107,9 +107,14 @@ def question_and_answer():
             # set session state to question screening
             session.attributes['session_state'] = 'SCREENING_QUESTIONS'
 
+            return screening_question_iteration()
+
         if not session.attributes['bool_response']:
             # reset bool_response
             session.attributes['bool_response'] = None
+
+            # ask if there's anything else to do
+            return question(data['application_text']['introduction_text']['additional_edu_prompt'])
 
         # otherwise raise error
         else:
@@ -119,7 +124,26 @@ def question_and_answer():
             raise AssertionError('Had trouble understanding what the response was')
 
     elif session.attributes['session_state'] == 'SCREENING_QUESTIONS':
-        pass
+        if session.attributes['bool_response']:
+            # reset bool_response
+            session.attributes['bool_response'] = None
+
+            # ask if there's anything else to do
+            return screening_question_iteration()
+
+        if not session.attributes['bool_response']:
+            # reset bool_response
+            session.attributes['bool_response'] = None
+
+            # ask if there's anything else to do
+            return screening_question_iteration()
+
+        # otherwise raise error
+        else:
+            # reset bool_response
+            session.attributes['bool_response'] = None
+
+            raise AssertionError('Had trouble understanding what the response was')
 
 def initialize_questions():
     """
@@ -140,27 +164,10 @@ def initialize_questions():
     # set user recorder information
     session.attributes['response_recorder'] = user
 
-def consent_for_screening():
-    pass
-
-def screening_question_iteration(intent_type=None, critical_question=False):
+def screening_question_iteration():
     """
     used to iterate through questions
     """
-
-    # assert initialized
-    if not hasattr(session.attributes, 'initialized'):
-        raise AssertionError("Used an utterance before initialization")
-
-    if not session.attributes['initialized']:
-        raise AssertionError("Used an utterance before initialization")
-
-    # if critical question is answered no, then end
-    if session.attributes['crit'] and intent_type is "no":
-        return statement("Hmmm... something appears to be wrong")
-
-    # set critical question
-    session.attributes['crit'] = critical_question
 
     # test if there's any more questions left
     if len(session.attributes['question_lst']):

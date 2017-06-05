@@ -129,7 +129,6 @@ application_settings:
     - "person_confirmation"
   question_lists:
     "ILEOSTOMY":
-      - "Person Confirmation"
       - "Mobility"
       - "Currently Eating"
       - "Currently Drinking"
