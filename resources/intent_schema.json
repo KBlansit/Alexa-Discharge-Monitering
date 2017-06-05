@@ -8,6 +8,10 @@
     },
 
     {
+      "intent": "ScreeningIntent"
+    },
+
+    {
       "intent": "QuestionWoundCareIntent"
     },
     {

@@ -8,6 +8,9 @@ NoIntent no
 NoIntent nah
 NoIntent I don't think so
 
+ScreeningIntent start screening
+ScreeningIntent screening
+
 QuestionWoundCareIntent what are my instructions for after surgery
 QuestionWoundCareIntent how do I take care of my wound
 
