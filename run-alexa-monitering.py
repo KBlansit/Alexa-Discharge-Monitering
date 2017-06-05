@@ -66,6 +66,8 @@ def question_and_answer():
     elif session.attributes['session_state'] == 'PERSON_CONFIRMATION':
         # determine response
         if not session.attributes['bool_response']:
+            # reset bool_response
+            session.attributes['bool_response'] = None
 
             # return text
             rslt_lst = data['application_text']['introduction_text']['failed_user_confirmation']
@@ -73,18 +75,20 @@ def question_and_answer():
             return statement(rslt_lst)
 
         else:
+            # reset bool_response
+            session.attributes['bool_response'] = None
+
             # set session state
             session.attributes['session_state'] = "SCREENING_OR_EDU"
 
             # return text
             rslt_lst = data['application_text']['introduction_text']['ask_screening_or_edu']
 
-            return statement(rslt_lst)
+            return question(rslt_lst)
 
     elif session.attributes['session_state'] == 'SCREENING_CONSENT':
         pass
-    elif session.attributes['session_state'] == 'SCREENING_CONSENT':
-        pass
+
     elif session.attributes['session_state'] == 'SCREENING_QUESTIONS':
         pass
 
@@ -162,9 +166,12 @@ def educational_response(educational_request):
 
         # prompt if screening not already done for screening
         # might be nice to add a MCMC model to this to ask after n edu requests
-        if not PREVIOUSLY_PERFORMED_SCREENING:
+        if not PREVIOUSLY_PERFORMED_SCREENING and not session.attributes['asked_screening']:
+            # don't prompt again
+            session.attributes['asked_screening'] = True
+
             # set state to confirmation mode
-            session.attributes['session_state'] = "PERSON_CONFIRMATION"
+            session.attributes['session_state'] = "SCREENING_CONSENT"
 
             # ask for consent to screen
             additional_text = data['application_text']['introduction_text']['prompt_for_screening']
@@ -173,7 +180,7 @@ def educational_response(educational_request):
             # ask for consent to screen
             additional_text = data['application_text']['introduction_text']['additional_edu_prompt']
 
-        return question(educational_response_text + "..." + additional_text)
+        return question(educational_response_text + "... " + additional_text)
 
     else:
         # else return that we cannot find the specific question
@@ -189,8 +196,9 @@ def welcome_msg():
     reply_text = "Welcome to the discharge monitoring application.\
     Is this Kevin or his caretaker?"
 
-    # set state
+    # initialize setup
     session.attributes['session_state'] = 'USER_IDENTIFICATION'
+    session.attributes['asked_screening'] = False
 
     # return question of speech
     return question(reply_text)
