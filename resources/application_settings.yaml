@@ -22,16 +22,16 @@ application_text:
     # defined questions
     "Person Confirmation":
       caretaker:
-        ["Alright, can we confirm the person we're monitering today? I current
-        see that we're going over Kevin. Is this correct?"]
+        ["Alright, can we confirm the person we're monitoring today is Kevin?\
+          Is this correct?"]
       patient:
-        ["Hope you're feeling alright. I wanted to start by verifying this is
-        the correct person... I see that you're Kevin, correct?"]
+        ["Hope you're feeling alright. Let’s start by verifying this is the\
+          correct person... I see that you're Kevin, correct?"]
     "Mobility":
       caretaker:
         ["Has Kevin been able to move around?"]
       patient:
-        ["Have you been able to move around today"]
+        ["Have you been able to get up and move around?"]
       linkId:
         "mobility"
       text:
@@ -40,14 +40,14 @@ application_text:
       caretaker:
         ["Has Kevin been able to eat any food?"]
       patient:
-        ["Have you been able to keep down food?"]
+        [" Have you been able to eat food without throwing up?"]
       linkId:
         "eating"
       text:
         "problems eating or keeping down solid food"
     "Currently Drinking":
       caretaker:
-        ["Has Kevin drank any fluids?"]
+        ["Has Kevin drunk sufficient fluids?"]
       patient:
         ["Have you been able to drink any fluids?"]
       linkId:
@@ -56,16 +56,16 @@ application_text:
         "problems drinking or keeping down liquids"
     "Pain Control":
       caretaker:
-        ["Is Kevin in much pain?"]
+        ["Is Kevin in pain?"]
       patient:
-        ["Have you had much pain?"]
+        ["Are you in pain?"]
       linkId:
         "pain"
       text:
         "problems controlling or managing pain"
     "Currently Taking Pain Medications":
       caretaker:
-        ["Has Kevin been taking his pain medication?"]
+        ["Has Kevin been his pain medication?"]
       patient:
         ["Have you been taking all of your pain medications?"]
       linkId:
@@ -83,18 +83,18 @@ application_text:
         "patient has problems urinating"
     "Urine Color":
       caretaker:
-        ["What is the color of the urine?"]
+        ["Is Kevin's urine an off color?"]
       patient:
-        ["What is the color of your urine?"]
+        ["Is your urine an off color?"]
       linkId:
         "urineColor"
       text:
         "patient reports problem color in urine"
     "Feeling Better Than Previous Day":
       caretaker:
-        ["Is Kevin feeling any better than yesterday?"]
+        ["Has Kevin felt better than yesterday?"]
       patient:
-        ["Are you feeling better than yesterday?"]
+        ["Are you feeling better than last we spoke?"]
       linkId:
         "status"
       text:
@@ -123,7 +123,7 @@ application_text:
             "Still requires content surgery"
         "WOUND CARE":
           text:
-            "Still requires content wound care"
+            "Please make sure to inspect your wound area daily."
 application_settings:
   hard_assertion_questions:
     - "person_confirmation"
