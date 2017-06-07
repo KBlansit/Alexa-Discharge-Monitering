@@ -225,7 +225,7 @@ def welcome_msg():
     """
     # make welcome message
     reply_text = "Welcome to the discharge monitoring application.\
-    Is this Kevin or his caretaker?"
+    Is this Margaret or his caretaker?"
 
     # initialize setup
     session.attributes['session_state'] = 'USER_IDENTIFICATION'
