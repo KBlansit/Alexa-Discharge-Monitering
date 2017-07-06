@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from flask import Flask
 from flask import session, request
 from flask import render_template, redirect
@@ -38,7 +40,6 @@ def home():
         return redirect('/')
     user = current_user()
     return render_template('home.html', user=user)
-
 
 if __name__ == '__main__':
     db.create_all()
