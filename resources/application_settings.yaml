@@ -1,169 +1,43 @@
 application_text:
   introduction_text:
     welcome_text:
-      "Welcome to the discharge monitering application. We're going
-        to ask some private questions. Is it okay to proceed?"
+      "Welcome to the discharge monitoring application. We're going to ask some
+      personal questions. Is now a good time?"
     user_identification:
-      "I wanted to confirm if ther was Margaret, or a care taker
-        for Margaret."
+      "I wanted to confirm that this was Tom. Is this correct?"
     failed_user_confirmation:
-      "Hmm... something went wrong"
-    ask_screening_or_edu:
-      "Great. I have you confirmed. You can now ask questions about your surgery \
-        or start the screening application."
-    educational_content_not_found:
-      "Hmmm, we weren't able to find the answer the question you're trying to ask.\
-        Is there something else I can help answer"
-    prompt_for_screening:
-      "Would now be a good time to ask some question about how you're recovering?"
-    additional_edu_prompt:
-      "Is there anything else you would like to know about your surgery?"
-  question_text:
-    # defined questions
-    "Person Confirmation":
-      caretaker:
-<<<<<<< HEAD
-        ["Alright, can we confirm the person we're monitoring today is Kevin?\
-          Is this correct?"]
-      patient:
-        ["Hope you're feeling alright. Let’s start by verifying this is the\
-          correct person... I see that you're Kevin, correct?"]
-=======
-        ["Alright, can we confirm the person we're monitering today? I current
-        see that we're going over Margaret. Is ther correct?"]
-      patient:
-        ["Hope you're feeling alright. I wanted to start by verifying that this is
-        the correct person... I see that you're Margaret, correct?"]
->>>>>>> demo1
-    "Mobility":
-      caretaker:
-        ["Has Margaret been able to move around?"]
-      patient:
-        ["Have you been able to get up and move around?"]
-      linkId:
-        "mobility"
-      text:
-        "problems walking or moving around"
-    "Currently Eating":
-      caretaker:
-        ["Has Margaret been able to eat any food?"]
-      patient:
-        [" Have you been able to eat food without throwing up?"]
-      linkId:
-        "eating"
-      text:
-        "problems eating or keeping down solid food"
-    "Currently Drinking":
-      caretaker:
-<<<<<<< HEAD
-        ["Has Kevin drunk sufficient fluids?"]
-=======
-        ["Has Margaret drank any fluids?"]
->>>>>>> demo1
-      patient:
-        ["Have you been able to drink any fluids?"]
-      linkId:
-        "liquids"
-      text:
-        "problems drinking or keeping down liquids"
-    "Pain Control":
-      caretaker:
-<<<<<<< HEAD
-        ["Is Kevin in pain?"]
-=======
-        ["Is Margaret in much pain?"]
->>>>>>> demo1
-      patient:
-        ["Are you in pain?"]
-      linkId:
-        "pain"
-      text:
-        "problems controlling or managing pain"
-    "Currently Taking Pain Medications":
-      caretaker:
-<<<<<<< HEAD
-        ["Has Kevin been his pain medication?"]
-=======
-        ["Has Margaret been taking her pain medication?"]
->>>>>>> demo1
-      patient:
-        ["Have you been taking all of your pain medications?"]
-      linkId:
-        "painMedicans"
-      text:
-        "patient has been taking pain medications"
-    "Currently Urinating":
-      caretaker:
-        ["Has Margaret been able to urinate?"]
-      patient:
-        ["Have you been urinating regularly?"]
-      linkId:
-        "urination"
-      text:
-        "patient has problems urinating"
-    "Urine Color":
-      caretaker:
-        ["Is Kevin's urine an off color?"]
-      patient:
-        ["Is your urine an off color?"]
-      linkId:
-        "urineColor"
-      text:
-        "patient reports problem color in urine"
-    "Feeling Better Than Previous Day":
-      caretaker:
-<<<<<<< HEAD
-        ["Has Kevin felt better than yesterday?"]
-=======
-        ["Is Margaret feeling any better than yesterday?"]
->>>>>>> demo1
-      patient:
-        ["Are you feeling better than last we spoke?"]
-      linkId:
-        "status"
-      text:
-        "patient feels better than previous day"
-    end_statement:
-      caretaker:
-        ["Thank you for your input on the care for Margaret. We'll be sending ther
-        information to her surgeon."]
-      patient:
-        ["Alright, thanks! I will send a note to your surgeon and we'll contact
-        you if we need any more information."]
-  educational_text:
-    "MASTECTOMY":
-      "EFFECTS OF SURGERY":
-        text:
-          "After surgery, the breast may be scarred or be a different shape or \
-          size than before surgery. The area around the surgical site may become \
-          hardened. If lymph nodes were removed, or affected, lymphedema which is \
-          a swelling of the arm, may occur. Ther is a life-long risk."
-      "WOUND CARE":
-        text:
-          "Please make sure to moniter your wound"
-    "ILEOSTOMY":
-        "EFFECTS OF SURGERY":
-          text:
-            "Still requires content surgery"
-        "WOUND CARE":
-          text:
-<<<<<<< HEAD
-            "Please make sure to inspect your wound area daily."
-=======
-            "Please make sure to moniter your wound over the next few days checking/
-            for redness or swelling."
->>>>>>> demo1
+      "Hmm... something went wrong."
+    exit_message:
+      "Thank you for your input Tom. We'll be sending this information to your surgeon,
+      who will follow-up with you if any additional information is required or if he needs
+      to see you sooner than your scheduled appointment."
+  questions:
+      mobility:
+        ["Have you been able to walk around today?"]
+      pain_calves:
+        ["Are you expierencing any pain or swelling in your cavles"]
+      food_eat:
+        ["Have you been able to eat any meals?"]
+      drink_liquids:
+        ["Have you been drinking liquids?"]
+      pain_change:
+        ["Is your pain decreased, increased, or about the same as it was yesterday?"]
+      urinating_regularly:
+        ["Are you urinating regularly?"]
+      bowel_movement:
+        ["Were you able to have  a bowel movement today?"]
+      condition_change:
+        ["Overall, do you feel better, worse or about the same as you did yesterday?"]
 application_settings:
   hard_assertion_questions:
     - "person_confirmation"
   question_lists:
     "ILEOSTOMY":
-      - "Mobility"
-      - "Currently Eating"
-      - "Currently Drinking"
-      - "Pain Control"
-      - "Currently Taking Pain Medications"
-      #- "Currently Urinating"
-      #- "Urine Color"
-      - "Feeling Better Than Previous Day"
-      - "end_statement"
+      - "mobility"
+      - "pain_calves"
+      - "food_eat"
+      - "drink_liquids"
+      - "pain_change"
+      - "urinating_regularly"
+      - "bowel_movement"
+      - "condition_change"
