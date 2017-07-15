@@ -90,4 +90,12 @@ class Questionaire:
                 the question we're interested in
             response_type:
                 the response type we got back
+        OUTPUT:
+            Bool is the response type is apprioprate
         """
+        # test if in dict
+        if question is not in self.all_clinical_questions.keys():
+            raise AssertionError(question + " is not a valid clinical question")
+
+        if response_type is not self.all_clinical_questions[question]['response_type']
+            raise AssertionError(question + " does not have a " + response_type + " response")
