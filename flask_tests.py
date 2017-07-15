@@ -7,9 +7,6 @@ import yaml
 import unittest
 import requests
 
-# go up a directory to see project root dir
-sys.path.append("..")
-
 # load user defined libraries
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 from src.fhir_validators import validate_encounter, validate_example_questionnaire,\

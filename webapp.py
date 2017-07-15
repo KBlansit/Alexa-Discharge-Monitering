@@ -200,10 +200,12 @@ def no_response():
 @ask.intent('DateSlotIntent')
 def date_response(date):
     print "GOT DATE " + date
-    
+
     # set answer level parameter
     session.attributes['response_type'] = "BOOL_ANSWER"
     session.attributes['date_response'] = date
+
+    return question_and_answer()
 
 @ask.session_ended
 def session_ended():
