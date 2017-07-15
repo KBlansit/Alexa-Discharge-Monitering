@@ -7,65 +7,46 @@ from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
 
 # load user defined libraries
-from src.utilities import load_questions
+from src.utilities import load_settings_and_content, load_questions
 
 # flask initialize
 app = Flask(__name__)
 ask = Ask(app, '/')
 
 # define global vars
-SETTNGS_PATH = "resources/application_settings.yaml"
+SETTINGS = load_settings_and_content('resources/application_settings.yaml')
 
 SESSION_STATES = [
-    'USER_IDENTIFICATION',
     'PERSON_CONFIRMATION',
     'QUESTION_ITERATION',
     'END_QUESTIONS',
 ]
 
+# HACK until FHIR integration:
+CURR_PROCEDURE = "ileostomy"
+
 # functions
-def initialize_questions():
+def initialize_content():
     """
-    initializes session parameters for either the patienr or caretaker user
+    EFFECT:
+        initializes session parameters
     """
-    # load data
-    try:
-        with open(SETTNGS_PATH, "r") as f:
-            data = yaml.load(f)
-    except IOError:
-        raise IOError("Cannot locate path: " + str(path))
+    if not hasattr(session.attributes, 'initialized'):
+        # set question information
+        session.attributes['question_lst'] = load_questions(SETTINGS, CURR_PROCEDURE)
 
-    user = session.attributes['user']
+        # set session state to user identification
+        session.attributes['session_state'] = 'PERSON_CONFIRMATION'
 
-    # set question information
-    session.attributes['question_lst'] = load_questions(data, user, SESSION_PROCEDURE)
+        # add initialized flag to session attributes
+        session.attributes['initialized'] = True
 
-    # set user recorder information
-    session.attributes['response_recorder'] = user
-    
 def question_and_answer():
     # assert that state is valid
     assert session.attributes['session_state'] in SESSION_STATES
 
-    # load data
-    try:
-        with open(SETTNGS_PATH, "r") as f:
-            data = yaml.load(f)
-    except IOError:
-        raise IOError("Cannot locate path: " + str(path))
-
     # determine state
-    if session.attributes['session_state'] == 'USER_IDENTIFICATION':
-        # set session state
-        session.attributes['session_state'] = "PERSON_CONFIRMATION"
-
-        # return text
-        user = session.attributes['user']
-        rslt_lst = data['application_text']['question_text']['Person Confirmation'][user]
-
-        return question(random.choice(rslt_lst))
-
-    elif session.attributes['session_state'] == 'PERSON_CONFIRMATION':
+    if session.attributes['session_state'] == 'PERSON_CONFIRMATION':
         # determine response
         # if yes resoponse
         if session.attributes['bool_response']:
@@ -73,10 +54,10 @@ def question_and_answer():
             session.attributes['bool_response'] = None
 
             # set session state
-            session.attributes['session_state'] = "SCREENING_OR_EDU"
+            session.attributes['session_state'] = 'SCREENING_OR_EDU'
 
             # return text
-            rslt_lst = data['application_text']['introduction_text']['ask_screening_or_edu']
+            rslt_lst = SETTINGS['application_text']['introduction_text']['ask_screening_or_edu']
 
             return question(rslt_lst)
 
@@ -86,7 +67,7 @@ def question_and_answer():
             session.attributes['bool_response'] = None
 
             # return text
-            rslt_lst = data['application_text']['introduction_text']['failed_user_confirmation']
+            rslt_lst = SETTINGS['application_text']['introduction_text']['failed_user_confirmation']
 
             return statement(rslt_lst)
         # otherwise raise error
@@ -116,7 +97,7 @@ def question_and_answer():
             session.attributes['bool_response'] = None
 
             # ask if there's anything else to do
-            return question(data['application_text']['introduction_text']['additional_edu_prompt'])
+            return question(SETTINGS['application_text']['introduction_text']['additional_edu_prompt'])
 
         # otherwise raise error
         else:
@@ -147,7 +128,6 @@ def question_and_answer():
 
             raise AssertionError('Had trouble understanding what the response was')
 
-
 def screening_question_iteration():
     """
     used to iterate through questions
@@ -162,58 +142,17 @@ def screening_question_iteration():
         return statement("Great! I'll send these results to your doctor, and will\
                          contact you if there's any more information we need.")
 
-def educational_response(educational_request):
-    """
-    """
-    # load data
-    try:
-        with open(SETTNGS_PATH, "r") as f:
-            data = yaml.load(f)
-    except IOError:
-        raise IOError("Cannot locate path: " + str(path))
-
-    # subset data
-    procedure_data = data['application_text']['educational_text'][SESSION_PROCEDURE]
-
-    # check if key is in dict
-    if educational_request in procedure_data.keys():
-        educational_response_text = procedure_data[educational_request]['text']
-
-        # prompt if screening not already done for screening
-        # might be nice to add a MCMC model to this to ask after n edu requests
-        if not PREVIOUSLY_PERFORMED_SCREENING and not session.attributes['asked_screening']:
-            # don't prompt again
-            session.attributes['asked_screening'] = True
-
-            # set state to confirmation mode
-            session.attributes['session_state'] = "SCREENING_CONSENT"
-
-            # ask for consent to screen
-            additional_text = data['application_text']['introduction_text']['prompt_for_screening']
-
-        else:
-            # ask for consent to screen
-            additional_text = data['application_text']['introduction_text']['additional_edu_prompt']
-
-        return question(educational_response_text + "... " + additional_text)
-
-    else:
-        # else return that we cannot find the specific question
-        return question(data['introduction_text']['educational_content_not_found'])
-
 # define welcome message
 @ask.launch
 def welcome_msg():
     """
     initial hook for alexa program
     """
-    # make welcome message
-    reply_text = "Welcome to the discharge monitoring application.\
-    Is this Margaret or his caretaker?"
+    # initialize session
+    initialize_content()
 
-    # initialize setup
-    session.attributes['session_state'] = 'USER_IDENTIFICATION'
-    session.attributes['asked_screening'] = False
+    # fetch introduction text
+    reply_text = SETTINGS["application_content"]["application_text"]["welcome_text"]
 
     # return question of speech
     return question(reply_text)
@@ -221,19 +160,6 @@ def welcome_msg():
 # set user for either patient or care taker
 @ask.intent("PatientIntent")
 def set_user_session():
-
-    # set patient level parameter
-    session.attributes['user'] = 'patient'
-
-    # let question and state flow through custom question
-    return question_and_answer()
-
-@ask.intent("CaretakerIntent")
-def set_user_session():
-
-    # set patient level parameter
-    session.attributes['user'] = 'caretaker'
-
     # let question and state flow through custom question
     return question_and_answer()
 
@@ -276,4 +202,5 @@ def session_ended():
     return "{}", 200
 
 if __name__ == '__main__':
+    # run app
     app.run()
