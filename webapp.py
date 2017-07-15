@@ -42,6 +42,11 @@ def initialize_content():
     # add initialized flag to session attributes
     session.attributes['initialized'] = True
 
+    # initialize responses
+    session.attributes['response_type'] = None
+    session.attributes['bool_response'] = None
+    session.attributes['date_response'] = None
+
 def resolve_answer():
     """
     EFFECT:
@@ -179,6 +184,7 @@ def welcome_msg():
 @ask.intent('YesIntent')
 def yes_response():
     # set answer level parameter
+    session.attributes['response_type'] = "BOOL_ANSWER"
     session.attributes['bool_response'] = True
 
     return question_and_answer()
@@ -186,9 +192,18 @@ def yes_response():
 @ask.intent('NoIntent')
 def no_response():
     # set answer level parameter
+    session.attributes['response_type'] = "BOOL_ANSWER"
     session.attributes['bool_response'] = False
 
     return question_and_answer()
+
+@ask.intent('DateSlotIntent')
+def date_response(date):
+    print "GOT DATE " + date
+    
+    # set answer level parameter
+    session.attributes['response_type'] = "BOOL_ANSWER"
+    session.attributes['date_response'] = date
 
 @ask.session_ended
 def session_ended():
