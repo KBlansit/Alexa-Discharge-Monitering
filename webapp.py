@@ -13,7 +13,7 @@ from src.utilities import load_settings_and_content, load_questions
 app = Flask(__name__)
 ask = Ask(app, '/')
 
-# define global vars
+# define vars
 SETTINGS = load_settings_and_content('resources/application_settings.yaml')
 
 SESSION_STATES = [
@@ -33,15 +33,20 @@ def initialize_content():
     EFFECT:
         initializes session parameters
     """
-    if not session.attributes['initialized']:
-        # set question information
-        session.attributes['question_lst'] = load_questions(SETTINGS, CURR_PROCEDURE)
+    # set question information
+    session.attributes['question_lst'] = load_questions(SETTINGS, CURR_PROCEDURE)
 
-        # set session state to user identification
-        session.attributes['session_state'] = 'PATIENT_CONSENT'
+    # set session state to user identification
+    session.attributes['session_state'] = 'PATIENT_CONSENT'
 
-        # add initialized flag to session attributes
-        session.attributes['initialized'] = True
+    # add initialized flag to session attributes
+    session.attributes['initialized'] = True
+
+def resolve_answer():
+    """
+    EFFECT:
+        resolves the answer from the user
+    """
 
 def question_and_answer():
     """
