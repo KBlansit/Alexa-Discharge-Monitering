@@ -4,8 +4,8 @@ application_text:
       "Welcome to the discharge monitering application. We're going
         to ask some private questions. Is it okay to proceed?"
     user_identification:
-      "I wanted to confirm if this was Kevin, or a care taker
-        for Kevin."
+      "I wanted to confirm if ther was Margaret, or a care taker
+        for Margaret."
     failed_user_confirmation:
       "Hmm... something went wrong"
     ask_screening_or_edu:
@@ -22,14 +22,22 @@ application_text:
     # defined questions
     "Person Confirmation":
       caretaker:
+<<<<<<< HEAD
         ["Alright, can we confirm the person we're monitoring today is Kevin?\
           Is this correct?"]
       patient:
         ["Hope you're feeling alright. Let’s start by verifying this is the\
           correct person... I see that you're Kevin, correct?"]
+=======
+        ["Alright, can we confirm the person we're monitering today? I current
+        see that we're going over Margaret. Is ther correct?"]
+      patient:
+        ["Hope you're feeling alright. I wanted to start by verifying that this is
+        the correct person... I see that you're Margaret, correct?"]
+>>>>>>> demo1
     "Mobility":
       caretaker:
-        ["Has Kevin been able to move around?"]
+        ["Has Margaret been able to move around?"]
       patient:
         ["Have you been able to get up and move around?"]
       linkId:
@@ -38,7 +46,7 @@ application_text:
         "problems walking or moving around"
     "Currently Eating":
       caretaker:
-        ["Has Kevin been able to eat any food?"]
+        ["Has Margaret been able to eat any food?"]
       patient:
         [" Have you been able to eat food without throwing up?"]
       linkId:
@@ -47,7 +55,11 @@ application_text:
         "problems eating or keeping down solid food"
     "Currently Drinking":
       caretaker:
+<<<<<<< HEAD
         ["Has Kevin drunk sufficient fluids?"]
+=======
+        ["Has Margaret drank any fluids?"]
+>>>>>>> demo1
       patient:
         ["Have you been able to drink any fluids?"]
       linkId:
@@ -56,7 +68,11 @@ application_text:
         "problems drinking or keeping down liquids"
     "Pain Control":
       caretaker:
+<<<<<<< HEAD
         ["Is Kevin in pain?"]
+=======
+        ["Is Margaret in much pain?"]
+>>>>>>> demo1
       patient:
         ["Are you in pain?"]
       linkId:
@@ -65,7 +81,11 @@ application_text:
         "problems controlling or managing pain"
     "Currently Taking Pain Medications":
       caretaker:
+<<<<<<< HEAD
         ["Has Kevin been his pain medication?"]
+=======
+        ["Has Margaret been taking her pain medication?"]
+>>>>>>> demo1
       patient:
         ["Have you been taking all of your pain medications?"]
       linkId:
@@ -74,7 +94,7 @@ application_text:
         "patient has been taking pain medications"
     "Currently Urinating":
       caretaker:
-        ["Has Kevin been able to urinate?"]
+        ["Has Margaret been able to urinate?"]
       patient:
         ["Have you been urinating regularly?"]
       linkId:
@@ -92,7 +112,11 @@ application_text:
         "patient reports problem color in urine"
     "Feeling Better Than Previous Day":
       caretaker:
+<<<<<<< HEAD
         ["Has Kevin felt better than yesterday?"]
+=======
+        ["Is Margaret feeling any better than yesterday?"]
+>>>>>>> demo1
       patient:
         ["Are you feeling better than last we spoke?"]
       linkId:
@@ -101,8 +125,8 @@ application_text:
         "patient feels better than previous day"
     end_statement:
       caretaker:
-        ["Thank you for your input on the care for Kevin. We'll be sending this
-        information to his surgeon."]
+        ["Thank you for your input on the care for Margaret. We'll be sending ther
+        information to her surgeon."]
       patient:
         ["Alright, thanks! I will send a note to your surgeon and we'll contact
         you if we need any more information."]
@@ -113,7 +137,7 @@ application_text:
           "After surgery, the breast may be scarred or be a different shape or \
           size than before surgery. The area around the surgical site may become \
           hardened. If lymph nodes were removed, or affected, lymphedema which is \
-          a swelling of the arm, may occur. This is a life-long risk."
+          a swelling of the arm, may occur. Ther is a life-long risk."
       "WOUND CARE":
         text:
           "Please make sure to moniter your wound"
@@ -123,7 +147,12 @@ application_text:
             "Still requires content surgery"
         "WOUND CARE":
           text:
+<<<<<<< HEAD
             "Please make sure to inspect your wound area daily."
+=======
+            "Please make sure to moniter your wound over the next few days checking/
+            for redness or swelling."
+>>>>>>> demo1
 application_settings:
   hard_assertion_questions:
     - "person_confirmation"
