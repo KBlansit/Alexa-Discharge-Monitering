@@ -19,7 +19,7 @@ class TestQuestionsStructure(unittest.TestCase):
         Tests that can load the content and settings yaml file
         """
         # load data
-        path = "../resources/application_settings.yaml"
+        path = "resources/application_settings.yaml"
         settings = load_settings_and_content(path)
 
         # define basic queries
@@ -35,7 +35,7 @@ class TestQuestionsStructure(unittest.TestCase):
         tests that question loader function works
         """
         # load data
-        path = "../resources/application_settings.yaml"
+        path = "resources/application_settings.yaml"
         settings = load_settings_and_content(path)
 
         # load question into container class
@@ -84,7 +84,7 @@ class TestFHIRStructure(unittest.TestCase):
         control for QuestionnaireResponse
         """
         # open file
-        path = '../resources/example_FHIR_resources/example_questionnaire.json'
+        path = 'resources/example_FHIR_resources/example_questionnaire.json'
         with open(path, 'r') as f:
             data = json.load(f)
 

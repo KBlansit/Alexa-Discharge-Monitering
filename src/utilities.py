@@ -19,7 +19,7 @@ def load_settings_and_content(settings_path):
         with open(settings_path, "r") as f:
             data = yaml.load(f)
     except IOError:
-        raise IOError("Cannot locate path: " + str(path))
+        raise IOError("Cannot locate path: " + str(settings_path))
 
     return data
 
