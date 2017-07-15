@@ -5,6 +5,8 @@ application_content:
       personal questions. Is now a good time?"
     user_identification:
       "I wanted to confirm that this was Tom. Is this correct?"
+    user_2nd_step_identification:
+      "Could you confirm your birthdate"
     failed_user_confirmation:
       "Hmm... something went wrong."
     exit_message:

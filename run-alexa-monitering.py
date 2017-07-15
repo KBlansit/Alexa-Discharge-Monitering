@@ -17,7 +17,9 @@ ask = Ask(app, '/')
 SETTINGS = load_settings_and_content('resources/application_settings.yaml')
 
 SESSION_STATES = [
-    'PERSON_CONFIRMATION',
+    'PATIENT_CONSENT',
+    'PATIENT_CONFIRMATION',
+    'PATIENT__2ND_CONFIRMATION',
     'QUESTION_ITERATION',
     'END_QUESTIONS',
 ]
@@ -31,45 +33,56 @@ def initialize_content():
     EFFECT:
         initializes session parameters
     """
-    if not hasattr(session.attributes, 'initialized'):
+    if not session.attributes['initialized']:
         # set question information
         session.attributes['question_lst'] = load_questions(SETTINGS, CURR_PROCEDURE)
 
         # set session state to user identification
-        session.attributes['session_state'] = 'PERSON_CONFIRMATION'
+        session.attributes['session_state'] = 'PATIENT_CONSENT'
 
         # add initialized flag to session attributes
         session.attributes['initialized'] = True
 
 def question_and_answer():
+    """
+    EFFECT:
+        takes session attributes parameters to create a state machine
+    """
     # assert that state is valid
     assert session.attributes['session_state'] in SESSION_STATES
 
     # determine state
-    if session.attributes['session_state'] == 'PERSON_CONFIRMATION':
+    if session.attributes['session_state'] == 'PATIENT_CONSENT':
+        # progress session state
+        session.attributes['session_state'] = 'PATIENT_CONFIRMATION'
+
+        # determine the result question
+        rslt_txt = SETTINGS['application_content']['application_text']['user_identification']
+
+        return question(rslt_txt)
+
+    elif session.attributes['session_state'] == 'PATIENT_CONFIRMATION':
         # determine response
         # if yes resoponse
         if session.attributes['bool_response']:
             # reset bool_response
             session.attributes['bool_response'] = None
 
-            # set session state
-            session.attributes['session_state'] = 'SCREENING_OR_EDU'
+            # determine the result question
+            rslt_txt = SETTINGS['application_content']['application_text']['user_2nd_step_identification']
 
-            # return text
-            rslt_lst = SETTINGS['application_text']['introduction_text']['ask_screening_or_edu']
-
-            return question(rslt_lst)
+            return question(rslt_txt)
 
         # if no resoponse
         elif not session.attributes['bool_response']:
             # reset bool_response
             session.attributes['bool_response'] = None
 
-            # return text
-            rslt_lst = SETTINGS['application_text']['introduction_text']['failed_user_confirmation']
+            # determine the result question
+            rslt_txt = SETTINGS['application_content']['application_text']['user_2nd_step_identification']
 
-            return statement(rslt_lst)
+            return question(rslt_txt)
+
         # otherwise raise error
         else:
             # reset bool_response
@@ -152,54 +165,29 @@ def welcome_msg():
     initialize_content()
 
     # fetch introduction text
-    reply_text = SETTINGS["application_content"]["application_text"]["welcome_text"]
+    rslt_txt = SETTINGS['application_content']['application_text']['welcome_text']
 
     # return question of speech
-    return question(reply_text)
-
-# set user for either patient or care taker
-@ask.intent("PatientIntent")
-def set_user_session():
-    # let question and state flow through custom question
-    return question_and_answer()
+    return question(rslt_txt)
 
 # response to questions
-@ask.intent("YesIntent")
+@ask.intent('YesIntent')
 def yes_response():
     # set answer level parameter
     session.attributes['bool_response'] = True
 
     return question_and_answer()
 
-@ask.intent("NoIntent")
+@ask.intent('NoIntent')
 def no_response():
     # set answer level parameter
     session.attributes['bool_response'] = False
 
     return question_and_answer()
 
-@ask.intent("ScreeningIntent")
-def screening_response():
-    if session.attributes['session_state'] == 'SCREENING_OR_EDU':
-        # intialize questions
-        initialize_questions()
-
-        # set session state to question screening
-        session.attributes['session_state'] = 'SCREENING_QUESTIONS'
-
-        return screening_question_iteration()
-
-    else:
-        return statement("hmm... cannot do that right now")
-
-# educational_intents
-@ask.intent("QuestionWoundCareIntent")
-def wound_care_education():
-    return educational_response("WOUND CARE")
-
 @ask.session_ended
 def session_ended():
-    return "{}", 200
+    return '{}', 200
 
 if __name__ == '__main__':
     # run app
