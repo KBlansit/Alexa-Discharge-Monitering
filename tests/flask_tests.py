@@ -11,58 +11,38 @@ import requests
 sys.path.append("..")
 
 # load user defined libraries
-from src.utilities import load_questions, extract_questionnaire_questions
+from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 from src.fhir_validators import validate_encounter, validate_example_questionnaire,\
     validate_example_questionnaire_response
 
 class TestQuestionsStructure(unittest.TestCase):
 
-    def test_question_list_valid(self):
+    def test_load_content_and_settings(self):
         """
-        Tests that list of questions is valid
+        Tests that can load the content and settings yaml file
         """
-
         # load data
         path = "../resources/application_settings.yaml"
-        try:
-            with open(path, "r") as f:
-                data = yaml.load(f)
-        except IOError:
-            raise IOError("Cannot locate path: " + str(path))
+        settings = load_settings_and_content(path)
 
         # define basic queries
-        questions = data['application_settings']['question_lists']['ILEOSTOMY']
-        question_text = data['application_text']['question_text']
+        procedure_questions = settings['application_settings']['question_lists']
+        question_text = settings['application_content']['question_text']
 
-        for i in questions:
-            self.assertIn(i, question_text.keys())
+        for p in procedure_questions.keys():
+            for q in procedure_questions[p]:
+                self.assertIn(q, question_text.keys())
 
     def test_question_loader(self):
         """
-        Tests that both patient and caretaker can be used for all questions
+        tests that question loader function works
         """
-        LIST_OF_QS = [
-            "person_confirmation",
-            "moving_question",
-            "eating_question",
-            "drinking_question",
-            "pain_control_question",
-        ]
-
-        # test
-        path = "../resources/application_settings.yaml"
-        users = ["caretaker", "patient"]
-
         # load data
-        try:
-            with open(path, "r") as f:
-                data = yaml.load(f)
-        except IOError:
-            raise IOError("Cannot locate path: " + str(path))
+        path = "../resources/application_settings.yaml"
+        settings = load_settings_and_content(path)
 
-        # test both
-        for i in users:
-            load_questions(data, i, 'ILEOSTOMY')
+        # load question into container class
+        load_questions(settings, 'ileostomy')
 
 class TestFHIRStructure(unittest.TestCase):
 

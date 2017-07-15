@@ -6,20 +6,41 @@ import yaml
 # load user defined libraries
 from Questionaire import QuestionNode
 
-# define utility functions
-def load_questions(data, user, procedure):
-    # assert that user is either a care_taker or patient
-    if user not in ["caretaker", "patient"]:
-        raise AssertionError("Must be either a caretaker or patient")
+def load_settings_and_content(settings_path):
+    """
+    INPUTS:
+        settings_path:
+            the path to the yaml settings and content file
+    OUTPUT:
+        the dictionary of the settings data
+    """
+    # load data
+    try:
+        with open(settings_path, "r") as f:
+            data = yaml.load(f)
+    except IOError:
+        raise IOError("Cannot locate path: " + str(path))
 
+    return data
+
+def load_questions(data, procedure):
+    """
+    INPUTS:
+        data:
+            the dictionary setting and content file
+        procedure:
+            a string that defines the key of the setting file for the current procedure
+    OUTPUT:
+        a list of questions to ask
+    """
     # define basic queries
     questions = data['application_settings']['question_lists'][procedure]
-    question_text = data['application_text']['question_text']
+    question_text = data['application_content']['question_text']
 
     # make linked list
     node = None
     for i in questions[::-1]:
-        node = QuestionNode(question_text[i][user], child_node=node)
+        node = QuestionNode(question_text[i], child_node=node)
 
     # return linked list
     return node.to_list()

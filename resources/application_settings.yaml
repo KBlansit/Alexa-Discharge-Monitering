@@ -1,4 +1,4 @@
-application_text:
+application_content:
   introduction_text:
     welcome_text:
       "Welcome to the discharge monitoring application. We're going to ask some
@@ -11,7 +11,7 @@ application_text:
       "Thank you for your input Tom. We'll be sending this information to your surgeon,
       who will follow-up with you if any additional information is required or if he needs
       to see you sooner than your scheduled appointment."
-  questions:
+  question_text:
       mobility:
         ["Have you been able to walk around today?"]
       pain_calves:
@@ -32,7 +32,7 @@ application_settings:
   hard_assertion_questions:
     - "person_confirmation"
   question_lists:
-    "ILEOSTOMY":
+    ileostomy:
       - "mobility"
       - "pain_calves"
       - "food_eat"

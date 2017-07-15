@@ -15,32 +15,34 @@ ask = Ask(app, '/')
 
 # define global vars
 SETTNGS_PATH = "resources/application_settings.yaml"
-VALID_USERS = [
-    'patient',
-    'caretaker',
-]
+
 SESSION_STATES = [
     'USER_IDENTIFICATION',
     'PERSON_CONFIRMATION',
-    'SCREENING_OR_EDU',
-    'SCREENING_CONSENT',
-    'SCREENING_QUESTIONS',
-    ]
-
-# HACK
-# needs to be replaced with database linkage
-PREVIOUSLY_PERFORMED_SCREENING = False
-SESSION_PROCEDURE = "ILEOSTOMY"
-LIST_OF_QS = [
-    "Mobility",
-    "Currently Eating",
-    "Currently Drinking",
-    "Currently Taking Pain Medications",
-
-    'end_statement'
+    'QUESTION_ITERATION',
+    'END_QUESTIONS',
 ]
 
 # functions
+def initialize_questions():
+    """
+    initializes session parameters for either the patienr or caretaker user
+    """
+    # load data
+    try:
+        with open(SETTNGS_PATH, "r") as f:
+            data = yaml.load(f)
+    except IOError:
+        raise IOError("Cannot locate path: " + str(path))
+
+    user = session.attributes['user']
+
+    # set question information
+    session.attributes['question_lst'] = load_questions(data, user, SESSION_PROCEDURE)
+
+    # set user recorder information
+    session.attributes['response_recorder'] = user
+    
 def question_and_answer():
     # assert that state is valid
     assert session.attributes['session_state'] in SESSION_STATES
@@ -145,24 +147,6 @@ def question_and_answer():
 
             raise AssertionError('Had trouble understanding what the response was')
 
-def initialize_questions():
-    """
-    initializes session parameters for either the patienr or caretaker user
-    """
-    # load data
-    try:
-        with open(SETTNGS_PATH, "r") as f:
-            data = yaml.load(f)
-    except IOError:
-        raise IOError("Cannot locate path: " + str(path))
-
-    user = session.attributes['user']
-
-    # set question information
-    session.attributes['question_lst'] = load_questions(data, user, SESSION_PROCEDURE)
-
-    # set user recorder information
-    session.attributes['response_recorder'] = user
 
 def screening_question_iteration():
     """
