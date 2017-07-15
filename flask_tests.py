@@ -105,7 +105,6 @@ class TestFHIRStructure(unittest.TestCase):
         # assert same
         self.assertItemsEqual(extract_questionnaire_questions(data), LIST_OF_QS)
 
-
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):
         pass

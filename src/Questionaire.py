@@ -3,32 +3,42 @@
 # load libraries
 import random
 
-class QuestionNode:
-    def __init__(self, question_lst=None, child_node=None, name=None):
 
-        # set parameters
-        self.question_lst = question_lst
-        self.child_node = child_node
-        self.name = name
-
-    def to_list(self):
+class Questionaire:
+    """
+    the container class to hold administrative and clinical questions
+    """
+    def __init__(self, clinical_indication, settings_dict):
         """
-        transforms the linked list into a flat list and chooses questions
+        INPUTS:
+            clinical_indication:
+                the clinical indication to
+            settings_dict:
+                the dictionary that holds the settings
         """
+        # save admin questions
+        self.admin_questions = settings_dict['application_content']['application_text']['application_questions'].keys()
 
-        # use to bootstrap vars
-        rslt_lst = []
-        curr_node = self
+        # save clinical questions
+        self.indication_questions = settings_dict['application_settings']['questions_by_indication']
 
-        # iterate until there no children left
-        while curr_node.child_node is not None:
-            # add question to list
-            rslt_lst.append(random.choice(curr_node.question_lst))
+        # return all clinical questions
+        self.all_clinical_questions = settings_dict['application_content']['clinical_questions'].keys()
 
-            # update node
-            curr_node = curr_node.child_node
+    def get_admin_question():
+        pass
 
-        return rslt_lst[::-1]
+    def get_admin_response():
+        pass
 
-    def __str__(self):
-        return name
+    def get_clinical_question():
+        pass
+
+    def validate_answer(question, response_type):
+        """
+        INPUTS:
+            question:
+                the question we're interested in
+            response_type:
+                the response type we got back
+        """

@@ -1,39 +1,71 @@
 application_content:
   application_text:
-    welcome_text:
-      "Welcome to the discharge monitoring application. We're going to ask some
-      personal questions. Is now a good time?"
-    user_identification:
-      "I wanted to confirm that this was Tom. Is this correct?"
-    user_2nd_step_identification:
-      "Could you confirm your birthdate"
+    application_questions:
+      welcome_text:
+        text:
+          "Welcome to the discharge monitoring application. We're going to ask some
+          personal questions. Is now a good time?"
+        response_type:
+          "BOOL_ANSWER"
+      user_identification:
+        text:
+          "I wanted to confirm that this was Tom. Is this correct?"
+        response_type:
+          "BOOL_ANSWER"
+      user_2nd_step_identification:
+        text:
+          "Could you confirm your birthdate"
+        response_type:
+          "DATE_ANSWER"
     failed_user_confirmation:
       "Hmm... something went wrong."
     exit_message:
       "Thank you for your input Tom. We'll be sending this information to your surgeon,
       who will follow-up with you if any additional information is required or if he needs
       to see you sooner than your scheduled appointment."
-  question_text:
+  clinical_questions:
       mobility:
-        ["Have you been able to walk around today?"]
+        text:
+          ["Have you been able to walk around today?"]
+        response_type:
+          "BOOL_ANSWER"
       pain_calves:
-        ["Are you expierencing any pain or swelling in your cavles"]
+        text:
+          ["Are you expierencing any pain or swelling in your cavles"]
+        response_type:
+          "BOOL_ANSWER"
       food_eat:
-        ["Have you been able to eat any meals?"]
+        text:
+          ["Have you been able to eat any meals?"]
+        response_type:
+          "BOOL_ANSWER"
       drink_liquids:
-        ["Have you been drinking liquids?"]
+        text:
+          ["Have you been drinking liquids?"]
+        response_type:
+          "BOOL_ANSWER"
       pain_change:
-        ["Is your pain decreased, increased, or about the same as it was yesterday?"]
+        text:
+          ["Is your pain decreased, increased, or about the same as it was yesterday?"]
+        response_type:
+          "BOOL_ANSWER"
       urinating_regularly:
-        ["Are you urinating regularly?"]
+        text:
+          ["Are you urinating regularly?"]
+        response_type:
+          "BOOL_ANSWER"
       bowel_movement:
-        ["Were you able to have  a bowel movement today?"]
+        text:
+          ["Were you able to have  a bowel movement today?"]
+        response_type:
+          "BOOL_ANSWER"
       condition_change:
-        ["Overall, do you feel better, worse or about the same as you did yesterday?"]
+        text:
+          ["Overall, do you feel better, worse or about the same as you did yesterday?"]
+        response_type:
+          "BOOL_ANSWER"
 application_settings:
-  hard_assertion_questions:
-    - "person_confirmation"
-  question_lists:
+  questions_by_indication:
     ileostomy:
       - "mobility"
       - "pain_calves"
