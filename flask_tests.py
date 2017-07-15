@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 # load libraries
+import io
+import six
 import sys
 import json
 import yaml
@@ -8,6 +10,8 @@ import unittest
 import requests
 
 # load user defined libraries
+import webapp
+
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 from src.fhir_validators import validate_encounter, validate_example_questionnaire,\
     validate_example_questionnaire_response
@@ -105,13 +109,19 @@ class TestFHIRStructure(unittest.TestCase):
         # assert same
         self.assertItemsEqual(extract_questionnaire_questions(data), LIST_OF_QS)
 
-
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):
-        pass
+        self.app = webapp.app.test_client()
 
-    def test_run_server(self):
-        pass
+    def test_welcome(self):
+        # load data
+        with open('json_fixtures/launch.json') as data_file:
+            body = data_file.read()
+            rqst = io.StringIO(six.u(body))
+
+        response = self.app.post('/ask', data=rqst)
+        import ptpdb; ptpdb.set_trace()
+
 
     def test_(self):
         pass

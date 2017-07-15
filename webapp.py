@@ -11,7 +11,7 @@ from src.utilities import load_settings_and_content, load_questions
 
 # flask initialize
 app = Flask(__name__)
-ask = Ask(app, '/')
+ask = Ask(app, '/ask')
 
 # define vars
 SETTINGS = load_settings_and_content('resources/application_settings.yaml')
