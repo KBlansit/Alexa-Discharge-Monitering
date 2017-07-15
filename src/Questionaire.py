@@ -3,33 +3,53 @@
 # load libraries
 import random
 
+from flask_ask import statement, question
 
 class Questionaire:
     """
     the container class to hold administrative and clinical questions
     """
-    def __init__(self, clinical_indication, settings_dict):
+    def __init__(self, settings_dict):
         """
         INPUTS:
-            clinical_indication:
-                the clinical indication to
             settings_dict:
                 the dictionary that holds the settings
+        EFFECTS:
+            sets base attributes for container class
         """
-        # save admin questions
-        self.admin_questions = settings_dict['application_content']['application_text']['application_questions'].keys()
+        # save admin information
+        self.admin_questions = settings_dict['application_content']['application_text']['application_questions']
+        self.admin_statements = settings_dict['application_content']['application_text']['application_statements']
 
         # save clinical questions
         self.indication_questions = settings_dict['application_settings']['questions_by_indication']
 
         # return all clinical questions
-        self.all_clinical_questions = settings_dict['application_content']['clinical_questions'].keys()
+        self.all_clinical_questions = settings_dict['application_content']['clinical_questions']
 
-    def get_admin_question():
-        pass
+    def get_admin_question(question):
+        """
+        INPUTS:
+            question:
+                the question to ask
+        """
+        # test if in dict
+        if question not in self.admin_questions.keys():
+            raise AssertionError(question + " is not a valid admin question")
 
-    def get_admin_response():
-        pass
+        return question(self.admin_questions[question]['text'])
+
+    def get_admin_response(statement):
+        """
+        INPUTS:
+            question:
+                the statement o respond with
+        """
+        # test if in dict
+        if statement not in self.admin_statements:
+            raise AssertionError(statement + " is not a valid admin statement")
+
+        return statement(self.admin_statements[statement])
 
     def get_clinical_question():
         pass

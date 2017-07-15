@@ -17,12 +17,13 @@ application_content:
           "Could you confirm your birthdate"
         response_type:
           "DATE_ANSWER"
-    failed_user_confirmation:
-      "Hmm... something went wrong."
-    exit_message:
-      "Thank you for your input Tom. We'll be sending this information to your surgeon,
-      who will follow-up with you if any additional information is required or if he needs
-      to see you sooner than your scheduled appointment."
+    application_statements:
+      failed_user_confirmation:
+        "Hmm... something went wrong."
+      exit_message:
+        "Thank you for your input Tom. We'll be sending this information to your surgeon,
+        who will follow-up with you if any additional information is required or if he needs
+        to see you sooner than your scheduled appointment."
   clinical_questions:
       mobility:
         text:
