@@ -7,62 +7,46 @@ import yaml
 import unittest
 import requests
 
-# go up a directory to see project root dir
-sys.path.append("..")
-
 # load user defined libraries
-from src.utilities import load_questions, extract_questionnaire_questions
+from src.Questionaire import Questionaire
+from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 from src.fhir_validators import validate_encounter, validate_example_questionnaire,\
     validate_example_questionnaire_response
 
 class TestQuestionsStructure(unittest.TestCase):
 
-    def test_question_list_valid(self):
+    def test_load_questions(self):
         """
-        Tests that list of questions is valid
+        Tests that can load the content and settings yaml file
         """
-
         # load data
-        path = "../resources/application_settings.yaml"
+        path = "resources/application_settings.yaml"
+        indication = "ileostomy"
+
+        # cast to Questionaire container
+        q_containter = Questionaire(path)
+
+        # test that bad questions/statements properly rasie AssertionError
         try:
-            with open(path, "r") as f:
-                data = yaml.load(f)
-        except IOError:
-            raise IOError("Cannot locate path: " + str(path))
+            self.assertRaises(AssertionError, q_containter.get_admin_question("BAD"))
+            self.assertRaises(AssertionError, q_containter.get_admin_response("BAD"))
+            self.assertRaises(AssertionError, q_containter.get_clinical_question("BAD"))
+        except AssertionError:
+            pass
 
-        # define basic queries
-        questions = data['application_settings']['question_lists']['ILEOSTOMY']
-        question_text = data['application_text']['question_text']
+        # verify we can get questions
+        q_containter.get_list_of_clinical_questions(indication)
 
-        for i in questions:
-            self.assertIn(i, question_text.keys())
+        tst_admin_qs = q_containter.admin_questions.keys()
+        tst_admin_Ss = q_containter.admin_statements.keys()
+        tst_clin_qs = q_containter.indication_questions[indication]
 
-    def test_question_loader(self):
-        """
-        Tests that both patient and caretaker can be used for all questions
-        """
-        LIST_OF_QS = [
-            "person_confirmation",
-            "moving_question",
-            "eating_question",
-            "drinking_question",
-            "pain_control_question",
-        ]
-
-        # test
-        path = "../resources/application_settings.yaml"
-        users = ["caretaker", "patient"]
-
-        # load data
-        try:
-            with open(path, "r") as f:
-                data = yaml.load(f)
-        except IOError:
-            raise IOError("Cannot locate path: " + str(path))
-
-        # test both
-        for i in users:
-            load_questions(data, i, 'ILEOSTOMY')
+        for q in tst_admin_qs:
+            q_containter.get_admin_question(q)
+        for s in tst_admin_Ss:
+            q_containter.get_admin_response(s)
+        for q in tst_clin_qs:
+            q_containter.get_clinical_question(q)
 
 class TestFHIRStructure(unittest.TestCase):
 
@@ -107,7 +91,7 @@ class TestFHIRStructure(unittest.TestCase):
         control for QuestionnaireResponse
         """
         # open file
-        path = '../resources/example_FHIR_resources/example_questionnaire.json'
+        path = 'resources/example_FHIR_resources/example_questionnaire.json'
         with open(path, 'r') as f:
             data = json.load(f)
 
@@ -127,7 +111,6 @@ class TestFHIRStructure(unittest.TestCase):
 
         # assert same
         self.assertItemsEqual(extract_questionnaire_questions(data), LIST_OF_QS)
-
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):

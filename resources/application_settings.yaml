@@ -1,141 +1,78 @@
-application_text:
-  introduction_text:
-    welcome_text:
-      "Welcome to the discharge monitering application. We're going
-        to ask some private questions. Is it okay to proceed?"
-    user_identification:
-      "I wanted to confirm if ther was Margaret, or a care taker
-        for Margaret."
-    failed_user_confirmation:
-      "Hmm... something went wrong"
-    ask_screening_or_edu:
-      "Great. I have you confirmed. You can now ask questions about your surgery \
-        or start the screening application."
-    educational_content_not_found:
-      "Hmmm, we weren't able to find the answer the question you're trying to ask.\
-        Is there something else I can help answer"
-    prompt_for_screening:
-      "Would now be a good time to ask some question about how you're recovering?"
-    additional_edu_prompt:
-      "Is there anything else you would like to know about your surgery?"
-  question_text:
-    # defined questions
-    "Person Confirmation":
-      caretaker:
-        ["Alright, can we confirm the person we're monitering today? I current
-        see that we're going over Margaret. Is ther correct?"]
-      patient:
-        ["Hope you're feeling alright. I wanted to start by verifying that this is
-        the correct person... I see that you're Margaret, correct?"]
-    "Mobility":
-      caretaker:
-        ["Has Margaret been able to move around?"]
-      patient:
-        ["Have you been able to move around today"]
-      linkId:
-        "mobility"
-      text:
-        "problems walking or moving around"
-    "Currently Eating":
-      caretaker:
-        ["Has Margaret been able to eat any food?"]
-      patient:
-        ["Have you been able to keep down food?"]
-      linkId:
-        "eating"
-      text:
-        "problems eating or keeping down solid food"
-    "Currently Drinking":
-      caretaker:
-        ["Has Margaret drank any fluids?"]
-      patient:
-        ["Have you been able to drink any fluids?"]
-      linkId:
-        "liquids"
-      text:
-        "problems drinking or keeping down liquids"
-    "Pain Control":
-      caretaker:
-        ["Is Margaret in much pain?"]
-      patient:
-        ["Have you had much pain?"]
-      linkId:
-        "pain"
-      text:
-        "problems controlling or managing pain"
-    "Currently Taking Pain Medications":
-      caretaker:
-        ["Has Margaret been taking her pain medication?"]
-      patient:
-        ["Have you been taking all of your pain medications?"]
-      linkId:
-        "painMedicans"
-      text:
-        "patient has been taking pain medications"
-    "Currently Urinating":
-      caretaker:
-        ["Has Margaret been able to urinate?"]
-      patient:
-        ["Have you been urinating regularly?"]
-      linkId:
-        "urination"
-      text:
-        "patient has problems urinating"
-    "Urine Color":
-      caretaker:
-        ["What is the color of the urine?"]
-      patient:
-        ["What is the color of your urine?"]
-      linkId:
-        "urineColor"
-      text:
-        "patient reports problem color in urine"
-    "Feeling Better Than Previous Day":
-      caretaker:
-        ["Is Margaret feeling any better than yesterday?"]
-      patient:
-        ["Are you feeling better than yesterday?"]
-      linkId:
-        "status"
-      text:
-        "patient feels better than previous day"
-    end_statement:
-      caretaker:
-        ["Thank you for your input on the care for Margaret. We'll be sending ther
-        information to her surgeon."]
-      patient:
-        ["Alright, thanks! I will send a note to your surgeon and we'll contact
-        you if we need any more information."]
-  educational_text:
-    "MASTECTOMY":
-      "EFFECTS OF SURGERY":
+application_content:
+  application_text:
+    application_questions:
+      welcome_text:
         text:
-          "After surgery, the breast may be scarred or be a different shape or \
-          size than before surgery. The area around the surgical site may become \
-          hardened. If lymph nodes were removed, or affected, lymphedema which is \
-          a swelling of the arm, may occur. Ther is a life-long risk."
-      "WOUND CARE":
+          "Welcome to the discharge monitoring application. We're going to ask some
+          personal questions. Is now a good time?"
+        response_type:
+          "BOOL_ANSWER"
+      user_identification:
         text:
-          "Please make sure to moniter your wound"
-    "ILEOSTOMY":
-        "EFFECTS OF SURGERY":
-          text:
-            "Still requires content surgery"
-        "WOUND CARE":
-          text:
-            "Please make sure to moniter your wound over the next few days checking/
-            for redness or swelling."
+          "I wanted to confirm that this was Ron. Is this correct?"
+        response_type:
+          "BOOL_ANSWER"
+      user_2nd_step_identification:
+        text:
+          "Could you confirm your birthdate"
+        response_type:
+          "DATE_ANSWER"
+    application_statements:
+      failed_user_confirmation:
+        "Hmm... something went wrong."
+      exit_message:
+        "Thank you for your input Ron. We'll be sending this information to your surgeon,
+        who will follow-up with you if any additional information is required or if he needs
+        to see you sooner than your scheduled appointment."
+  clinical_questions:
+      mobility:
+        text:
+          ["Have you been able to walk around today?"]
+        response_type:
+          "BOOL_ANSWER"
+      pain_calves:
+        text:
+          ["Are you expierencing any pain or swelling in your cavles"]
+        response_type:
+          "BOOL_ANSWER"
+      food_eat:
+        text:
+          ["Have you been able to eat any meals?"]
+        response_type:
+          "BOOL_ANSWER"
+      drink_liquids:
+        text:
+          ["Have you been drinking liquids?"]
+        response_type:
+          "BOOL_ANSWER"
+      pain_change:
+        text:
+          ["Is your pain decreased, increased, or about the same as it was yesterday?"]
+        response_type:
+          "BOOL_ANSWER"
+      urinating_regularly:
+        text:
+          ["Are you urinating regularly?"]
+        response_type:
+          "BOOL_ANSWER"
+      bowel_movement:
+        text:
+          ["Were you able to have  a bowel movement today?"]
+        response_type:
+          "BOOL_ANSWER"
+      condition_change:
+        text:
+          ["Overall, do you feel better, worse or about the same as you did yesterday?"]
+        response_type:
+          "BOOL_ANSWER"
 application_settings:
-  hard_assertion_questions:
-    - "person_confirmation"
-  question_lists:
-    "ILEOSTOMY":
-      - "Mobility"
-      - "Currently Eating"
-      - "Currently Drinking"
-      - "Pain Control"
-      - "Currently Taking Pain Medications"
-      #- "Currently Urinating"
-      #- "Urine Color"
-      - "Feeling Better Than Previous Day"
-      - "end_statement"
+  questions_by_indication:
+    ileostomy:
+      - "mobility"
+      - "pain_calves"
+      #- "food_eat"
+      #- "drink_liquids"
+      #- "pain_change"
+      #- "urinating_regularly"
+      #- "bowel_movement"
+      #- "condition_change"
