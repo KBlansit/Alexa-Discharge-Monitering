@@ -179,6 +179,9 @@ def welcome_msg():
 # response to questions
 @ask.intent('YesIntent')
 def yes_response():
+    # reset enviorment
+    reset_question()
+
     # set answer level parameter
     session.attributes['response']['response_slot'] = True
     session.attributes['response']['response_type'] = "BOOL_ANSWER"
@@ -187,6 +190,9 @@ def yes_response():
 
 @ask.intent('NoIntent')
 def no_response():
+    # reset enviorment
+    reset_question()
+
     # set answer level parameter
     session.attributes['response']['response_slot'] = False
     session.attributes['response']['response_type'] = "BOOL_ANSWER"
@@ -195,6 +201,9 @@ def no_response():
 
 @ask.intent('DateSlotIntent')
 def date_response(date):
+    # reset enviorment
+    reset_question()
+    
     # set answer level parameter
     session.attributes['response']['response_slot'] = date
     session.attributes['response']['response_type'] = "DATE_ANSWER"
