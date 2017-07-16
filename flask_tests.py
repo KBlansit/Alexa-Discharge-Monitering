@@ -10,6 +10,7 @@ import requests
 # load user defined libraries
 from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
+from src.fhir_helper_functions import read_json_patient, create_question_response
 
 class TestQuestionsStructure(unittest.TestCase):
 
@@ -51,7 +52,18 @@ class TestQuestionsResponse(unittest.TestCase):
     note: requires connection to internet
     """
     def test_name_object(self):
+        pass
+    def test_example_patient(self):
+        # read in example json
+        json_path = "example_fhir/ex_patient.json"
+        curr_pt = read_json_patient(json_path)
 
+        # post to fhir server
+        post_url = 'http://fhirtest.uhn.ca/baseDstu3/Patient?_format=json&_pretty=true'
+        r = requests.post(post_url, json.dumps(curr_pt.as_json()))
+
+        # assert we got a valid response
+        assertTrue(r.ok)
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):
