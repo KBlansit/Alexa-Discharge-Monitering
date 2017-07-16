@@ -8,38 +8,45 @@ import unittest
 import requests
 
 # load user defined libraries
+from src.Questionaire import Questionaire
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 from src.fhir_validators import validate_encounter, validate_example_questionnaire,\
     validate_example_questionnaire_response
 
 class TestQuestionsStructure(unittest.TestCase):
 
-    def test_load_content_and_settings(self):
+    def test_load_questions(self):
         """
         Tests that can load the content and settings yaml file
         """
         # load data
         path = "resources/application_settings.yaml"
-        settings = load_settings_and_content(path)
+        indication = "ileostomy"
 
-        # define basic queries
-        procedure_questions = settings['application_settings']['question_lists']
-        question_text = settings['application_content']['question_text']
+        # cast to Questionaire container
+        q_containter = Questionaire(path)
 
-        for p in procedure_questions.keys():
-            for q in procedure_questions[p]:
-                self.assertIn(q, question_text.keys())
+        # test that bad questions/statements properly rasie AssertionError
+        try:
+            self.assertRaises(AssertionError, q_containter.get_admin_question("BAD"))
+            self.assertRaises(AssertionError, q_containter.get_admin_response("BAD"))
+            self.assertRaises(AssertionError, q_containter.get_clinical_question("BAD"))
+        except AssertionError:
+            pass
 
-    def test_question_loader(self):
-        """
-        tests that question loader function works
-        """
-        # load data
-        path = "resources/application_settings.yaml"
-        settings = load_settings_and_content(path)
+        # verify we can get questions
+        q_containter.get_list_of_clinical_question(indication)
 
-        # load question into container class
-        load_questions(settings, 'ileostomy')
+        tst_admin_qs = q_containter.admin_questions.keys()
+        tst_admin_Ss = q_containter.admin_statements.keys()
+        tst_clin_qs = q_containter.indication_questions[indication]
+
+        for q in tst_admin_qs:
+            q_containter.get_admin_question(q)
+        for s in tst_admin_Ss:
+            q_containter.get_admin_response(s)
+        for q in tst_clin_qs:
+            q_containter.get_clinical_question(q)
 
 class TestFHIRStructure(unittest.TestCase):
 

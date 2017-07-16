@@ -3,9 +3,6 @@
 # load libraries
 import yaml
 
-# load user defined libraries
-from Questionaire import QuestionNode
-
 def load_settings_and_content(settings_path):
     """
     INPUTS:

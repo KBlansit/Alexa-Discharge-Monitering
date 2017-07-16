@@ -4,12 +4,13 @@
 import random
 
 from flask_ask import statement, question
+from src.utilities import load_settings_and_content
 
 class Questionaire:
     """
     the container class to hold administrative and clinical questions
     """
-    def __init__(self, settings_dict):
+    def __init__(self, settings_path):
         """
         INPUTS:
             settings_dict:
@@ -17,6 +18,8 @@ class Questionaire:
         EFFECTS:
             sets base attributes for container class
         """
+        settings_dict = load_settings_and_content(settings_path)
+
         # save admin information
         self.admin_questions = settings_dict['application_content']['application_text']['application_questions']
         self.admin_statements = settings_dict['application_content']['application_text']['application_statements']
@@ -27,35 +30,35 @@ class Questionaire:
         # return all clinical questions
         self.all_clinical_questions = settings_dict['application_content']['clinical_questions']
 
-    def get_admin_question(question):
+    def get_admin_question(self, question):
         """
         INPUTS:
             question:
                 the question to ask
         OUTPUT:
-            a question with the apprioprate text
+            a (str) question with the apprioprate text
         """
         # test if in dict
-        if question is not in self.admin_questions.keys():
+        if question not in self.admin_questions.keys():
             raise AssertionError(question + " is not a valid admin question")
 
-        return question(self.admin_questions[question]['text'])
+        return self.admin_questions[question]['text']
 
-    def get_admin_response(statement):
+    def get_admin_response(self, statement):
         """
         INPUTS:
             statement:
                 the statement to respond with
         OUTPUT:
-            a statement with the apprioprate text
+            a (str) statement with the apprioprate text
         """
         # test if in dict
-        if statement is not in self.admin_statements:
+        if statement not in self.admin_statements:
             raise AssertionError(statement + " is not a valid admin statement")
 
-        return statement(self.admin_statements[statement])
+        return self.admin_statements[statement]
 
-    def get_list_of_clinical_question(clinical_indication):
+    def get_list_of_clinical_question(self, clinical_indication):
         """
         INPUTS:
             clinical_indication:
@@ -64,26 +67,26 @@ class Questionaire:
             a list of question keys for a given indication
         """
         # test if in dict
-        if clinical_indication is not in self.indication_questions.keys():
+        if clinical_indication not in self.indication_questions.keys():
             raise AssertionError(clinical_indication + " is not a valid clinical indication")
 
         return self.indication_questions[clinical_indication]
 
-    def get_clinical_question(question):
+    def get_clinical_question(self, question):
         """
         INPUTS:
             question:
                 the question to ask
         OUTPUT:
-            a question with the apprioprate text
+            a (str) question with the apprioprate text
         """
         # test if in dict
-        if question is not in self.all_clinical_questions.keys():
+        if question not in self.all_clinical_questions.keys():
             raise AssertionError(question + " is not a valid clinical question")
 
-        return question(self.all_clinical_questions[question]['text'])
+        return self.all_clinical_questions[question]['text']
 
-    def validate_answer(question, response_type):
+    def validate_answer(self, question, response_type):
         """
         INPUTS:
             question:
@@ -94,8 +97,8 @@ class Questionaire:
             Bool is the response type is apprioprate
         """
         # test if in dict
-        if question is not in self.all_clinical_questions.keys():
+        if question not in self.all_clinical_questions.keys():
             raise AssertionError(question + " is not a valid clinical question")
 
-        if response_type is not self.all_clinical_questions[question]['response_type']
+        if response_type is not self.all_clinical_questions[question]['response_type']:
             raise AssertionError(question + " does not have a " + response_type + " response")
