@@ -11,6 +11,6 @@ with open(path) as data_file:
 
 # cast as pateint
 curr_pt = p.Patient(data)
-requests.post(url, json.dumps(data))
 
-url = "http://fhirtest.uhn.ca/baseDstu3/Patient?_format=json&_pretty=true
+url = "http://fhirtest.uhn.ca/baseDstu3/Patient?_format=json&_pretty=true"
+requests.post(url, json.dumps(data))
