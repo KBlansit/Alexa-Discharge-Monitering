@@ -3,32 +3,119 @@
 # load libraries
 import random
 
-class QuestionNode:
-    def __init__(self, question_lst=None, child_node=None, name=None):
+from flask_ask import statement, question
+from src.utilities import load_settings_and_content
 
-        # set parameters
-        self.question_lst = question_lst
-        self.child_node = child_node
-        self.name = name
-
-    def to_list(self):
+class Questionaire:
+    """
+    the container class to hold administrative and clinical questions
+    """
+    def __init__(self, settings_path):
         """
-        transforms the linked list into a flat list and chooses questions
+        INPUTS:
+            settings_dict:
+                the dictionary that holds the settings
+        EFFECTS:
+            sets base attributes for container class
         """
+        settings_dict = load_settings_and_content(settings_path)
 
-        # use to bootstrap vars
-        rslt_lst = []
-        curr_node = self
+        # save admin information
+        self.admin_questions = settings_dict['application_content']['application_text']['application_questions']
+        self.admin_statements = settings_dict['application_content']['application_text']['application_statements']
 
-        # iterate until there no children left
-        while curr_node.child_node is not None:
-            # add question to list
-            rslt_lst.append(random.choice(curr_node.question_lst))
+        # save clinical questions
+        self.indication_questions = settings_dict['application_settings']['questions_by_indication']
 
-            # update node
-            curr_node = curr_node.child_node
+        # return all clinical questions
+        self.all_clinical_questions = settings_dict['application_content']['clinical_questions']
 
-        return rslt_lst[::-1]
+    def get_admin_question(self, question):
+        """
+        INPUTS:
+            question:
+                the question to ask
+        OUTPUT:
+            a (str) question with the apprioprate text
+        """
+        # test if in dict
+        if question not in self.admin_questions.keys():
+            raise AssertionError(question + " is not a valid admin question")
 
-    def __str__(self):
-        return name
+        return self.admin_questions[question]['text']
+
+    def get_admin_response(self, statement):
+        """
+        INPUTS:
+            statement:
+                the statement to respond with
+        OUTPUT:
+            a (str) statement with the apprioprate text
+        """
+        # test if in dict
+        if statement not in self.admin_statements:
+            raise AssertionError(statement + " is not a valid admin statement")
+
+        return self.admin_statements[statement]
+
+    def get_list_of_clinical_questions(self, clinical_indication):
+        """
+        INPUTS:
+            clinical_indication:
+                the clinical indication to get questions for
+        OUTPUT:
+            a list of question keys for a given indication
+        """
+        # test if in dict
+        if clinical_indication not in self.indication_questions.keys():
+            raise AssertionError(clinical_indication + " is not a valid clinical indication")
+
+        return self.indication_questions[clinical_indication]
+
+    def get_clinical_question(self, question):
+        """
+        INPUTS:
+            question:
+                the question to ask
+        OUTPUT:
+            a (str) question with the apprioprate text
+        """
+        # test if in dict
+        if question not in self.all_clinical_questions.keys():
+            raise AssertionError(question + " is not a valid clinical question")
+
+        return self.all_clinical_questions[question]['text'][0]
+
+    def validate_admin_answer(self, question, response_type):
+        """
+        INPUTS:
+            question:
+                the question we're interested in
+            response_type:
+                the response type we got back
+        OUTPUT:
+            Bool is the response type is apprioprate
+        """
+        # test if in dict
+        if question not in self.admin_questions.keys():
+            raise AssertionError(question + " is not a valid clinical question")
+
+        if not self.admin_questions[question]['response_type'] == response_type:
+            raise AssertionError(question + " does not have a " + response_type + " response")
+
+    def validate_clinical_answer(self, question, response_type):
+        """
+        INPUTS:
+            question:
+                the question we're interested in
+            response_type:
+                the response type we got back
+        OUTPUT:
+            Bool is the response type is apprioprate
+        """
+        # test if in dict
+        if question not in self.all_clinical_questions.keys():
+            raise AssertionError(question + " is not a valid clinical question")
+
+        if response_type is not self.all_clinical_questions[question]['response_type']:
+            raise AssertionError(question + " does not have a " + response_type + " response")
