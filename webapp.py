@@ -7,6 +7,7 @@ from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
 
 # load user defined libraries
+from src.Questionaire import Questionaire
 from src.utilities import load_settings_and_content, load_questions
 
 # flask initialize
@@ -14,7 +15,8 @@ app = Flask(__name__)
 ask = Ask(app, '/')
 
 # define vars
-SETTINGS = load_settings_and_content('resources/application_settings.yaml')
+SETTINGS_PATH = ('resources/application_settings.yaml')
+QUESTION_CONTAINER = Questionaire(SETTINGS_PATH)
 
 SESSION_STATES = [
     'PATIENT_CONSENT',
@@ -34,7 +36,9 @@ def initialize_content():
         initializes session parameters
     """
     # set question information
-    session.attributes['question_lst'] = load_questions(SETTINGS, CURR_PROCEDURE)
+    question_lst = QUESTION_CONTAINER.get_list_of_clinical_questions(CURR_PROCEDURE)
+    session.attributes['question_lst'] = question_lst
+    session.attributes['last_question'] = None
 
     # set session state to user identification
     session.attributes['session_state'] = 'PATIENT_CONSENT'
@@ -47,13 +51,27 @@ def initialize_content():
     session.attributes['bool_response'] = None
     session.attributes['date_response'] = None
 
-def resolve_answer():
+def validate_question():
     """
     EFFECT:
-        resolves the answer from the user
+        validates the answer from the user
     """
+    # first validate question
+    r_type = session.attributes['response_type']
+    curr_question = session.attributes['last_question']
+    QUESTION_CONTAINER.validate_answer(curr_question, r_type)
 
-def question_and_answer():
+def reset_question():
+    """
+    EFFECT:
+        resets session question level attributes
+    """
+    # initialize responses
+    session.attributes['response_type'] = None
+    session.attributes['bool_response'] = None
+    session.attributes['date_response'] = None
+
+def process_session():
     """
     EFFECT:
         takes session attributes parameters to create a state machine
@@ -66,10 +84,14 @@ def question_and_answer():
         # progress session state
         session.attributes['session_state'] = 'PATIENT_CONFIRMATION'
 
-        # determine the result question
-        rslt_txt = SETTINGS['application_content']['application_text']['user_identification']
-
-        return question(rslt_txt)
+        # validate question
+        process_question()
+        if session.attributes['bool_response']:
+            rslt_txt = QUESTION_CONTAINER.get_admin_question('user_identification')
+            return question(rslt_txt)
+        else:
+            rslt_txt = QUESTION_CONTAINER.get_admin_question('failed_user_confirmation')
+            return statement(rslt_txt)
 
     elif session.attributes['session_state'] == 'PATIENT_CONFIRMATION':
         # determine response
@@ -175,7 +197,7 @@ def welcome_msg():
     initialize_content()
 
     # fetch introduction text
-    rslt_txt = SETTINGS['application_content']['application_text']['welcome_text']
+    rslt_txt = QUESTION_CONTAINER.get_admin_question('welcome_text')
 
     # return question of speech
     return question(rslt_txt)

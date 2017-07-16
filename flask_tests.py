@@ -35,7 +35,7 @@ class TestQuestionsStructure(unittest.TestCase):
             pass
 
         # verify we can get questions
-        q_containter.get_list_of_clinical_question(indication)
+        q_containter.get_list_of_clinical_questions(indication)
 
         tst_admin_qs = q_containter.admin_questions.keys()
         tst_admin_Ss = q_containter.admin_statements.keys()

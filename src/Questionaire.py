@@ -58,7 +58,7 @@ class Questionaire:
 
         return self.admin_statements[statement]
 
-    def get_list_of_clinical_question(self, clinical_indication):
+    def get_list_of_clinical_questions(self, clinical_indication):
         """
         INPUTS:
             clinical_indication:
@@ -72,7 +72,7 @@ class Questionaire:
 
         return self.indication_questions[clinical_indication]
 
-    def get_clinical_question(self, question):
+    def get_clinical_questions(self, question):
         """
         INPUTS:
             question:
