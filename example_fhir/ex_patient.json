@@ -1,0 +1,42 @@
+{
+  "resourceType": "Patient",
+  "id": "184014",
+  "meta": {
+    "versionId": "2",
+    "lastUpdated": "2017-07-13T09:32:46.773-04:00"
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"> \n         <h1>Fhir-Workshop</h1> \n      </div>"
+  },
+  "identifier": [
+    {
+      "system": "http://www.health-comm.de/",
+      "value": "007001"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "text": "Jon Snow",
+      "family": "Snow",
+      "given": [
+        "Jon"
+      ],
+      "suffix": [
+        "Lord Cmmdr."
+      ]
+    }
+  ],
+  "gender": "male",
+  "birthDate": "281",
+  "address": [
+    {
+      "line": [
+        "Hauptstraße 69"
+      ],
+      "city": "Köln",
+      "postalCode": "55994"
+    }
+  ]
+}
