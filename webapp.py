@@ -124,20 +124,19 @@ def process_session():
     elif session.attributes['session_state'] == 'PATIENT_2ND_CONFIRMATION':
         # format date
         input_date = datetime.strptime(session.attributes['response']['response_slot'], "%Y-%m-%d")
-        print str(input_date)
 
         # determine how to respond to question
         if input_date.date() == CURR_BDAY.date():
             # progress session state
             session.attributes['session_state'] = 'QUESTION_ITERATIONS'
 
-            return screening_question_iteration()
+            return clinical_question_iteration()
 
     elif session.attributes['session_state'] == 'QUESTION_ITERATIONS':
             # ask if there's anything else to do
-            return screening_question_iteration()
+            return clinical_question_iteration()
 
-def screening_question_iteration():
+def clinical_question_iteration():
     """
     used to iterate through questions
     """
@@ -145,8 +144,11 @@ def screening_question_iteration():
     # test if there's any more questions left
     if len(session.attributes['question_lst']):
         # determine question text
-        question_text = session.attributes['question_lst'].pop()
-        return question(question_text)
+        curr_question = session.attributes['question_lst'].pop()
+        session.attributes['previous_question'] = curr_question
+        question_txt = QUESTION_CONTAINER.get_clinical_question(curr_question)
+
+        return question(question_txt)
     else:
         return statement("Great! I'll send these results to your doctor, and will\
                          contact you if there's any more information we need.")

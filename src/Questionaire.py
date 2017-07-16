@@ -72,7 +72,7 @@ class Questionaire:
 
         return self.indication_questions[clinical_indication]
 
-    def get_clinical_questions(self, question):
+    def get_clinical_question(self, question):
         """
         INPUTS:
             question:
@@ -84,7 +84,7 @@ class Questionaire:
         if question not in self.all_clinical_questions.keys():
             raise AssertionError(question + " is not a valid clinical question")
 
-        return self.all_clinical_questions[question]['text']
+        return self.all_clinical_questions[question]['text'][0]
 
     def validate_admin_answer(self, question, response_type):
         """
