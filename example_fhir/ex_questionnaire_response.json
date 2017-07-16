@@ -1,0 +1,154 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "id": "SMART-PROMs-7-QR4",
+  "meta": {
+    "versionId": "104",
+    "lastUpdated": "2017-05-22T12:39:18.016-04:00"
+  },
+  "questionnaire": {
+    "reference": "Questionnaire/SMART-PROMs-QUE3",
+    "display": "Post-Op Q2 PROMs General Health Questionnaire"
+  },
+  "status": "completed",
+  "subject": {
+    "reference": "Patient/SMART-PROMs-7",
+    "display": "Barbara Fox"
+  },
+  "context": {
+    "reference": "Encounter/SMART-PROMs-7-ENC3"
+  },
+  "item": [
+    {
+      "linkId": "Assisted",
+      "text": "Is Anyone helping you fill in this questionnaire?",
+      "answer": [
+        {
+          "valueCoding": {
+            "code": "2"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "Assisted By",
+      "text": "If Yes, give the relationship to you of the person assisting you",
+      "answer": [
+        {
+          "valueCoding": {
+            "code": "9"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "Living Arrangements",
+      "text": "Which statement best describes your living arrangements?",
+      "answer": [
+        {
+          "valueCoding": {
+            "code": "1"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "Disability",
+      "text": "Do you consider yourself to have a disability?",
+      "answer": [
+        {
+          "valueCoding": {
+            "code": "2"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "Satisfaction",
+      "text": "How would you describe the results of your operation",
+      "answer": [
+        {
+          "valueCoding": {
+            "code": "2"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "Success",
+      "text": "Overall, how are your problems now, compared to before your operation?",
+      "answer": [
+        {
+          "valueCoding": {
+            "code": "1"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "Allergy",
+      "text": "Did you experience any of the following problems after your operation: Allergy or reaction to drug?",
+      "answer": [
+        {
+          "valueCoding": {
+            "code": "2"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "Bleeding",
+      "text": "Did you experience any of the following problems after your operation: Bleeding?",
+      "answer": [
+        {
+          "valueCoding": {
+            "code": "2"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "Wound",
+      "text": "Did you experience any of the following problems after your operation: Wound problems?",
+      "answer": [
+        {
+          "valueCoding": {
+            "code": "2"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "Urine",
+      "text": "Did you experience any of the following problems after your operation: Urinary problems?",
+      "answer": [
+        {
+          "valueCoding": {
+            "code": "2"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "Further Surgery",
+      "text": "Indicates whether the patient has had another operation on the affected area",
+      "answer": [
+        {
+          "valueCoding": {
+            "code": "2"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "Readmitted",
+      "text": "Have you been readmitted to the hospital since your operation?",
+      "answer": [
+        {
+          "valueCoding": {
+            "code": "2"
+          }
+        }
+      ]
+    }
+  ]
+}

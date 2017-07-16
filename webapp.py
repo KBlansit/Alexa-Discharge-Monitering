@@ -8,7 +8,7 @@ from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
 
 # load user defined libraries
-from src.Questionaire import Questionaire
+from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions
 
 # flask initialize
@@ -17,7 +17,7 @@ ask = Ask(app, '/')
 
 # define vars
 SETTINGS_PATH = ('resources/application_settings.yaml')
-QUESTION_CONTAINER = Questionaire(SETTINGS_PATH)
+QUESTION_CONTAINER = QuestionContainer(SETTINGS_PATH)
 
 SESSION_STATES = [
     'PATIENT_CONSENT',
@@ -203,7 +203,7 @@ def no_response():
 def date_response(date):
     # reset enviorment
     reset_question()
-    
+
     # set answer level parameter
     session.attributes['response']['response_slot'] = date
     session.attributes['response']['response_type'] = "DATE_ANSWER"

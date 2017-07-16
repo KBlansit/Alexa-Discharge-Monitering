@@ -6,7 +6,7 @@ import random
 from flask_ask import statement, question
 from src.utilities import load_settings_and_content
 
-class Questionaire:
+class QuestionContainer:
     """
     the container class to hold administrative and clinical questions
     """

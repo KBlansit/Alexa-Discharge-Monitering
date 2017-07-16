@@ -8,10 +8,8 @@ import unittest
 import requests
 
 # load user defined libraries
-from src.Questionaire import Questionaire
+from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
-from src.fhir_validators import validate_encounter, validate_example_questionnaire,\
-    validate_example_questionnaire_response
 
 class TestQuestionsStructure(unittest.TestCase):
 
@@ -24,7 +22,7 @@ class TestQuestionsStructure(unittest.TestCase):
         indication = "ileostomy"
 
         # cast to Questionaire container
-        q_containter = Questionaire(path)
+        q_containter = QuestionContainer(path)
 
         # test that bad questions/statements properly rasie AssertionError
         try:
@@ -48,69 +46,12 @@ class TestQuestionsStructure(unittest.TestCase):
         for q in tst_clin_qs:
             q_containter.get_clinical_question(q)
 
-class TestFHIRStructure(unittest.TestCase):
+class TestQuestionsResponse(unittest.TestCase):
+    """
+    note: requires connection to internet
+    """
+    def test_name_object(self):
 
-    def test_positive_control_Questionnaire_Response_format(self):
-        """
-        positive control for QuestionnaireResponse
-        """
-        # open file
-        path = 'example_fhir/example_Questionnaire_Response.json'
-        with open(path, 'r') as f:
-            data = json.load(f)
-
-        # run through validator
-        validate_example_questionnaire_response(data)
-
-    def test_positive_control_Questionnaire_format(self):
-        """
-        positive control for Questionnaire
-        """
-        # open file
-        path = 'example_fhir/example_Questionnaire.json'
-        with open(path, 'r') as f:
-            data = json.load(f)
-
-        # run through validator
-        validate_example_questionnaire(data)
-
-    def test_positive_control_Encounter_format(self):
-        """
-        positive control for Questionnaire
-        """
-        # open file
-        path = 'example_fhir/example_Encounter.json'
-        with open(path, 'r') as f:
-            data = json.load(f)
-
-        # run through validator
-        validate_encounter(data)
-
-    def test_Questionnaire_JSON(self):
-        """
-        control for QuestionnaireResponse
-        """
-        # open file
-        path = 'resources/example_FHIR_resources/example_questionnaire.json'
-        with open(path, 'r') as f:
-            data = json.load(f)
-
-        # run through validator
-        validate_example_questionnaire(data)
-
-        # extract questions
-        extract_questionnaire_questions(data)
-
-        LIST_OF_QS = [
-            "Person Confirmation",
-            "Mobility",
-            "Currently Eating",
-            "Currently Drinking",
-            "Currently Taking Pain Medications",
-        ]
-
-        # assert same
-        self.assertItemsEqual(extract_questionnaire_questions(data), LIST_OF_QS)
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):
