@@ -86,6 +86,7 @@ def process_session():
     EFFECT:
         takes session attributes parameters to create a state machine
     """
+
     # assert that state is valid
     assert session.attributes['session_state'] in SESSION_STATES
 
@@ -130,26 +131,33 @@ def process_session():
             # progress session state
             session.attributes['session_state'] = 'QUESTION_ITERATIONS'
 
-            return clinical_question_iteration()
+            if len(session.attributes['question_lst']):
+                # determine question text
+                curr_question = session.attributes['question_lst'].pop()
+                session.attributes['previous_question'] = curr_question
+                question_txt = QUESTION_CONTAINER.get_clinical_question(curr_question)
+
+                return question(question_txt)
+            else:
+                rslt_txt = QUESTION_CONTAINER.get_admin_response('failed_user_confirmation')
+                return statement(rslt_txt)
+        else:
+            rslt_txt = QUESTION_CONTAINER.get_admin_response('failed_user_confirmation')
+            return statement(rslt_txt)
 
     elif session.attributes['session_state'] == 'QUESTION_ITERATIONS':
-            # ask if there's anything else to do
-            return clinical_question_iteration()
+        # determine is session progresses (next to last)
+        if len(session.attributes['question_lst']) == 1:
+            session.attributes['session_state'] = 'END_QUESTIONS'
 
-def clinical_question_iteration():
-    """
-    used to iterate through questions
-    """
-
-    # test if there's any more questions left
-    if len(session.attributes['question_lst']):
         # determine question text
         curr_question = session.attributes['question_lst'].pop()
         session.attributes['previous_question'] = curr_question
         question_txt = QUESTION_CONTAINER.get_clinical_question(curr_question)
 
         return question(question_txt)
-    else:
+
+    elif session.attributes['session_state'] == 'END_QUESTIONS':
         return statement("Great! I'll send these results to your doctor, and will\
                          contact you if there's any more information we need.")
 
