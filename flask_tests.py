@@ -4,13 +4,16 @@
 import sys
 import json
 import yaml
+import signal
 import unittest
 import requests
+
+from requests.exceptions import Timeout
 
 # load user defined libraries
 from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
-from src.fhir_helper_functions import read_json_patient, create_question_response
+from src.fhir_utilities import read_json_patient, create_question_response
 
 class TestQuestionsStructure(unittest.TestCase):
 
@@ -47,23 +50,50 @@ class TestQuestionsStructure(unittest.TestCase):
         for q in tst_clin_qs:
             q_containter.get_clinical_question(q)
 
-class TestQuestionsResponse(unittest.TestCase):
+class TestFhirHelperMethods(unittest.TestCase):
     """
     note: requires connection to internet
     """
-    def test_name_object(self):
-        pass
-    def test_example_patient(self):
-        # read in example json
-        json_path = "example_fhir/ex_patient.json"
-        curr_pt = read_json_patient(json_path)
 
+    def _try_twice_request(self, url, content):
+        """
+        try connecting twice
+        """
+        try:
+            r = requests.post(url, data=content, timeout = 2)
+        except Timeout:
+            # try again
+            r = requests.post(url, data=content, timeout = 2)
+        return r
+
+    def setUp(self):
+        self.answer_dict = {
+            "BoolQuestion1": True,
+            "BoolQuestion2": False,
+        }
+
+        # read in and cast patient
+        json_path = "example_fhir/ex_patient.json"
+        self.example_pt = read_json_patient(json_path)
+
+    def test_example_patient(self):
         # post to fhir server
         post_url = 'http://fhirtest.uhn.ca/baseDstu3/Patient?_format=json&_pretty=true'
-        r = requests.post(post_url, json.dumps(curr_pt.as_json()))
 
         # assert we got a valid response
-        assertTrue(r.ok)
+        r = self._try_twice_request(post_url, json.dumps(self.example_pt.as_json()))
+        self.assertTrue(r.ok)
+
+    def test_create_question_response_object(self):
+        # create object
+        qr = create_question_response(self.answer_dict, "completed", self.example_pt)
+
+        # test that values are same as answer_dict
+
+        # test that we can post to fhir server
+        post_url = 'http://fhirtest.uhn.ca/baseDstu3/QuestionnaireResponse?_format=json&_pretty=true'
+        r = self._try_twice_request(post_url, json.dumps(self.example_pt.as_json()))
+        self.assertTrue(r.ok)
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):

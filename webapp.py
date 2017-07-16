@@ -13,6 +13,7 @@ from src.utilities import load_settings_and_content, load_questions
 
 # flask initialize
 app = Flask(__name__)
+app.config['ASK_VERIFY_REQUESTS'] = False
 ask = Ask(app, '/')
 
 # define vars
