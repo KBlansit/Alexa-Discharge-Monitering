@@ -1,10 +1,11 @@
+# import libraries
 import json
-import fhirclient.models.patient as pt
+import requests
 
-def create_QuestionnaireResponse():
-    pass
+import fhirclient.models.patient as p
 
+# read in json data
 path = "example_fhir/ex_patient.json"
-
 with open(path) as data_file:
-    data = pt.Patient(json.load(data_file))
+    data = json.load(data_file)
+p.Patient(data)
