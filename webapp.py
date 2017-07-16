@@ -26,6 +26,12 @@ SESSION_STATES = [
     'END_QUESTIONS',
 ]
 
+ADMIN_QUESTION_MAP = {
+    'PATIENT_CONSENT': 'welcome_text',
+    'PATIENT_CONFIRMATION': 'user_identification',
+    'PATIENT__2ND_CONFIRMATION': 'user_2nd_step_identification',
+}
+
 # HACK until FHIR integration:
 CURR_PROCEDURE = "ileostomy"
 
@@ -47,19 +53,8 @@ def initialize_content():
     session.attributes['initialized'] = True
 
     # initialize responses
-    session.attributes['response_type'] = None
     session.attributes['bool_response'] = None
     session.attributes['date_response'] = None
-
-def validate_question():
-    """
-    EFFECT:
-        validates the answer from the user
-    """
-    # first validate question
-    r_type = session.attributes['response_type']
-    curr_question = session.attributes['last_question']
-    QUESTION_CONTAINER.validate_answer(curr_question, r_type)
 
 def reset_question():
     """
@@ -67,11 +62,10 @@ def reset_question():
         resets session question level attributes
     """
     # initialize responses
-    session.attributes['response_type'] = None
     session.attributes['bool_response'] = None
     session.attributes['date_response'] = None
 
-def process_session():
+def process_session(response_type=None):
     """
     EFFECT:
         takes session attributes parameters to create a state machine
@@ -79,18 +73,22 @@ def process_session():
     # assert that state is valid
     assert session.attributes['session_state'] in SESSION_STATES
 
+    # validate admin questions
+    if session.attributes['session_state'] in ADMIN_QUESTION_MAP.keys():
+        admin_q = ADMIN_QUESTION_MAP[session.attributes['session_state']]
+        QUESTION_CONTAINER.validate_admin_answer(admin_q, response_type)
+
     # determine state
     if session.attributes['session_state'] == 'PATIENT_CONSENT':
         # progress session state
         session.attributes['session_state'] = 'PATIENT_CONFIRMATION'
 
-        # validate question
-        process_question()
+        # determine how to respond to question
         if session.attributes['bool_response']:
             rslt_txt = QUESTION_CONTAINER.get_admin_question('user_identification')
             return question(rslt_txt)
         else:
-            rslt_txt = QUESTION_CONTAINER.get_admin_question('failed_user_confirmation')
+            rslt_txt = QUESTION_CONTAINER.get_admin_response('failed_user_confirmation')
             return statement(rslt_txt)
 
     elif session.attributes['session_state'] == 'PATIENT_CONFIRMATION':
@@ -209,7 +207,7 @@ def yes_response():
     session.attributes['response_type'] = "BOOL_ANSWER"
     session.attributes['bool_response'] = True
 
-    return question_and_answer()
+    return process_session(response_type="BOOL_ANSWER")
 
 @ask.intent('NoIntent')
 def no_response():
@@ -217,7 +215,7 @@ def no_response():
     session.attributes['response_type'] = "BOOL_ANSWER"
     session.attributes['bool_response'] = False
 
-    return question_and_answer()
+    return process_session(response_type="BOOL_ANSWER")
 
 @ask.intent('DateSlotIntent')
 def date_response(date):
@@ -227,7 +225,7 @@ def date_response(date):
     session.attributes['response_type'] = "BOOL_ANSWER"
     session.attributes['date_response'] = date
 
-    return question_and_answer()
+    return process_session(response_type="DATE_ANSWER")
 
 @ask.session_ended
 def session_ended():

@@ -86,7 +86,24 @@ class Questionaire:
 
         return self.all_clinical_questions[question]['text']
 
-    def validate_answer(self, question, response_type):
+    def validate_admin_answer(self, question, response_type):
+        """
+        INPUTS:
+            question:
+                the question we're interested in
+            response_type:
+                the response type we got back
+        OUTPUT:
+            Bool is the response type is apprioprate
+        """
+        # test if in dict
+        if question not in self.admin_questions.keys():
+            raise AssertionError(question + " is not a valid clinical question")
+
+        if not self.admin_questions[question]['response_type'] == response_type:
+            raise AssertionError(question + " does not have a " + response_type + " response")
+
+    def validate_clinical_answer(self, question, response_type):
         """
         INPUTS:
             question:
