@@ -3,6 +3,7 @@
 # load libraries
 import yaml
 import random
+from datetime import datetime
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
 
@@ -21,19 +22,21 @@ QUESTION_CONTAINER = Questionaire(SETTINGS_PATH)
 SESSION_STATES = [
     'PATIENT_CONSENT',
     'PATIENT_CONFIRMATION',
-    'PATIENT__2ND_CONFIRMATION',
-    'QUESTION_ITERATION',
+    'PATIENT_2ND_CONFIRMATION',
+    'QUESTION_ITERATIONS',
     'END_QUESTIONS',
 ]
 
 ADMIN_QUESTION_MAP = {
     'PATIENT_CONSENT': 'welcome_text',
     'PATIENT_CONFIRMATION': 'user_identification',
-    'PATIENT__2ND_CONFIRMATION': 'user_2nd_step_identification',
+    'PATIENT_2ND_CONFIRMATION': 'user_2nd_step_identification',
 }
 
 # HACK until FHIR integration:
 CURR_PROCEDURE = "ileostomy"
+CURR_USER = "Ron"
+CURR_BDAY = datetime.strptime("1990-10-10", "%Y-%m-%d")
 
 # functions
 def initialize_content():
@@ -53,8 +56,10 @@ def initialize_content():
     session.attributes['initialized'] = True
 
     # initialize responses
-    session.attributes['bool_response'] = None
-    session.attributes['date_response'] = None
+    session.attributes['response'] = {
+        'response_slot': None,
+        'response_type': None,
+    }
 
 def reset_question():
     """
@@ -62,10 +67,21 @@ def reset_question():
         resets session question level attributes
     """
     # initialize responses
-    session.attributes['bool_response'] = None
-    session.attributes['date_response'] = None
+    session.attributes['response'] = {
+        'response_slot': None,
+        'response_type': None,
+    }
 
-def process_session(response_type=None):
+def validate_question_answer():
+    # validate admin questions
+    if session.attributes['session_state'] in ADMIN_QUESTION_MAP.keys():
+        admin_q = ADMIN_QUESTION_MAP[session.attributes['session_state']]
+        response_type = session.attributes['response']['response_type']
+        QUESTION_CONTAINER.validate_admin_answer(admin_q, response_type)
+
+    return True
+
+def process_session():
     """
     EFFECT:
         takes session attributes parameters to create a state machine
@@ -73,18 +89,18 @@ def process_session(response_type=None):
     # assert that state is valid
     assert session.attributes['session_state'] in SESSION_STATES
 
-    # validate admin questions
-    if session.attributes['session_state'] in ADMIN_QUESTION_MAP.keys():
-        admin_q = ADMIN_QUESTION_MAP[session.attributes['session_state']]
-        QUESTION_CONTAINER.validate_admin_answer(admin_q, response_type)
+    # validate question
+    assert validate_question_answer()
 
     # determine state
     if session.attributes['session_state'] == 'PATIENT_CONSENT':
-        # progress session state
-        session.attributes['session_state'] = 'PATIENT_CONFIRMATION'
 
         # determine how to respond to question
-        if session.attributes['bool_response']:
+        if session.attributes['response']['response_slot']:
+            # progress session state
+            session.attributes['session_state'] = 'PATIENT_CONFIRMATION'
+
+            # ask the next question
             rslt_txt = QUESTION_CONTAINER.get_admin_question('user_identification')
             return question(rslt_txt)
         else:
@@ -92,84 +108,34 @@ def process_session(response_type=None):
             return statement(rslt_txt)
 
     elif session.attributes['session_state'] == 'PATIENT_CONFIRMATION':
-        # determine response
-        # if yes resoponse
-        if session.attributes['bool_response']:
-            # reset bool_response
-            session.attributes['bool_response'] = None
 
-            # determine the result question
-            rslt_txt = SETTINGS['application_content']['application_text']['user_2nd_step_identification']
+        # determine how to respond to question
+        if session.attributes['response']['response_slot']:
+            # progress session state
+            session.attributes['session_state'] = 'PATIENT_2ND_CONFIRMATION'
 
+            # ask the next question
+            rslt_txt = QUESTION_CONTAINER.get_admin_question('user_2nd_step_identification')
             return question(rslt_txt)
-
-        # if no resoponse
-        elif not session.attributes['bool_response']:
-            # reset bool_response
-            session.attributes['bool_response'] = None
-
-            # determine the result question
-            rslt_txt = SETTINGS['application_content']['application_text']['user_2nd_step_identification']
-
-            return question(rslt_txt)
-
-        # otherwise raise error
         else:
-            # reset bool_response
-            session.attributes['bool_response'] = None
+            rslt_txt = QUESTION_CONTAINER.get_admin_response('failed_user_confirmation')
+            return statement(rslt_txt)
 
-            raise AssertionError('Had trouble understanding what the response was')
+    elif session.attributes['session_state'] == 'PATIENT_2ND_CONFIRMATION':
+        # format date
+        input_date = datetime.strptime(session.attributes['response']['response_slot'], "%Y-%m-%d")
+        print str(input_date)
 
-    elif session.attributes['session_state'] == 'SCREENING_CONSENT':
-        # determine response
-        # if yes response
-        if session.attributes['bool_response']:
-            # reset bool_response
-            session.attributes['bool_response'] = None
-
-            # intialize questions
-            initialize_questions()
-
-            # set session state to question screening
-            session.attributes['session_state'] = 'SCREENING_QUESTIONS'
+        # determine how to respond to question
+        if input_date.date() == CURR_BDAY.date():
+            # progress session state
+            session.attributes['session_state'] = 'QUESTION_ITERATIONS'
 
             return screening_question_iteration()
 
-        if not session.attributes['bool_response']:
-            # reset bool_response
-            session.attributes['bool_response'] = None
-
-            # ask if there's anything else to do
-            return question(SETTINGS['application_text']['introduction_text']['additional_edu_prompt'])
-
-        # otherwise raise error
-        else:
-            # reset bool_response
-            session.attributes['bool_response'] = None
-
-            raise AssertionError('Had trouble understanding what the response was')
-
-    elif session.attributes['session_state'] == 'SCREENING_QUESTIONS':
-        if session.attributes['bool_response']:
-            # reset bool_response
-            session.attributes['bool_response'] = None
-
+    elif session.attributes['session_state'] == 'QUESTION_ITERATIONS':
             # ask if there's anything else to do
             return screening_question_iteration()
-
-        if not session.attributes['bool_response']:
-            # reset bool_response
-            session.attributes['bool_response'] = None
-
-            # ask if there's anything else to do
-            return screening_question_iteration()
-
-        # otherwise raise error
-        else:
-            # reset bool_response
-            session.attributes['bool_response'] = None
-
-            raise AssertionError('Had trouble understanding what the response was')
 
 def screening_question_iteration():
     """
@@ -204,28 +170,26 @@ def welcome_msg():
 @ask.intent('YesIntent')
 def yes_response():
     # set answer level parameter
-    session.attributes['response_type'] = "BOOL_ANSWER"
-    session.attributes['bool_response'] = True
+    session.attributes['response']['response_slot'] = True
+    session.attributes['response']['response_type'] = "BOOL_ANSWER"
 
-    return process_session(response_type="BOOL_ANSWER")
+    return process_session()
 
 @ask.intent('NoIntent')
 def no_response():
     # set answer level parameter
-    session.attributes['response_type'] = "BOOL_ANSWER"
-    session.attributes['bool_response'] = False
+    session.attributes['response']['response_slot'] = False
+    session.attributes['response']['response_type'] = "BOOL_ANSWER"
 
-    return process_session(response_type="BOOL_ANSWER")
+    return process_session()
 
 @ask.intent('DateSlotIntent')
 def date_response(date):
-    print "GOT DATE " + date
-
     # set answer level parameter
-    session.attributes['response_type'] = "BOOL_ANSWER"
-    session.attributes['date_response'] = date
+    session.attributes['response']['response_slot'] = date
+    session.attributes['response']['response_type'] = "DATE_ANSWER"
 
-    return process_session(response_type="DATE_ANSWER")
+    return process_session()
 
 @ask.session_ended
 def session_ended():

@@ -9,7 +9,7 @@ application_content:
           "BOOL_ANSWER"
       user_identification:
         text:
-          "I wanted to confirm that this was Tom. Is this correct?"
+          "I wanted to confirm that this was Ron. Is this correct?"
         response_type:
           "BOOL_ANSWER"
       user_2nd_step_identification:
@@ -21,7 +21,7 @@ application_content:
       failed_user_confirmation:
         "Hmm... something went wrong."
       exit_message:
-        "Thank you for your input Tom. We'll be sending this information to your surgeon,
+        "Thank you for your input Ron. We'll be sending this information to your surgeon,
         who will follow-up with you if any additional information is required or if he needs
         to see you sooner than your scheduled appointment."
   clinical_questions:
