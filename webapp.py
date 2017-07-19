@@ -6,6 +6,7 @@ import random
 from datetime import datetime
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
+from flask_sqlalchemy import SQLAlchemy
 
 # load user defined libraries
 from src.Questionaire import QuestionContainer
@@ -13,7 +14,9 @@ from src.utilities import load_settings_and_content, load_questions
 
 # flask initialize
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 ask = Ask(app, '/')
+db = SQLAlchemy(app)
 
 # define vars
 SETTINGS_PATH = ('resources/application_settings.yaml')
@@ -34,9 +37,109 @@ ADMIN_QUESTION_MAP = {
 }
 
 # HACK until FHIR integration:
+CURR_USER = "Jon"
+CURR_L_NAME = "SNOW"
 CURR_PROCEDURE = "ileostomy"
-CURR_USER = "Ron"
 CURR_BDAY = datetime.strptime("1990-10-10", "%Y-%m-%d")
+
+# define models
+class User(db.Model):
+    # define model items
+    id = db.Column(db.Integer, primary_key=True)
+    patient_f_name = db.Column(db.String(80))
+    patient_l_name = db.Column(db.String(80))
+    patient_bday = db.Column(db.Date)
+    patient_procedure = db.Column(db.String(80))
+
+    def __init__(
+        self,
+        patient_f_name,
+        patient_l_name,
+        patient_bday,
+        patient_procedure,
+    ):
+        self.patient_f_name = patient_f_name
+        self.patient_l_name = patient_l_name
+        self.patient_bday = patient_bday
+        self.patient_procedure = patient_procedure
+
+    def __repr__(self):
+        return '<User %r>' % self.patient_f_name + " " + self.patient_l_name
+
+class Question(db.Model):
+    # define model items
+    id = db.Column(db.Integer, primary_key=True)
+    q_link_id = db.Column(db.String(80))
+    q_text = db.Column(db.Text)
+    q_type = db.Column(db.String(80))
+
+    def __init__(
+        self,
+        q_link_id,
+        q_text,
+        q_type,
+    ):
+        self.q_link_id = q_link_id
+        self.q_text = q_text
+
+class IndicationQuestionList(db.Model):
+    # define model items
+    id = db.Column(db.Integer, primary_key=True)
+    indication = db.Column(db.String(80))
+    next_item = db.relationship("UserQuestionList", backref = "previous_item")
+    question = db.relationship("Question")
+
+    def __init__(
+        self,
+        indication,
+        next_item,
+        question,
+    ):
+        self.indication = indication
+        self.next_item = next_item
+        self.question = question
+
+class SessionState(db.Model):
+    # define model items
+    id = db.Column(db.Integer, primary_key=True)
+
+    user = db.relationship("User")
+    session_id = db.Column(db.String(80))
+    curr_list_position = db.relationship("IndicationQuestionList")
+
+    session_state = db.Column(db.String(80))
+    active = db.Column(db.Boolean)
+
+    def __init__(
+        user,
+        session_id,
+        curr_list_position,
+    ):
+        # from constructor
+        self.user = user
+        self.session_id = session_id
+        self.curr_list_position = curr_list_position
+
+        # defaults
+        self.session_state = 'PATIENT_CONSENT'
+        self.active = True
+
+class UserAnswer(db.Model):
+    # define model items
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.relationship("User")
+    question = db.relationship("Question")
+    answer_bool = db.Column(db.Boolean)
+
+    def __init__(
+        self,
+        user,
+        question,
+        answer_bool = None,
+    ):
+        self.user = user
+        self.question = question
+        self.answer_bool = answer_bool
 
 # functions
 def initialize_content():
