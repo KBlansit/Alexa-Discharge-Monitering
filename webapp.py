@@ -36,7 +36,7 @@ ADMIN_QUESTION_MAP = {
 
 # HACK until FHIR integration:
 CURR_PROCEDURE = "ileostomy"
-CURR_USER = "Ron"
+CURR_USER = "Jon"
 CURR_BDAY = datetime.strptime("1990-10-10", "%Y-%m-%d")
 
 # functions
