@@ -13,12 +13,8 @@ from src.utilities import load_settings_and_content, load_questions
 
 # flask initialize
 app = Flask(__name__)
-<<<<<<< HEAD
 app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
 ask = Ask(app, '/')
-=======
-ask = Ask(app, '/ask')
->>>>>>> 1f8864b52b54119e110632b7a64f85089ddd9719
 
 # define vars
 SETTINGS_PATH = ('resources/application_settings.yaml')
