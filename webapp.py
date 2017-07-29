@@ -10,11 +10,15 @@ from flask_ask import Ask, statement, question, session
 # load user defined libraries
 from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions
+from src.fhir_utilities import read_json_patient
 
 # flask initialize
 app = Flask(__name__)
 app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
 ask = Ask(app, '/')
+
+# fhir
+FHIR_SUBJECT = read_json_patient('example_fhir/ex_patient.json')
 
 # define vars
 SETTINGS_PATH = ('resources/application_settings.yaml')
@@ -48,7 +52,7 @@ def initialize_content():
     # set question information
     question_lst = QUESTION_CONTAINER.get_list_of_clinical_questions(CURR_PROCEDURE)
     session.attributes['question_lst'] = question_lst
-    session.attributes['last_question'] = None
+    session.attributes['previous_question'] = None
 
     # set session state to user identification
     session.attributes['session_state'] = 'PATIENT_CONSENT'
@@ -61,6 +65,13 @@ def initialize_content():
         'response_slot': None,
         'response_type': None,
     }
+
+    # initialize answers container
+    session.attributes['answer_dict'] = {}
+
+    # initialize fhir
+    session.attributes['FHIR'] = {}
+    session.attributes['FHIR']['subject'] = None
 
 def reset_question():
     """
@@ -132,6 +143,10 @@ def process_session():
             # progress session state
             session.attributes['session_state'] = 'QUESTION_ITERATIONS'
 
+            # add fhir info to session
+            session.attributes['FHIR']['subject'] = FHIR_SUBJECT.as_json()
+
+            # populate question list
             if len(session.attributes['question_lst']):
                 # determine question text
                 curr_question = session.attributes['question_lst'].pop()
@@ -147,6 +162,10 @@ def process_session():
             return statement(rslt_txt)
 
     elif session.attributes['session_state'] == 'QUESTION_ITERATIONS':
+        # record answer
+        if session.attributes['response']['response_type'] == "BOOL_ANSWER":
+            session.attributes['answer_dict'][session.attributes['previous_question']] = session.attributes['response']['response_slot']
+
         # determine is session progresses (next to last)
         if len(session.attributes['question_lst']) == 1:
             session.attributes['session_state'] = 'END_QUESTIONS'
@@ -159,6 +178,10 @@ def process_session():
         return question(question_txt)
 
     elif session.attributes['session_state'] == 'END_QUESTIONS':
+        # record answer
+        if session.attributes['response']['response_type'] == "BOOL_ANSWER":
+            session.attributes['answer_dict'][session.attributes['previous_question']] = session.attributes['response']['response_slot']
+            
         return statement("Great! I'll send these results to your doctor, and will\
                          contact you if there's any more information we need.")
 
