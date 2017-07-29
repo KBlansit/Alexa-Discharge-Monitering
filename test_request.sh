@@ -1,1 +1,1 @@
-cat request.json | http post https://2e501661.ngrok.io
+cat request.json | http post localhost:5000
