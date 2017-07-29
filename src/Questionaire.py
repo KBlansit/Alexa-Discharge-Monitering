@@ -70,7 +70,7 @@ class QuestionContainer:
         if clinical_indication not in self.indication_questions.keys():
             raise AssertionError(clinical_indication + " is not a valid clinical indication")
 
-        return self.indication_questions[clinical_indication]
+        return self.indication_questions[clinical_indication][::-1]
 
     def get_clinical_question(self, question):
         """
