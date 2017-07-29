@@ -235,6 +235,26 @@ class TestAlexaServer(unittest.TestCase):
         # confirm that we switch mode
         self.assertEqual(response_data['sessionAttributes']['session_state'], "QUESTION_ITERATIONS")
 
+    def test_bad_user_bday_verification(self):
+        # define date
+        bday_date = '1987-12-12'
+
+        # load json format
+        body = construct_session_request_json(
+            intent='DateSlotIntent',
+            session_state='PATIENT_2ND_CONFIRMATION',
+            question_lst=['mobility', 'pain_calves'],
+            slot={'date': {'name': 'date', 'value': bday_date}},
+        )
+
+        # test that we can get response back
+        confirmation_response = self.app.post('/', data=json.dumps(body))
+        self.assertEqual(confirmation_response.status_code, 200)
+
+        # want to ensure we end here
+        response_data = json.loads(confirmation_response.get_data(as_text=True))
+        self.assertTrue(response_data['response']['shouldEndSession'])
+
     def tearDown(self):
         # when integrating databse, close connection here
         pass
