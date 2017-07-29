@@ -19,9 +19,18 @@ from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 from src.fhir_utilities import read_json_patient, create_question_response
 
-# utility functions
+# utility functions and global vars
+SETTINGS_PATH = ('resources/application_settings.yaml')
+QUESTION_CONTAINER = QuestionContainer(SETTINGS_PATH)
+
+ADMIN_QUESTION_MAP = {
+    'PATIENT_CONSENT': 'welcome_text',
+    'PATIENT_CONFIRMATION': 'user_identification',
+    'PATIENT_2ND_CONFIRMATION': 'user_2nd_step_identification',
+}
+
 BASE_SERVICE_REQUEST = "json_fixtures/base_service_request.json"
-def construct_session_request_json(intent, session_state, question_lst=None):
+def construct_session_request_json(intent, session_state, slot=None, question_lst=None):
     """
     INPUTS:
         intent:
@@ -46,7 +55,13 @@ def construct_session_request_json(intent, session_state, question_lst=None):
     # initialize session attributes and set intent and slots
     data['request']['intent'] = {}
     data['request']['intent']['name'] = intent
-    data['request']['intent']['slots'] = {}
+
+    if slot is None:
+        data['request']['intent']['slots'] = {}
+    elif type(slot) is dict:
+        data['request']['intent']['slots'] = slot
+    else:
+        raise AssertionError('question_lst must be list or None')
 
     # initialize session attributes
     data['session']['attributes'] = {}
@@ -167,9 +182,50 @@ class TestAlexaServer(unittest.TestCase):
         # do not want to end here
         self.assertFalse(response_data['response']['shouldEndSession'])
 
+        # verify we ask the correct question
+        self.assertEqual(
+            response_data['response']['outputSpeech']['text'],
+            QUESTION_CONTAINER.get_admin_question('welcome_text'),
+        )
+
     def test_user_verification(self):
         # load json format
-        body = construct_session_request_json(intent='YesIntent', session_state='PATIENT_CONSENT')
+        body = construct_session_request_json(
+            intent='YesIntent',
+            session_state='PATIENT_CONSENT',
+        )
+
+        # test that we can get response back
+        confirmation_response = self.app.post('/', data=json.dumps(body))
+        self.assertEqual(confirmation_response.status_code, 200)
+
+        # do not want to end here
+        response_data = json.loads(confirmation_response.get_data(as_text=True))
+        self.assertFalse(response_data['response']['shouldEndSession'])
+
+        # verify we ask the correct question
+        self.assertEqual(
+            response_data['response']['outputSpeech']['text'],
+            QUESTION_CONTAINER.get_admin_question('user_identification'),
+        )
+
+        # confirm that we switch mode
+        self.assertEqual(response_data['sessionAttributes']['session_state'], "PATIENT_CONFIRMATION")
+
+    def test_user_bday_verification(self):
+        # define date
+        bday_date = '1990-10-10'
+
+        # load json format
+        body2 = construct_session_request_json(
+            intent='DateSlotIntent',
+            session_state='PATIENT_CONFIRMATION',
+            slot={'date': {'name': 'date', 'value': bday_date}},
+        )
+
+        with open('json_fixtures/consent.json') as data_file:
+            body = data_file.read()
+            body = json.loads(body)
 
         # test that we can get response back
         confirmation_response = self.app.post('/', data=json.dumps(body))
@@ -180,7 +236,8 @@ class TestAlexaServer(unittest.TestCase):
         self.assertFalse(response_data['response']['shouldEndSession'])
 
         # confirm that we switch mode
-        self.assertEqual(response_data['sessionAttributes']['session_state'], "PATIENT_CONFIRMATION")
+        self.assertEqual(response_data['sessionAttributes']['session_state'], "QUESTION_ITERATIONS")
+
 
     def tearDown(self):
         # when integrating databse, close connection here
