@@ -92,7 +92,7 @@ class TestFhirHelperMethods(unittest.TestCase):
 
         # test that we can post to fhir server
         post_url = 'http://fhirtest.uhn.ca/baseDstu3/QuestionnaireResponse?_format=json&_pretty=true'
-        r = self._try_twice_request(post_url, json.dumps(self.example_pt.as_json()))
+        r = self._try_twice_request(post_url, json.dumps(qr.as_json()))
         self.assertTrue(r.ok)
 
 class TestAlexaServer(unittest.TestCase):
