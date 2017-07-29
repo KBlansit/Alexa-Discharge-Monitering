@@ -56,6 +56,7 @@ def construct_session_request_json(intent, session_state, slot=None, question_ls
     data['request']['intent'] = {}
     data['request']['intent']['name'] = intent
 
+    # set slot
     if slot is None:
         data['request']['intent']['slots'] = {}
     elif type(slot) is dict:
@@ -78,7 +79,8 @@ def construct_session_request_json(intent, session_state, slot=None, question_ls
         raise AssertionError('question_lst must be list or None')
 
     # setting of initialized
-    data['session']['attributes']['initialized'] = True
+    data['session']['attributes']['initialized'] = False
+    data['session']['attributes']['FHIR'] = {}
 
     return data
 
