@@ -178,7 +178,9 @@ class TestAlexaServer(unittest.TestCase):
         # do not want to end here
         response_data = json.loads(confirmation_response.get_data(as_text=True))
         self.assertFalse(response_data['response']['shouldEndSession'])
-        #import pdb; pdb.set_trace()
+
+        # confirm that we switch mode
+        self.assertEqual(response_data['sessionAttributes']['session_state'], "PATIENT_CONFIRMATION")
 
     def tearDown(self):
         # when integrating databse, close connection here
