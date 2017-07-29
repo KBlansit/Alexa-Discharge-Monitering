@@ -217,15 +217,12 @@ class TestAlexaServer(unittest.TestCase):
         bday_date = '1990-10-10'
 
         # load json format
-        body2 = construct_session_request_json(
+        body = construct_session_request_json(
             intent='DateSlotIntent',
-            session_state='PATIENT_CONFIRMATION',
+            session_state='PATIENT_2ND_CONFIRMATION',
+            question_lst=['mobility', 'pain_calves'],
             slot={'date': {'name': 'date', 'value': bday_date}},
         )
-
-        with open('json_fixtures/consent.json') as data_file:
-            body = data_file.read()
-            body = json.loads(body)
 
         # test that we can get response back
         confirmation_response = self.app.post('/', data=json.dumps(body))
@@ -237,7 +234,6 @@ class TestAlexaServer(unittest.TestCase):
 
         # confirm that we switch mode
         self.assertEqual(response_data['sessionAttributes']['session_state'], "QUESTION_ITERATIONS")
-
 
     def tearDown(self):
         # when integrating databse, close connection here
