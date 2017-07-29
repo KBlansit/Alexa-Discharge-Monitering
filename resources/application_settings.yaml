@@ -47,7 +47,7 @@ application_content:
           "BOOL_ANSWER"
       pain_change:
         text:
-          ["Is your pain decreased, increased, or about the same as it was yesterday?"]
+          ["Is your pain increased since yesterday?"]
         response_type:
           "BOOL_ANSWER"
       urinating_regularly:
