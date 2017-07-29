@@ -14,8 +14,12 @@ from requests.exceptions import Timeout
 
 # load user defined libraries
 import webapp
+<<<<<<< HEAD
 
 from src.Questionaire import QuestionContainer
+=======
+from src.Questionaire import Questionaire
+>>>>>>> 1f8864b52b54119e110632b7a64f85089ddd9719
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 from src.fhir_utilities import read_json_patient, create_question_response
 
@@ -113,11 +117,27 @@ class TestAlexaServer(unittest.TestCase):
         launch_response = self.app.post('/', data=json.dumps(json.loads(body)))
         self.assertEqual(launch_response.status_code, 200)
 
+<<<<<<< HEAD
         # assert that we're starting the interaction
         response_data = json.loads(launch_response.get_data(as_text=True))
 
         # do not want to end here
         self.assertFalse(response_data['response']['shouldEndSession'])
+=======
+class TestAlexaServer(unittest.TestCase):
+    def setUp(self):
+        self.app = webapp.app.test_client()
+
+    def test_welcome(self):
+        # load data
+        with open('json_fixtures/launch.json') as data_file:
+            body = data_file.read()
+            rqst = io.StringIO(six.u(body))
+
+        response = self.app.post('/ask', data=rqst)
+        import ptpdb; ptpdb.set_trace()
+
+>>>>>>> 1f8864b52b54119e110632b7a64f85089ddd9719
 
     def test_(self):
         pass
