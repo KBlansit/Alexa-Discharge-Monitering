@@ -32,7 +32,7 @@ application_content:
           "BOOL_ANSWER"
       pain_calves:
         text:
-          ["Are you expierencing any pain or swelling in your cavles"]
+          ["Are you experiencing any pain or swelling in your cavles"]
         response_type:
           "BOOL_ANSWER"
       food_eat:
@@ -57,7 +57,7 @@ application_content:
           "BOOL_ANSWER"
       bowel_movement:
         text:
-          ["Were you able to have  a bowel movement today?"]
+          ["Were you able to have a bowel movement today?"]
         response_type:
           "BOOL_ANSWER"
       condition_change:
@@ -70,9 +70,9 @@ application_settings:
     ileostomy:
       - "mobility"
       - "pain_calves"
-      #- "food_eat"
-      #- "drink_liquids"
-      #- "pain_change"
-      #- "urinating_regularly"
-      #- "bowel_movement"
-      #- "condition_change"
+      - "food_eat"
+      - "drink_liquids"
+      - "pain_change"
+      - "urinating_regularly"
+      - "bowel_movement"
+      - "condition_change"
