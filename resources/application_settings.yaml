@@ -19,7 +19,7 @@ application_content:
           "DATE_ANSWER"
     application_statements:
       failed_user_confirmation:
-        "Hmm... something went wJong."
+        "Hmm... something went wrong."
       exit_message:
         "Thank you for your input Jon. We'll be sending this information to your surgeon,
         who will follow-up with you if any additional information is required or if he needs

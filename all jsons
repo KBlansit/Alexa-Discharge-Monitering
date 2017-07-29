@@ -1,0 +1,53 @@
+{
+  "session": {
+    "sessionId": "SessionId.4aa8b7c3-b60f-40f3-ad37-966d9a129875",
+    "application": {
+      "applicationId": "amzn1.ask.skill.8136bbae-f25f-42b7-b27c-adbf23b1015b"
+    },
+    "attributes": {},
+    "user": {
+      "userId": "amzn1.ask.account.AHYRUEB7ZCDR7ODSZPN4HHCQPSISCSP3H74SEWZM3GWYJ5NY6DLFGO4HA5R6IEWU4UPB5BKYQPTZ5HKZ6TEZNY7PXYTZRECWJ6T26LNMDURBFKCWR25Z2YJOZBUWGHJNAIEQD6VWOM3NRCETW4TC53PYGSJQCQUKVSHTKBUXLT6QONX5HI4NAHSCQFWUKD5NJC4X7WROGSCWSCQ"
+    },
+    "new": true
+  },
+  "request": {
+    "type": "LaunchRequest",
+    "requestId": "EdwRequestId.23918747-048a-4554-8641-9c3ab4fbd441",
+    "locale": "en-US",
+    "timestamp": "2017-07-29T00:27:29Z"
+  },
+  "version": "1.0"
+}
+
+{
+  "session": {
+    "sessionId": "SessionId.4aa8b7c3-b60f-40f3-ad37-966d9a129875",
+    "application": {
+      "applicationId": "amzn1.ask.skill.8136bbae-f25f-42b7-b27c-adbf23b1015b"
+    },
+    "attributes": {
+      "question_lst": [
+        "mobility",
+        "pain_calves"
+      ],
+      "response": {},
+      "initialized": true,
+      "session_state": "PATIENT_CONSENT"
+    },
+    "user": {
+      "userId": "amzn1.ask.account.AHYRUEB7ZCDR7ODSZPN4HHCQPSISCSP3H74SEWZM3GWYJ5NY6DLFGO4HA5R6IEWU4UPB5BKYQPTZ5HKZ6TEZNY7PXYTZRECWJ6T26LNMDURBFKCWR25Z2YJOZBUWGHJNAIEQD6VWOM3NRCETW4TC53PYGSJQCQUKVSHTKBUXLT6QONX5HI4NAHSCQFWUKD5NJC4X7WROGSCWSCQ"
+    },
+    "new": false
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "EdwRequestId.97205f05-c778-4497-bdc0-32601264dca4",
+    "locale": "en-US",
+    "timestamp": "2017-07-29T00:27:41Z",
+    "intent": {
+      "name": "YesIntent",
+      "slots": {}
+    }
+  },
+  "version": "1.0"
+}
