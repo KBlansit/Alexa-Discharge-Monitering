@@ -69,10 +69,6 @@ def initialize_content():
     # initialize answers container
     session.attributes['answer_dict'] = {}
 
-    # initialize fhir
-    session.attributes['FHIR'] = {}
-    session.attributes['FHIR']['subject'] = None
-
 def reset_question():
     """
     EFFECT:
@@ -143,9 +139,6 @@ def process_session():
             # progress session state
             session.attributes['session_state'] = 'QUESTION_ITERATIONS'
 
-            # add fhir info to session
-            session.attributes['FHIR']['subject'] = FHIR_SUBJECT.as_json()
-
             # populate question list
             if len(session.attributes['question_lst']):
                 # determine question text
@@ -181,7 +174,7 @@ def process_session():
         # record answer
         if session.attributes['response']['response_type'] == "BOOL_ANSWER":
             session.attributes['answer_dict'][session.attributes['previous_question']] = session.attributes['response']['response_slot']
-            
+
         return statement("Great! I'll send these results to your doctor, and will\
                          contact you if there's any more information we need.")
 
