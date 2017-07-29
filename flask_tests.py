@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 # load libraries
+import io
+import six
 import sys
 import json
 import yaml
@@ -11,6 +13,8 @@ import requests
 from requests.exceptions import Timeout
 
 # load user defined libraries
+import webapp
+
 from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 from src.fhir_utilities import read_json_patient, create_question_response
@@ -97,15 +101,29 @@ class TestFhirHelperMethods(unittest.TestCase):
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):
-        pass
+        self.app = webapp.app.test_client()
 
-    def test_run_server(self):
-        pass
+    def test_launch(self):
+        # load data
+        with open('json_fixtures/launch.json') as data_file:
+            body = data_file.read()
+            rqst = io.StringIO(six.u(body))
+
+        # test that we can get response back
+        launch_response = self.app.post('/', data=json.dumps(json.loads(body)))
+        self.assertEqual(launch_response.status_code, 200)
+
+        # assert that we're starting the interaction
+        response_data = json.loads(launch_response.get_data(as_text=True))
+
+        # do not want to end here
+        self.assertFalse(response_data['response']['shouldEndSession'])
 
     def test_(self):
         pass
 
     def tearDown(self):
         pass
+
 if __name__ == "__main__":
     unittest.main()
