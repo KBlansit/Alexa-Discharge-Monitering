@@ -1,0 +1,19 @@
+{
+  "session": {
+    "sessionId": "XXXXX",
+    "application": {
+      "applicationId": "XXXXX"
+    },
+    "user": {
+      "userId": "XXXXX"
+    },
+    "new": false
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "XXXXX",
+    "locale": "en-US",
+    "timestamp": "2017-07-29T01:39:13Z"
+  },
+  "version": "1.0"
+}

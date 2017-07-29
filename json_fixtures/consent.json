@@ -1,0 +1,32 @@
+{
+  "session": {
+    "sessionId": "XXX",
+    "application": {
+      "applicationId": "XXX"
+    },
+    "attributes": {
+      "question_lst": [
+        "mobility",
+        "pain_calves"
+      ],
+      "response": {},
+      "initialized": true,
+      "session_state": "PATIENT_CONSENT"
+    },
+    "user": {
+      "userId": "XXX"
+    },
+    "new": false
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "XXX",
+    "locale": "en-US",
+    "timestamp": "2017-07-29T01:39:13Z",
+    "intent": {
+      "name": "YesIntent",
+      "slots": {}
+    }
+  },
+  "version": "1.0"
+}

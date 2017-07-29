@@ -19,6 +19,55 @@ from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 from src.fhir_utilities import read_json_patient, create_question_response
 
+# utility functions
+BASE_SERVICE_REQUEST = "json_fixtures/base_service_request.json"
+def construct_session_request_json(intent, session_state, question_lst=None):
+    """
+    INPUTS:
+        intent:
+            the intent to use
+        session_state:
+            the session state
+        question_lst:
+            the question list to add to session attributes
+    OUTPUT:
+        a dict object which expands a base service request
+        note: if question_lst is empty an empty list is constructed
+    """
+    # may need to remove some of this stuff when sanitizing for HIPPA
+
+    path = BASE_SERVICE_REQUEST
+
+    # read in json file
+    with open(path) as data_file:
+        body = data_file.read()
+        data = json.loads(body)
+
+    # initialize session attributes and set intent and slots
+    data['request']['intent'] = {}
+    data['request']['intent']['name'] = intent
+    data['request']['intent']['slots'] = {}
+
+    # initialize session attributes
+    data['session']['attributes'] = {}
+
+    # setting of session_state
+    data['session']['attributes']['session_state'] = session_state
+
+    # setting of question_lst with validation
+    if question_lst is None:
+        data['session']['attributes']['question_lst'] = []
+    elif type(question_lst) is list:
+        data['session']['attributes']['question_lst'] = question_lst
+    else:
+        raise AssertionError('question_lst must be list or None')
+
+    # setting of initialized
+    data['session']['attributes']['initialized'] = True
+
+    return data
+
+# main test definations
 class TestQuestionsStructure(unittest.TestCase):
 
     def test_load_questions(self):
@@ -107,7 +156,6 @@ class TestAlexaServer(unittest.TestCase):
         # load data
         with open('json_fixtures/launch.json') as data_file:
             body = data_file.read()
-            rqst = io.StringIO(six.u(body))
 
         # test that we can get response back
         launch_response = self.app.post('/', data=json.dumps(json.loads(body)))
@@ -119,10 +167,21 @@ class TestAlexaServer(unittest.TestCase):
         # do not want to end here
         self.assertFalse(response_data['response']['shouldEndSession'])
 
-    def test_(self):
-        pass
+    def test_user_verification(self):
+        # load json format
+        body = construct_session_request_json(intent='YesIntent', session_state='PATIENT_CONSENT')
+
+        # test that we can get response back
+        confirmation_response = self.app.post('/', data=json.dumps(body))
+        self.assertEqual(confirmation_response.status_code, 200)
+
+        # do not want to end here
+        response_data = json.loads(confirmation_response.get_data(as_text=True))
+        self.assertFalse(response_data['response']['shouldEndSession'])
+        #import pdb; pdb.set_trace()
 
     def tearDown(self):
+        # when integrating databse, close connection here
         pass
 
 if __name__ == "__main__":
