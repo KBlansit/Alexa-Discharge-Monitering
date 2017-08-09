@@ -45,10 +45,7 @@ ADMIN_QUESTION_MAP = {
 CURR_USER = "Jon"
 CURR_L_NAME = "SNOW"
 CURR_PROCEDURE = "ileostomy"
-<<<<<<< HEAD
-=======
 CURR_USER = "Jon"
->>>>>>> develop
 CURR_BDAY = datetime.strptime("1990-10-10", "%Y-%m-%d")
 
 # define models
