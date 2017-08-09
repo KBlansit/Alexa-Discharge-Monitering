@@ -13,7 +13,7 @@ import requests
 from requests.exceptions import Timeout
 
 # load user defined libraries
-import webapp
+from webapp import create_app
 
 from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
@@ -167,7 +167,7 @@ class TestFhirHelperMethods(unittest.TestCase):
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):
-        self.app = webapp.app.test_client()
+        self.app = create_app().test_client()
 
     def test_launch(self):
         # load data
@@ -266,20 +266,14 @@ class TestWebAppDB(unittest.TestCase):
         """
         Creates a new database for the unit test to use
         """
-        self.app = Flask(__name__)
-        db.init_app(self.app)
-        with self.app.app_context():
-            db.create_all()
-
+        webapp.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        self.db = SQLAlchemy(app)
 
     def tearDown(self):
         """
         Ensures that the database is emptied for next unit test
         """
-        self.app = Flask(__name__)
-        db.init_app(self.app)
-        with self.app.app_context():
-            db.drop_all()
+        pass
 
 if __name__ == "__main__":
     unittest.main()

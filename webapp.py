@@ -5,9 +5,16 @@ import yaml
 import random
 
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
+
 from flask import Flask, render_template
+
 from flask_ask import Ask, statement, question, session
+
+from flask_sqlalchemy import SQLAlchemy
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 # load user defined libraries
 from src.Questionaire import QuestionContainer
@@ -15,12 +22,23 @@ from src.utilities import load_settings_and_content, load_questions
 from src.fhir_utilities import read_json_patient
 from src.model import db
 
+# initialize extention objects
+ask = Ask(route = '/')
+db = SQLAlchemy()
+
 # flask initialize
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
-ask = Ask(app, '/')
-db = SQLAlchemy(app)
+def create_app():
+    # initialize flask
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+    app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
+
+    # initialize flask extentions
+    db.init_app(app)
+    ask.init_app(app)
+
+    return app
+
 
 # fhir
 FHIR_SUBJECT = read_json_patient('example_fhir/ex_patient.json')
@@ -367,4 +385,5 @@ def session_ended():
 
 if __name__ == '__main__':
     # run app
+    app = create_app()
     app.run()
