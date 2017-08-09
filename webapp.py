@@ -3,10 +3,11 @@
 # load libraries
 import yaml
 import random
+
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question, session
-from flask_sqlalchemy import SQLAlchemy
 
 # load user defined libraries
 from src.Questionaire import QuestionContainer
@@ -88,11 +89,19 @@ class Question(db.Model):
         self.q_link_id = q_link_id
         self.q_text = q_text
 
-class IndicationQuestionList(db.Model):
+    def __repr__(self):
+        return '<QuestionID %r>' % self.q_link_id
+
+    def __str__(self):
+        return 'QuestionID: %r' % self.q_text
+
+class IndicationQuestionOrder(db.Model):
+    __tablename__ = 'indicationquestionorder'
+
     # define model items
     id = db.Column(db.Integer, primary_key=True)
     indication = db.Column(db.String(80))
-    next_item = db.relationship("UserQuestionList", backref = "previous_item")
+    question_id = db.Column(db.Integer, db.ForeignKey(Question.id))
     question = db.relationship("Question")
 
     def __init__(
@@ -105,13 +114,25 @@ class IndicationQuestionList(db.Model):
         self.next_item = next_item
         self.question = question
 
+    def __repr__(self):
+        return '<Indication %r, Question %r>' % self.indication, self.question
+
+    def __str__(self):
+        return 'Indication %r, Question %r' % self.indication, self.question
+
+# monkey patch
+IndicationQuestionOrder.next_id = db.Column(db.Integer, db.ForeignKey(IndicationQuestionOrder.id))
+IndicationQuestionOrder.next_item = db.relationship(IndicationQuestionOrder, backref = "previous_item", remote_side = IndicationQuestionOrder.id)
+
 class SessionState(db.Model):
     # define model items
     id = db.Column(db.Integer, primary_key=True)
 
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     user = db.relationship("User")
     session_id = db.Column(db.String(80))
-    curr_list_position = db.relationship("IndicationQuestionList")
+    curr_list_position_id = db.Column(db.Integer, db.ForeignKey(IndicationQuestionOrder.id))
+    curr_list_position = db.relationship("IndicationQuestionOrder")
 
     session_state = db.Column(db.String(80))
     active = db.Column(db.Boolean)
@@ -133,7 +154,9 @@ class SessionState(db.Model):
 class UserAnswer(db.Model):
     # define model items
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
     user = db.relationship("User")
+    question_id = db.Column(db.Integer, db.ForeignKey(Question.id))
     question = db.relationship("Question")
     answer_bool = db.Column(db.Boolean)
 
