@@ -12,12 +12,16 @@ import requests
 
 from requests.exceptions import Timeout
 
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
 # load user defined libraries
-from webapp import create_app
+from webapp import db, ask, create_app
 
 from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 from src.fhir_utilities import read_json_patient, create_question_response
+from src.model import User, Question, IndicationQuestionOrder, SessionState, UserAnswer
 
 # utility functions and global vars
 SETTINGS_PATH = ('resources/application_settings.yaml')
@@ -266,8 +270,20 @@ class TestWebAppDB(unittest.TestCase):
         """
         Creates a new database for the unit test to use
         """
-        webapp.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-        self.db = SQLAlchemy(app)
+        app = Flask(__name__)
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
+
+        # initialize flask extentions
+        db = SQLAlchemy(app)
+        db.create_all()
+
+        ask.init_app(app)
+
+
+
+    def test_(self):
+        pass
 
     def tearDown(self):
         """
