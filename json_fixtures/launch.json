@@ -1,0 +1,20 @@
+{
+  "session": {
+    "sessionId": "XXXXX",
+    "application": {
+      "applicationId": "XXXXX"
+    },
+    "attributes": {},
+    "user": {
+      "userId": "XXXXX"
+    },
+    "new": true
+  },
+  "request": {
+    "type": "LaunchRequest",
+    "requestId": "XXXXX",
+    "locale": "en-US",
+    "timestamp": "2017-07-28T23:07:57Z"
+  },
+  "version": "1.0"
+}

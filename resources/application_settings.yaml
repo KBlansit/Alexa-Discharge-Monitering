@@ -9,7 +9,7 @@ application_content:
           "BOOL_ANSWER"
       user_identification:
         text:
-          "I wanted to confirm that this was Ron. Is this correct?"
+          "I wanted to confirm that this was Jon. Is this correct?"
         response_type:
           "BOOL_ANSWER"
       user_2nd_step_identification:
@@ -21,7 +21,7 @@ application_content:
       failed_user_confirmation:
         "Hmm... something went wrong."
       exit_message:
-        "Thank you for your input Ron. We'll be sending this information to your surgeon,
+        "Thank you for your input Jon. We'll be sending this information to your surgeon,
         who will follow-up with you if any additional information is required or if he needs
         to see you sooner than your scheduled appointment."
   clinical_questions:
@@ -32,7 +32,7 @@ application_content:
           "BOOL_ANSWER"
       pain_calves:
         text:
-          ["Are you expierencing any pain or swelling in your cavles"]
+          ["Are you experiencing any pain or swelling in your cavles"]
         response_type:
           "BOOL_ANSWER"
       food_eat:
@@ -47,7 +47,7 @@ application_content:
           "BOOL_ANSWER"
       pain_change:
         text:
-          ["Is your pain decreased, increased, or about the same as it was yesterday?"]
+          ["Is your pain increased since yesterday?"]
         response_type:
           "BOOL_ANSWER"
       urinating_regularly:
@@ -57,7 +57,7 @@ application_content:
           "BOOL_ANSWER"
       bowel_movement:
         text:
-          ["Were you able to have  a bowel movement today?"]
+          ["Were you able to have a bowel movement today?"]
         response_type:
           "BOOL_ANSWER"
       condition_change:
@@ -70,9 +70,9 @@ application_settings:
     ileostomy:
       - "mobility"
       - "pain_calves"
-      #- "food_eat"
-      #- "drink_liquids"
-      #- "pain_change"
-      #- "urinating_regularly"
-      #- "bowel_movement"
-      #- "condition_change"
+      - "food_eat"
+      - "drink_liquids"
+      - "pain_change"
+      - "urinating_regularly"
+      - "bowel_movement"
+      - "condition_change"
