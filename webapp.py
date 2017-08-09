@@ -13,6 +13,7 @@ from flask_ask import Ask, statement, question, session
 from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions
 from src.fhir_utilities import read_json_patient
+from src.model import db
 
 # flask initialize
 app = Flask(__name__)
@@ -49,7 +50,6 @@ CURR_PROCEDURE = "ileostomy"
 CURR_USER = "Jon"
 CURR_BDAY = datetime.strptime("1990-10-10", "%Y-%m-%d")
 
-# define models
 class User(db.Model):
     # define model items
     id = db.Column(db.Integer, primary_key=True)
@@ -71,7 +71,7 @@ class User(db.Model):
         self.patient_procedure = patient_procedure
 
     def __repr__(self):
-        return '<User %r>' % self.patient_f_name + " " + self.patient_l_name
+        return '<User: {} {}>'.format(self.patient_f_name, self.patient_l_name)
 
 class Question(db.Model):
     # define model items
@@ -90,10 +90,7 @@ class Question(db.Model):
         self.q_text = q_text
 
     def __repr__(self):
-        return '<QuestionID %r>' % self.q_link_id
-
-    def __str__(self):
-        return 'QuestionID: %r' % self.q_text
+        return '<QuestionID: {}>'.format(self.q_link_id)
 
 class IndicationQuestionOrder(db.Model):
     __tablename__ = 'indicationquestionorder'
@@ -115,10 +112,7 @@ class IndicationQuestionOrder(db.Model):
         self.question = question
 
     def __repr__(self):
-        return '<Indication %r, Question %r>' % self.indication, self.question
-
-    def __str__(self):
-        return 'Indication %r, Question %r' % self.indication, self.question
+        return '<Indication: {}, Question: {}>'.format(self.indication, self.question)
 
 # monkey patch
 IndicationQuestionOrder.next_id = db.Column(db.Integer, db.ForeignKey(IndicationQuestionOrder.id))
@@ -151,6 +145,9 @@ class SessionState(db.Model):
         self.session_state = 'PATIENT_CONSENT'
         self.active = True
 
+    def __repr__(self):
+        return '<Session: {}, State: {}>'.format(self.session_id, self.session_state)
+
 class UserAnswer(db.Model):
     # define model items
     id = db.Column(db.Integer, primary_key=True)
@@ -169,6 +166,9 @@ class UserAnswer(db.Model):
         self.user = user
         self.question = question
         self.answer_bool = answer_bool
+
+    def __repr__(self):
+        return '<User: {}, Answer: {}>'.format(self.user, self.answer_bool)
 
 # functions
 def initialize_content():
