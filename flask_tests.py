@@ -173,7 +173,7 @@ class TestFhirHelperMethods(unittest.TestCase):
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):
-        self.app = create_app().test_client()
+        self.app = create_app()[0].test_client()
 
     def test_launch(self):
         # load data

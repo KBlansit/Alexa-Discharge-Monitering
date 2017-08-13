@@ -37,22 +37,24 @@ def create_app():
     db = SQLAlchemy(app, metadata=metadata)
 
     # initialize flask extentions
-    db.init_app(app)
     ask.init_app(app)
 
-    return app
+    return app, db
 
 def create_test_app():
     # initialize flask
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
 
+    # initialize db
+    db = SQLAlchemy(app, metadata=metadata)
+
     # initialize flask extentions
-    db.init_app(app)
     ask.init_app(app)
 
-    return app
+    return app, db
 
 # fhir
 FHIR_SUBJECT = read_json_patient('example_fhir/ex_patient.json')
@@ -279,5 +281,5 @@ def session_ended():
 
 if __name__ == '__main__':
     # run app
-    app = create_app()
+    app, db = create_app()
     app.run()
