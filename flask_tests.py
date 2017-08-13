@@ -10,18 +10,18 @@ import signal
 import unittest
 import requests
 
-from requests.exceptions import Timeout
-
 from flask import Flask
+from requests.exceptions import Timeout
 from flask_sqlalchemy import SQLAlchemy
 
 # load user defined libraries
 from webapp import ask, create_app
 
+from src.database import metadata
 from src.Questionaire import QuestionContainer
-from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 from src.fhir_utilities import read_json_patient, create_question_response
 from src.model import User, Question, IndicationQuestionOrder, SessionState, UserAnswer
+from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 
 # utility functions and global vars
 SETTINGS_PATH = ('resources/application_settings.yaml')
@@ -280,8 +280,6 @@ class TestWebAppDB(unittest.TestCase):
         db.create_all()
 
         ask.init_app(app)
-
-
 
     def test_(self):
         pass
