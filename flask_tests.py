@@ -11,8 +11,10 @@ import unittest
 import requests
 
 from flask import Flask
+from datetime import datetime
 from requests.exceptions import Timeout
 from flask_sqlalchemy import SQLAlchemy
+
 
 # load user defined libraries
 from webapp import ask, create_app
@@ -275,14 +277,20 @@ class TestWebAppDB(unittest.TestCase):
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
 
-        # initialize flask extentions
-        db = SQLAlchemy(app)
-        db.create_all()
+        # initialize db
+        self.db = SQLAlchemy(app, metadata=metadata)
+        self.db.create_all()
 
-        ask.init_app(app)
+    def test_add_user(self):
+        # set test user
+        bdate = datetime.strptime("1990-10-10", "%Y-%m-%d")
+        usr = User('Jon', 'Snow', bdate, 'surg')
 
-    def test_(self):
-        pass
+        # pass to database
+        self.db.session.add(usr)
+        self.db.session.commit()
+
+        self.assertTrue(len(self.db.session.query(User).all()) == 1)
 
     def tearDown(self):
         """
