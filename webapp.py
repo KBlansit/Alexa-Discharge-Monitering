@@ -20,7 +20,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions
 from src.fhir_utilities import read_json_patient
-from src.model import db
+from src.database import metadata
 
 # initialize extention objects
 ask = Ask(route = '/')
@@ -30,7 +30,11 @@ def create_app():
     # initialize flask
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
+
+    # initialize db
+    db = SQLAlchemy(app, metadata=metadata)
 
     # initialize flask extentions
     db.init_app(app)

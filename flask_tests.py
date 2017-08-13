@@ -16,7 +16,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 # load user defined libraries
-from webapp import db, ask, create_app
+from webapp import ask, create_app
 
 from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
@@ -272,6 +272,7 @@ class TestWebAppDB(unittest.TestCase):
         """
         app = Flask(__name__)
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
 
         # initialize flask extentions
