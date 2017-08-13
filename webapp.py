@@ -44,7 +44,7 @@ def create_app():
 def create_test_app():
     # initialize flask
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
 

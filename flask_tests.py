@@ -17,7 +17,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 # load user defined libraries
-from webapp import ask, create_app
+from webapp import ask, create_test_app
 
 from src.database import metadata
 from src.Questionaire import QuestionContainer
@@ -173,7 +173,7 @@ class TestFhirHelperMethods(unittest.TestCase):
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):
-        self.app = create_app()[0].test_client()
+        self.app = create_test_app()[0].test_client()
 
     def test_launch(self):
         # load data
