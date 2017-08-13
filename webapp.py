@@ -13,8 +13,6 @@ from flask_ask import Ask, statement, question, session
 from flask_sqlalchemy import SQLAlchemy
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 
 # load user defined libraries
 from src.Questionaire import QuestionContainer
@@ -25,6 +23,9 @@ from src.database import metadata
 # initialize extention objects
 ask = Ask(route = '/')
 
+# initialize db
+db = SQLAlchemy(metadata=metadata)
+
 # flask initialize
 def create_app():
     # initialize flask
@@ -33,8 +34,9 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
 
-    # initialize db
-    db = SQLAlchemy(app, metadata=metadata)
+    # bind app to db
+    db.app = app # your library is bad and you should feel bad...
+    db.init_app(app)
 
     # initialize flask extentions
     ask.init_app(app)
@@ -48,8 +50,9 @@ def create_test_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
 
-    # initialize db
-    db = SQLAlchemy(app, metadata=metadata)
+    # bind app to db
+    db.app = app # your library is bad and you should feel bad...
+    db.init_app(app)
 
     # initialize flask extentions
     ask.init_app(app)

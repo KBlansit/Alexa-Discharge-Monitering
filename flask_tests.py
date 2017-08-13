@@ -173,7 +173,30 @@ class TestFhirHelperMethods(unittest.TestCase):
 
 class TestAlexaServer(unittest.TestCase):
     def setUp(self):
-        self.app = create_test_app()[0].test_client()
+        # initialize app and db objects
+        self.app, self.db = create_test_app()
+        import pdb; pdb.set_trace()
+        self.app = self.app.test_client()
+
+        # load test data
+        curr_f_user = "Jon"
+        curr_l_name = "Snow"
+        curr_procedure = "ileostomy"
+        curr_bday = datetime.strptime("1990-10-10", "%Y-%m-%d")
+
+        # define test objects
+        usr = User(
+            curr_f_user,
+            curr_f_user,
+            curr_bday,
+            curr_procedure,
+        )
+
+        # add to db
+        self.db.session.add_all((
+            usr,
+        ))
+        self.db.session.commit()
 
     def test_launch(self):
         # load data
