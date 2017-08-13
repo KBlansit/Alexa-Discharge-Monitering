@@ -315,6 +315,54 @@ class TestWebAppDB(unittest.TestCase):
         qry = self.db.session.query(Question, Question.q_link_id=="Surg1`").first()
         self.assertEqual(qry.Question.q_text, tst_q_text)
 
+    def test_indication_question_order(self):
+        tst_question1 = Question(
+            q_link_id="Surg1",
+            q_text="text 1",
+            q_type="Surg",
+        )
+        tst_question2 = Question(
+            q_link_id="Surg2",
+            q_text="text 2",
+            q_type="Surg",
+        )
+
+        # have to work backwards
+        q_order_2 = IndicationQuestionOrder(
+            indication="surg",
+            next_item=None,
+            question=tst_question2,
+        )
+        q_order_1 = IndicationQuestionOrder(
+            indication="surg",
+            next_item=q_order_2,
+            question=tst_question1,
+        )
+        q_order_bad_2 = IndicationQuestionOrder(
+            indication="bad",
+            next_item=None,
+            question=tst_question2,
+        )
+        q_order_bad_1 = IndicationQuestionOrder(
+            indication="bad",
+            next_item=q_order_2,
+            question=tst_question1,
+        )
+
+        # pass to database
+        self.db.session.add_all((
+            tst_question1,
+            tst_question2,
+            q_order_2,
+            q_order_1,
+        ))
+        self.db.session.commit()
+
+        # define query for first question
+        qry = self.db.session.query(IndicationQuestionOrder)
+        rslts = qry.filter(IndicationQuestionOrder.indication=='surg', IndicationQuestionOrder.previous_item == None).all()
+        self.assertEqual(rslts[0].question.q_link_id, "Surg1")
+
     def tearDown(self):
         """
         Ensures that the database is emptied for next unit test
