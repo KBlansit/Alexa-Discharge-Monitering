@@ -284,13 +284,36 @@ class TestWebAppDB(unittest.TestCase):
     def test_add_user(self):
         # set test user
         bdate = datetime.strptime("1990-10-10", "%Y-%m-%d")
-        usr = User('Jon', 'Snow', bdate, 'surg')
+        usr = User(
+            patient_f_name='Jon',
+            patient_l_name='Snow',
+            patient_bday=bdate,
+            patient_procedure='surg',
+        )
 
         # pass to database
         self.db.session.add(usr)
         self.db.session.commit()
 
         self.assertTrue(len(self.db.session.query(User).all()) == 1)
+
+    def test_add_question(self):
+        # set test question
+        tst_q_text = "This is a test question"
+        tst_question = Question(
+            q_link_id="Surg1",
+            q_text=tst_q_text,
+            q_type="Surg",
+        )
+
+        # pass to database
+        self.db.session.add(tst_question)
+        self.db.session.commit()
+
+        # assert we can get question back
+        self.assertTrue(len(self.db.session.query(Question).all()) == 1)
+        qry = self.db.session.query(Question, Question.q_link_id=="Surg1`").first()
+        self.assertEqual(qry.Question.q_text, tst_q_text)
 
     def tearDown(self):
         """
