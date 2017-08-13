@@ -19,10 +19,9 @@ from flask_sqlalchemy import SQLAlchemy
 # load user defined libraries
 from webapp import ask, create_test_app
 
-from src.database import metadata
 from src.Questionaire import QuestionContainer
 from src.fhir_utilities import read_json_patient, create_question_response
-from src.model import User, Question, IndicationQuestionOrder, SessionState, UserAnswer
+from src.database import metadata, User, Question, IndicationQuestionOrder, SessionState, UserAnswer
 from src.utilities import load_settings_and_content, load_questions, extract_questionnaire_questions
 
 # utility functions and global vars
@@ -175,8 +174,10 @@ class TestAlexaServer(unittest.TestCase):
     def setUp(self):
         # initialize app and db objects
         self.app, self.db = create_test_app()
-        import pdb; pdb.set_trace()
         self.app = self.app.test_client()
+
+        # initiali db
+        self.db.create_all()
 
         # load test data
         curr_f_user = "Jon"
@@ -204,6 +205,7 @@ class TestAlexaServer(unittest.TestCase):
             body = data_file.read()
 
         # test that we can get response back
+        import pdb; pdb.set_trace()
         launch_response = self.app.post('/', data=json.dumps(json.loads(body)))
         self.assertEqual(launch_response.status_code, 200)
 

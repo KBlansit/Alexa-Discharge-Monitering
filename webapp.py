@@ -19,6 +19,7 @@ from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions
 from src.fhir_utilities import read_json_patient
 from src.database import metadata
+from src.model import User, Question, IndicationQuestionOrder, SessionState, UserAnswer
 
 # initialize extention objects
 ask = Ask(route = '/')
@@ -237,6 +238,9 @@ def welcome_msg():
     """
     # initialize session
     initialize_content()
+
+    qry = db.session.query(User)
+    print(qry.all())
 
     # fetch introduction text
     rslt_txt = QUESTION_CONTAINER.get_admin_question('welcome_text')
