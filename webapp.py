@@ -19,7 +19,7 @@ from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions
 from src.fhir_utilities import read_json_patient
 from src.database import metadata
-from src.model import User, Question, IndicationQuestionOrder, SessionState, UserAnswer
+from src.database import User, Question, IndicationQuestionOrder, SessionState, UserAnswer
 
 # initialize extention objects
 ask = Ask(route = '/')
@@ -144,6 +144,8 @@ def process_session():
         takes session attributes parameters to create a state machine
     """
 
+    # get session state
+
     # assert that state is valid
     assert session.attributes['session_state'] in SESSION_STATES
 
@@ -239,8 +241,21 @@ def welcome_msg():
     # initialize session
     initialize_content()
 
-    qry = db.session.query(User)
-    print(qry.all())
+    # initialize session state
+    # HACK for migration
+    # get current user
+    curr_usr = db.session.query(User).filter(User.patient_f_name == "Jon").first()
+
+    # get current pos
+    qry = db.session.query(IndicationQuestionOrder)
+    curr_pos = qry.filter(IndicationQuestionOrder.indication=='ileostomy', IndicationQuestionOrder.previous_item == None).first()
+
+    # make session object
+    curr_session = SessionState(curr_usr, session.session_id, curr_pos)
+
+    # add to database
+    db.session.add(curr_session)
+    db.session.commit()
 
     # fetch introduction text
     rslt_txt = QUESTION_CONTAINER.get_admin_question('welcome_text')

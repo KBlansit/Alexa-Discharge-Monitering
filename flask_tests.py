@@ -193,9 +193,51 @@ class TestAlexaServer(unittest.TestCase):
             curr_procedure,
         )
 
+        qst_1 = Question(
+            q_link_id="Surg1",
+            q_text="Test question 1",
+            q_type="Bool",
+        )
+
+        qst_2 = Question(
+            q_link_id="Surg2",
+            q_text="Test question 2",
+            q_type="Bool",
+        )
+
+        qst_3 = Question(
+            q_link_id="Surg3",
+            q_text="Test question 3",
+            q_type="Bool",
+        )
+
+        indication_order_3 = IndicationQuestionOrder(
+            indication=curr_procedure,
+            next_item=None,
+            question=qst_3,
+        )
+
+        indication_order_2 = IndicationQuestionOrder(
+            indication=curr_procedure,
+            next_item=indication_order_3,
+            question=qst_2,
+        )
+
+        indication_order_1 = IndicationQuestionOrder(
+            indication=curr_procedure,
+            next_item=indication_order_2,
+            question=qst_1,
+        )
+
         # add to db
         self.db.session.add_all((
             usr,
+            qst_1,
+            qst_2,
+            qst_3,
+            indication_order_1,
+            indication_order_2,
+            indication_order_3,
         ))
         self.db.session.commit()
 
@@ -205,7 +247,6 @@ class TestAlexaServer(unittest.TestCase):
             body = data_file.read()
 
         # test that we can get response back
-        import pdb; pdb.set_trace()
         launch_response = self.app.post('/', data=json.dumps(json.loads(body)))
         self.assertEqual(launch_response.status_code, 200)
 
@@ -220,6 +261,9 @@ class TestAlexaServer(unittest.TestCase):
             response_data['response']['outputSpeech']['text'],
             QUESTION_CONTAINER.get_admin_question('welcome_text'),
         )
+
+        # assert we have made a session state
+        self.assertTrue(self.db.session.query(SessionState).all())
 
     def test_user_verification(self):
         # load json format
@@ -344,12 +388,12 @@ class TestWebAppDB(unittest.TestCase):
         tst_question1 = Question(
             q_link_id="Surg1",
             q_text="text 1",
-            q_type="Surg",
+            q_type="Bool",
         )
         tst_question2 = Question(
             q_link_id="Surg2",
             q_text="text 2",
-            q_type="Surg",
+            q_type="Bool",
         )
 
         # have to work backwards

@@ -91,11 +91,11 @@ class SessionState(Base):
     session_id = Column(String(80))
     curr_list_position_id = Column(Integer, ForeignKey(IndicationQuestionOrder.id))
     curr_list_position = relationship("IndicationQuestionOrder")
-
     session_state = Column(String(80))
     active = Column(Boolean)
 
     def __init__(
+        self,
         user,
         session_id,
         curr_list_position,
@@ -103,7 +103,7 @@ class SessionState(Base):
         # from constructor
         self.user = user
         self.session_id = session_id
-        self.curr_list_position = curr_list_position
+        self.curr_list_position = curr_list_position # refactor get method to get start from string of indicstion
 
         # defaults
         self.session_state = 'PATIENT_CONSENT'
