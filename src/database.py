@@ -8,6 +8,14 @@ from sqlalchemy.ext.declarative import declarative_base
 metadata = MetaData()
 Base = declarative_base(metadata=metadata)
 
+SESSION_STATES = [
+    'PATIENT_CONSENT',
+    'PATIENT_CONFIRMATION',
+    'PATIENT_2ND_CONFIRMATION',
+    'QUESTION_ITERATIONS',
+    'END_QUESTIONS',
+]
+
 class User(Base):
     __tablename__ = "user"
 

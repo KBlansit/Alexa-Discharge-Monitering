@@ -19,7 +19,7 @@ from src.Questionaire import QuestionContainer
 from src.utilities import load_settings_and_content, load_questions
 from src.fhir_utilities import read_json_patient
 from src.database import metadata
-from src.database import User, Question, IndicationQuestionOrder, SessionState, UserAnswer
+from src.database import User, Question, IndicationQuestionOrder, SessionState, UserAnswer, SESSION_STATES
 
 # initialize extention objects
 ask = Ask(route = '/')
@@ -145,16 +145,22 @@ def process_session():
     """
 
     # get session state
+    qry = db.session.query(SessionState)
+    rslt = qry.filter(SessionState.session_id==session.sessionId).all()
+
+    if len(rslt) > 1:
+        raise AssertionError("Result: {} returned multiple sessions".format(rslt))
+    elif len(rslt) == 0:
+        raise AssertionError("Did not return any results for this session!")
+
+    # get session state
+    state = rslt[0].session_state
 
     # assert that state is valid
-    assert session.attributes['session_state'] in SESSION_STATES
-
-    # validate question
-    assert validate_question_answer()
+    assert state in SESSION_STATES
 
     # determine state
-    if session.attributes['session_state'] == 'PATIENT_CONSENT':
-
+    if state == 'PATIENT_CONSENT':
         # determine how to respond to question
         if session.attributes['response']['response_slot']:
             # progress session state
@@ -167,8 +173,7 @@ def process_session():
             rslt_txt = QUESTION_CONTAINER.get_admin_response('failed_user_confirmation')
             return statement(rslt_txt)
 
-    elif session.attributes['session_state'] == 'PATIENT_CONFIRMATION':
-
+    elif state == 'PATIENT_CONFIRMATION':
         # determine how to respond to question
         if session.attributes['response']['response_slot']:
             # progress session state
@@ -181,7 +186,7 @@ def process_session():
             rslt_txt = QUESTION_CONTAINER.get_admin_response('failed_user_confirmation')
             return statement(rslt_txt)
 
-    elif session.attributes['session_state'] == 'PATIENT_2ND_CONFIRMATION':
+    elif state == 'PATIENT_2ND_CONFIRMATION':
         # format date
         input_date = datetime.strptime(session.attributes['response']['response_slot'], "%Y-%m-%d")
 
@@ -208,7 +213,7 @@ def process_session():
             rslt_txt = QUESTION_CONTAINER.get_admin_response('failed_user_confirmation')
             return statement(rslt_txt)
 
-    elif session.attributes['session_state'] == 'QUESTION_ITERATIONS':
+    elif state == 'QUESTION_ITERATIONS':
         # record answer
         if session.attributes['response']['response_type'] == "BOOL_ANSWER":
             session.attributes['answer_dict'][session.attributes['previous_question']] = session.attributes['response']['response_slot']
@@ -224,7 +229,7 @@ def process_session():
 
         return question(question_txt)
 
-    elif session.attributes['session_state'] == 'END_QUESTIONS':
+    elif state == 'END_QUESTIONS':
         # record answer
         if session.attributes['response']['response_type'] == "BOOL_ANSWER":
             session.attributes['answer_dict'][session.attributes['previous_question']] = session.attributes['response']['response_slot']

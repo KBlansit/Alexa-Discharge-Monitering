@@ -35,13 +35,11 @@ ADMIN_QUESTION_MAP = {
 }
 
 BASE_SERVICE_REQUEST = "json_fixtures/base_service_request.json"
-def construct_session_request_json(intent, session_state, slot=None, question_lst=None):
+def construct_session_request_json(intent, slot=None, question_lst=None):
     """
     INPUTS:
         intent:
             the intent to use
-        session_state:
-            the session state
         question_lst:
             the question list to add to session attributes
     OUTPUT:
@@ -71,9 +69,6 @@ def construct_session_request_json(intent, session_state, slot=None, question_ls
 
     # initialize session attributes
     data['session']['attributes'] = {}
-
-    # setting of session_state
-    data['session']['attributes']['session_state'] = session_state
 
     # setting of question_lst with validation
     if question_lst is None:
@@ -171,6 +166,28 @@ class TestFhirHelperMethods(unittest.TestCase):
         self.assertTrue(r.ok)
 
 class TestAlexaServer(unittest.TestCase):
+    def _initialize_session_state_db(self, session_id = "XXXXX", session_state=None):
+        """
+        helps initialize session db
+        """
+        curr_usr = self.db.session.query(User).filter(User.patient_f_name == "Jon").first()
+
+        # get current pos
+        qry = self.db.session.query(IndicationQuestionOrder)
+        curr_pos = qry.filter(IndicationQuestionOrder.indication=='ileostomy', IndicationQuestionOrder.previous_item == None).first()
+
+        # make session object
+        curr_session = SessionState(curr_usr, session_id, curr_pos)
+
+        if session_state:
+            curr_session.session_state = session_state
+            curr_session.session_state = session_state
+
+        # add to database
+        self.db.session.add(curr_session)
+        self.db.session.commit()
+
+
     def setUp(self):
         # initialize app and db objects
         self.app, self.db = create_test_app()
@@ -266,10 +283,12 @@ class TestAlexaServer(unittest.TestCase):
         self.assertTrue(self.db.session.query(SessionState).all())
 
     def test_user_verification(self):
+        # initialize session state
+        self._initialize_session_state_db(session_state='PATIENT_CONSENT')
+
         # load json format
         body = construct_session_request_json(
             intent='YesIntent',
-            session_state='PATIENT_CONSENT',
         )
 
         # test that we can get response back
@@ -290,13 +309,15 @@ class TestAlexaServer(unittest.TestCase):
         self.assertEqual(response_data['sessionAttributes']['session_state'], "PATIENT_CONFIRMATION")
 
     def test_user_bday_verification(self):
+        # initialize session state
+        self._initialize_session_state_db(session_state='PATIENT_2ND_CONFIRMATION')
+
         # define date
         bday_date = '1990-10-10'
 
         # load json format
         body = construct_session_request_json(
             intent='DateSlotIntent',
-            session_state='PATIENT_2ND_CONFIRMATION',
             question_lst=['mobility', 'pain_calves'],
             slot={'date': {'name': 'date', 'value': bday_date}},
         )
@@ -313,13 +334,15 @@ class TestAlexaServer(unittest.TestCase):
         self.assertEqual(response_data['sessionAttributes']['session_state'], "QUESTION_ITERATIONS")
 
     def test_bad_user_bday_verification(self):
+        # initialize session state
+        self._initialize_session_state_db(session_state='PATIENT_2ND_CONFIRMATION')
+
         # define date
         bday_date = '1987-12-12'
 
         # load json format
         body = construct_session_request_json(
             intent='DateSlotIntent',
-            session_state='PATIENT_2ND_CONFIRMATION',
             question_lst=['mobility', 'pain_calves'],
             slot={'date': {'name': 'date', 'value': bday_date}},
         )
