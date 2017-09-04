@@ -134,7 +134,6 @@ def process_session():
     EFFECT:
         takes session attributes parameters to create a state machine
     """
-
     # get session state
     qry = db.session.query(SessionState).filter(SessionState.session_id==session.sessionId)
     rslt = qry.all()
@@ -155,9 +154,11 @@ def process_session():
         # determine how to respond to question
         if session.attributes['response']['response_slot']:
             # progress session state
-            qry.update({'session_state': 'PATIENT_CONFIRMATION'})
+            rslt[0].session_state = 'PATIENT_CONFIRMATION'
+
+            # add to database
             db.session.commit()
-            import pdb; pdb.set_trace()
+            db.session.close()
 
             # ask the next question
             rslt_txt = QUESTION_CONTAINER.get_admin_question('user_identification')
@@ -170,8 +171,11 @@ def process_session():
         # determine how to respond to question
         if session.attributes['response']['response_slot']:
             # progress session state
-            qry.update({'session_state': 'PATIENT_2ND_CONFIRMATION'})
+            rslt[0].session_state = 'PATIENT_2ND_CONFIRMATION'
+
+            # add to database
             db.session.commit()
+            db.session.close()
 
             # ask the next question
             rslt_txt = QUESTION_CONTAINER.get_admin_question('user_2nd_step_identification')
@@ -187,8 +191,11 @@ def process_session():
         # determine how to respond to question
         if input_date.date() == CURR_BDAY.date():
             # progress session state
-            qry.update({'session_state': 'QUESTION_ITERATIONS'})
+            rslt[0].session_state = 'QUESTION_ITERATIONS'
+
+            # add to database
             db.session.commit()
+            db.session.close()
 
             # add fhir info to session
             session.attributes['FHIR']['subject'] = FHIR_SUBJECT.as_json()
@@ -215,7 +222,12 @@ def process_session():
 
         # determine is session progresses (next to last)
         if len(session.attributes['question_lst']) == 1:
-            session.attributes['session_state'] = 'END_QUESTIONS'
+            # progress session state
+            rslt[0].session_state = 'END_QUESTIONS'
+
+            # add to database
+            db.session.commit()
+            db.session.close()
 
         # determine question text
         curr_question = session.attributes['question_lst'].pop()
@@ -251,11 +263,12 @@ def welcome_msg():
     curr_pos = qry.filter(IndicationQuestionOrder.indication=='ileostomy', IndicationQuestionOrder.previous_item == None).first()
 
     # make session object
-    curr_session = SessionState(curr_usr, session.session_id, curr_pos)
+    curr_session = SessionState(curr_usr, session.sessionId, curr_pos)
 
     # add to database
     db.session.add(curr_session)
     db.session.commit()
+    db.session.close()
 
     # fetch introduction text
     rslt_txt = QUESTION_CONTAINER.get_admin_question('welcome_text')

@@ -192,7 +192,6 @@ class TestAlexaServer(unittest.TestCase):
 
         # add to database
         self.db.session.add(curr_session)
-        self.db.session.commit()
 
     def _validate_state(self, expected_state, session_id = "XXXXX"):
         """
@@ -207,17 +206,17 @@ class TestAlexaServer(unittest.TestCase):
         # confirm that we switch mode
         validation_qry = self.db.session.query(SessionState).filter(SessionState.session_id=='XXXXX')
         rslt = validation_qry.all()
-        if len(rslt) != 1:
+        if len(rslt) == 1:
             self.assertEqual(rslt[0].session_state, expected_state)
         else:
-            raise AssertionError("Should only get a single result back!")
+            raise AssertionError("Should only get a single result back! Got {} back instead".format(len(rslt)))
 
     def setUp(self):
         # initialize app and db objects
         self.app, self.db = create_test_app()
         self.app = self.app.test_client()
 
-        # initiali db
+        # initialize db
         self.db.create_all()
 
         # load test data
@@ -304,12 +303,11 @@ class TestAlexaServer(unittest.TestCase):
         )
 
         # assert we have made a session state
-        self.assertTrue(self.db.session.query(SessionState).all())
+        self.assertTrue(len(self.db.session.query(SessionState).all()))
 
     def test_user_verification(self):
         # initialize session state
         self._initialize_session_state_db(curr_session_state='PATIENT_CONSENT')
-        import pdb; pdb.set_trace()
 
         # load json format
         body = construct_session_request_json(
@@ -318,6 +316,8 @@ class TestAlexaServer(unittest.TestCase):
 
         # test that we can get response back
         confirmation_response = self.app.post('/', data=json.dumps(body))
+
+        #import pdb; pdb.set_trace()
         self.assertEqual(confirmation_response.status_code, 200)
 
         # do not want to end here
@@ -331,11 +331,11 @@ class TestAlexaServer(unittest.TestCase):
         )
 
         # confirm that we switch mode
-        self.assertEqual(response_data['sessionAttributes']['session_state'], "PATIENT_CONFIRMATION")
+        self._validate_state('PATIENT_CONFIRMATION')
 
     def test_user_bday_verification(self):
         # initialize session state
-        self._initialize_session_state_db(session_state='PATIENT_2ND_CONFIRMATION')
+        self._initialize_session_state_db(curr_session_state='PATIENT_2ND_CONFIRMATION')
 
         # define date
         bday_date = '1990-10-10'
@@ -360,7 +360,7 @@ class TestAlexaServer(unittest.TestCase):
 
     def test_bad_user_bday_verification(self):
         # initialize session state
-        self._initialize_session_state_db(session_state='PATIENT_2ND_CONFIRMATION')
+        self._initialize_session_state_db(curr_session_state='PATIENT_2ND_CONFIRMATION')
 
         # define date
         bday_date = '1987-12-12'
@@ -381,14 +381,8 @@ class TestAlexaServer(unittest.TestCase):
         self.assertTrue(response_data['response']['shouldEndSession'])
 
     def tearDown(self):
-        # remove all previous enteries
-        self.db.session.query(User).delete()
-        self.db.session.query(Question).delete()
-        self.db.session.query(SessionState).delete()
-        self.db.session.query(IndicationQuestionOrder).delete()
-
-        # close connection
-        self.db.session.close()
+        self.db.session.remove()
+        self.db.drop_all()
 
 class TestWebAppDB(unittest.TestCase):
     def setUp(self):
