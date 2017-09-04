@@ -129,15 +129,6 @@ def reset_question():
         'response_type': None,
     }
 
-def validate_question_answer():
-    # validate admin questions
-    if session.attributes['session_state'] in ADMIN_QUESTION_MAP.keys():
-        admin_q = ADMIN_QUESTION_MAP[session.attributes['session_state']]
-        response_type = session.attributes['response']['response_type']
-        QUESTION_CONTAINER.validate_admin_answer(admin_q, response_type)
-
-    return True
-
 def process_session():
     """
     EFFECT:
@@ -145,8 +136,8 @@ def process_session():
     """
 
     # get session state
-    qry = db.session.query(SessionState)
-    rslt = qry.filter(SessionState.session_id==session.sessionId).all()
+    qry = db.session.query(SessionState).filter(SessionState.session_id==session.sessionId)
+    rslt = qry.all()
 
     if len(rslt) > 1:
         raise AssertionError("Result: {} returned multiple sessions".format(rslt))
@@ -164,7 +155,9 @@ def process_session():
         # determine how to respond to question
         if session.attributes['response']['response_slot']:
             # progress session state
-            session.attributes['session_state'] = 'PATIENT_CONFIRMATION'
+            qry.update({'session_state': 'PATIENT_CONFIRMATION'})
+            db.session.commit()
+            import pdb; pdb.set_trace()
 
             # ask the next question
             rslt_txt = QUESTION_CONTAINER.get_admin_question('user_identification')
@@ -177,7 +170,8 @@ def process_session():
         # determine how to respond to question
         if session.attributes['response']['response_slot']:
             # progress session state
-            session.attributes['session_state'] = 'PATIENT_2ND_CONFIRMATION'
+            qry.update({'session_state': 'PATIENT_2ND_CONFIRMATION'})
+            db.session.commit()
 
             # ask the next question
             rslt_txt = QUESTION_CONTAINER.get_admin_question('user_2nd_step_identification')
@@ -193,7 +187,8 @@ def process_session():
         # determine how to respond to question
         if input_date.date() == CURR_BDAY.date():
             # progress session state
-            session.attributes['session_state'] = 'QUESTION_ITERATIONS'
+            qry.update({'session_state': 'QUESTION_ITERATIONS'})
+            db.session.commit()
 
             # add fhir info to session
             session.attributes['FHIR']['subject'] = FHIR_SUBJECT.as_json()

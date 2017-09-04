@@ -166,10 +166,17 @@ class TestFhirHelperMethods(unittest.TestCase):
         self.assertTrue(r.ok)
 
 class TestAlexaServer(unittest.TestCase):
-    def _initialize_session_state_db(self, session_id = "XXXXX", session_state=None):
+    def _initialize_session_state_db(self, session_id = "XXXXX", curr_session_state=None):
         """
-        helps initialize session db
+        INPUTS:
+            session_id:
+                the session id to initialize
+            curr_session_state:
+                the session state to initialize
+        EFFECT:
+            helps initialize session db
         """
+        # determine user
         curr_usr = self.db.session.query(User).filter(User.patient_f_name == "Jon").first()
 
         # get current pos
@@ -179,14 +186,31 @@ class TestAlexaServer(unittest.TestCase):
         # make session object
         curr_session = SessionState(curr_usr, session_id, curr_pos)
 
-        if session_state:
-            curr_session.session_state = session_state
-            curr_session.session_state = session_state
+        # add session state if specified
+        if curr_session_state:
+            curr_session.session_state = curr_session_state
 
         # add to database
         self.db.session.add(curr_session)
         self.db.session.commit()
 
+    def _validate_state(self, expected_state, session_id = "XXXXX"):
+        """
+        INPUTS:
+            expected_state:
+                the expected state to initialize
+            session_id:
+                the session id to initialize
+        EFFECT:
+            validates the session state
+        """
+        # confirm that we switch mode
+        validation_qry = self.db.session.query(SessionState).filter(SessionState.session_id=='XXXXX')
+        rslt = validation_qry.all()
+        if len(rslt) != 1:
+            self.assertEqual(rslt[0].session_state, expected_state)
+        else:
+            raise AssertionError("Should only get a single result back!")
 
     def setUp(self):
         # initialize app and db objects
@@ -284,7 +308,8 @@ class TestAlexaServer(unittest.TestCase):
 
     def test_user_verification(self):
         # initialize session state
-        self._initialize_session_state_db(session_state='PATIENT_CONSENT')
+        self._initialize_session_state_db(curr_session_state='PATIENT_CONSENT')
+        import pdb; pdb.set_trace()
 
         # load json format
         body = construct_session_request_json(
@@ -330,8 +355,8 @@ class TestAlexaServer(unittest.TestCase):
         response_data = json.loads(confirmation_response.get_data(as_text=True))
         self.assertFalse(response_data['response']['shouldEndSession'])
 
-        # confirm that we switch mode
-        self.assertEqual(response_data['sessionAttributes']['session_state'], "QUESTION_ITERATIONS")
+        # verify state progression
+        self._validate_state('QUESTION_ITERATIONS')
 
     def test_bad_user_bday_verification(self):
         # initialize session state
@@ -356,8 +381,14 @@ class TestAlexaServer(unittest.TestCase):
         self.assertTrue(response_data['response']['shouldEndSession'])
 
     def tearDown(self):
-        # when integrating databse, close connection here
-        pass
+        # remove all previous enteries
+        self.db.session.query(User).delete()
+        self.db.session.query(Question).delete()
+        self.db.session.query(SessionState).delete()
+        self.db.session.query(IndicationQuestionOrder).delete()
+
+        # close connection
+        self.db.session.close()
 
 class TestWebAppDB(unittest.TestCase):
     def setUp(self):
