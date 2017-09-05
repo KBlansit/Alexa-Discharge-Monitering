@@ -380,6 +380,12 @@ class TestAlexaServer(unittest.TestCase):
         response_data = json.loads(confirmation_response.get_data(as_text=True))
         self.assertTrue(response_data['response']['shouldEndSession'])
 
+    def test_question(self):
+        # initialize session state
+        self._initialize_session_state_db(curr_session_state='QUESTION_ITERATIONS')
+
+
+
     def tearDown(self):
         self.db.session.remove()
         self.db.drop_all()

@@ -60,28 +60,11 @@ def create_test_app():
 
     return app, db
 
-# fhir
-FHIR_SUBJECT = read_json_patient('example_fhir/ex_patient.json')
+# HACK until FHIR integration:
 
-# define vars
 SETTINGS_PATH = ('resources/application_settings.yaml')
 QUESTION_CONTAINER = QuestionContainer(SETTINGS_PATH)
 
-SESSION_STATES = [
-    'PATIENT_CONSENT',
-    'PATIENT_CONFIRMATION',
-    'PATIENT_2ND_CONFIRMATION',
-    'QUESTION_ITERATIONS',
-    'END_QUESTIONS',
-]
-
-ADMIN_QUESTION_MAP = {
-    'PATIENT_CONSENT': 'welcome_text',
-    'PATIENT_CONFIRMATION': 'user_identification',
-    'PATIENT_2ND_CONFIRMATION': 'user_2nd_step_identification',
-}
-
-# HACK until FHIR integration:
 CURR_USER = "Jon"
 CURR_L_NAME = "SNOW"
 CURR_PROCEDURE = "ileostomy"
@@ -196,9 +179,6 @@ def process_session():
             # add to database
             db.session.commit()
             db.session.close()
-
-            # add fhir info to session
-            session.attributes['FHIR']['subject'] = FHIR_SUBJECT.as_json()
 
             # populate question list
             if len(session.attributes['question_lst']):
