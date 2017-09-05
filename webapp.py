@@ -119,15 +119,18 @@ def process_session():
     """
     # get session state
     qry = db.session.query(SessionState).filter(SessionState.session_id==session.sessionId)
-    rslt = qry.all()
 
-    if len(rslt) > 1:
+    # validate we have right number
+    if qry.count() > 1:
         raise AssertionError("Result: {} returned multiple sessions".format(rslt))
-    elif len(rslt) == 0:
+    elif qry.count() == 0:
         raise AssertionError("Did not return any results for this session!")
 
+    # return to object
+    rslt = qry.one_or_none()
+
     # get session state
-    state = rslt[0].session_state
+    state = rslt.session_state
 
     # assert that state is valid
     assert state in SESSION_STATES
@@ -137,7 +140,7 @@ def process_session():
         # determine how to respond to question
         if session.attributes['response']['response_slot']:
             # progress session state
-            rslt[0].session_state = 'PATIENT_CONFIRMATION'
+            rslt.session_state = 'PATIENT_CONFIRMATION'
 
             # add to database
             db.session.commit()
@@ -154,7 +157,7 @@ def process_session():
         # determine how to respond to question
         if session.attributes['response']['response_slot']:
             # progress session state
-            rslt[0].session_state = 'PATIENT_2ND_CONFIRMATION'
+            rslt.session_state = 'PATIENT_2ND_CONFIRMATION'
 
             # add to database
             db.session.commit()
@@ -174,18 +177,17 @@ def process_session():
         # determine how to respond to question
         if input_date.date() == CURR_BDAY.date():
             # progress session state
-            rslt[0].session_state = 'QUESTION_ITERATIONS'
+            rslt.session_state = 'QUESTION_ITERATIONS'
 
             # add to database
             db.session.commit()
             db.session.close()
 
-            # populate question list
-            if len(session.attributes['question_lst']):
-                # determine question text
-                curr_question = session.attributes['question_lst'].pop()
-                session.attributes['previous_question'] = curr_question
-                question_txt = QUESTION_CONTAINER.get_clinical_question(curr_question)
+            # get current position
+            curr_pos = qry.one_or_none().curr_list_position
+            if curr_pos.next_item is not None:
+                # add new question
+                question_txt = curr_pos.question.q_text
 
                 return question(question_txt)
             else:

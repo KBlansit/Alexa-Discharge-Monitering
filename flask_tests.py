@@ -211,6 +211,7 @@ class TestAlexaServer(unittest.TestCase):
         else:
             raise AssertionError("Should only get a single result back! Got {} back instead".format(len(rslt)))
 
+
     def setUp(self):
         # initialize app and db objects
         self.app, self.db = create_test_app()
@@ -235,19 +236,19 @@ class TestAlexaServer(unittest.TestCase):
 
         qst_1 = Question(
             q_link_id="Surg1",
-            q_text="Test question 1",
+            q_text="Test question 1?",
             q_type="Bool",
         )
 
         qst_2 = Question(
             q_link_id="Surg2",
-            q_text="Test question 2",
+            q_text="Test question 2?",
             q_type="Bool",
         )
 
         qst_3 = Question(
             q_link_id="Surg3",
-            q_text="Test question 3",
+            q_text="Test question 3?",
             q_type="Bool",
         )
 
@@ -358,6 +359,18 @@ class TestAlexaServer(unittest.TestCase):
         # verify state progression
         self._validate_state('QUESTION_ITERATIONS')
 
+        # determine expected text and validate we get it back
+        qry = self.db.session.query(IndicationQuestionOrder)
+        expected_text = qry.filter(
+            IndicationQuestionOrder.indication=='ileostomy',
+            IndicationQuestionOrder.previous_item == None,
+        ).all()[0].question.q_text
+
+        self.assertEqual(
+            response_data['response']['outputSpeech']['text'],
+            expected_text,
+        )
+
     def test_bad_user_bday_verification(self):
         # initialize session state
         self._initialize_session_state_db(curr_session_state='PATIENT_2ND_CONFIRMATION')
@@ -383,6 +396,7 @@ class TestAlexaServer(unittest.TestCase):
     def test_question(self):
         # initialize session state
         self._initialize_session_state_db(curr_session_state='QUESTION_ITERATIONS')
+
 
 
 
