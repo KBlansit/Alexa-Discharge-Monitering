@@ -394,7 +394,7 @@ class TestAlexaServer(unittest.TestCase):
         response_data = json.loads(confirmation_response.get_data(as_text=True))
         self.assertTrue(response_data['response']['shouldEndSession'])
 
-    def test_question_loop(self):
+    def test_question_loop_yes_intent(self):
         # initialize session state
         self._initialize_session_state_db(curr_session_state='PATIENT_2ND_CONFIRMATION')
 
@@ -414,6 +414,41 @@ class TestAlexaServer(unittest.TestCase):
         # construct json
         body = construct_session_request_json(
             intent='YesIntent',
+        )
+
+        # do while loop to iterate
+        while True:
+            # test that we can get response back
+            confirmation_response = self.app.post('/', data=json.dumps(body))
+            self.assertEqual(confirmation_response.status_code, 200)
+
+            # get response data
+            response_data = json.loads(confirmation_response.get_data(as_text=True))
+
+            # test if we should end
+            if response_data['response']['shouldEndSession']:
+                break
+
+    def test_question_loop_no_intent(self):
+        # initialize session state
+        self._initialize_session_state_db(curr_session_state='PATIENT_2ND_CONFIRMATION')
+
+        # define date
+        bday_date = '1990-10-10'
+
+        # load json format
+        body = construct_session_request_json(
+            intent='DateSlotIntent',
+            slot={'date': {'name': 'date', 'value': bday_date}},
+        )
+
+        # test that we can get response back
+        confirmation_response = self.app.post('/', data=json.dumps(body))
+        self._validate_state('QUESTION_ITERATIONS')
+
+        # construct json
+        body = construct_session_request_json(
+            intent='NoIntent',
         )
 
         # do while loop to iterate
