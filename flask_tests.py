@@ -318,7 +318,6 @@ class TestAlexaServer(unittest.TestCase):
         # test that we can get response back
         confirmation_response = self.app.post('/', data=json.dumps(body))
 
-        #import pdb; pdb.set_trace()
         self.assertEqual(confirmation_response.status_code, 200)
 
         # do not want to end here
@@ -344,7 +343,6 @@ class TestAlexaServer(unittest.TestCase):
         # load json format
         body = construct_session_request_json(
             intent='DateSlotIntent',
-            question_lst=['mobility', 'pain_calves'],
             slot={'date': {'name': 'date', 'value': bday_date}},
         )
 
@@ -360,8 +358,8 @@ class TestAlexaServer(unittest.TestCase):
         self._validate_state('QUESTION_ITERATIONS')
 
         # determine expected text and validate we get it back
-        qry = self.db.session.query(IndicationQuestionOrder)
-        expected_text = qry.filter(
+        question_order_qry = self.db.session.query(IndicationQuestionOrder)
+        expected_text = question_order_qry.filter(
             IndicationQuestionOrder.indication=='ileostomy',
             IndicationQuestionOrder.previous_item == None,
         ).all()[0].question.q_text
@@ -370,6 +368,10 @@ class TestAlexaServer(unittest.TestCase):
             response_data['response']['outputSpeech']['text'],
             expected_text,
         )
+
+        # determine if we are in fact in the second position
+        curr_session_state = self.db.session.query(SessionState).one_or_none()
+        self.assertFalse(hasattr(curr_session_state.curr_list_position.previous_item, "previous_item"))
 
     def test_bad_user_bday_verification(self):
         # initialize session state
@@ -381,7 +383,6 @@ class TestAlexaServer(unittest.TestCase):
         # load json format
         body = construct_session_request_json(
             intent='DateSlotIntent',
-            question_lst=['mobility', 'pain_calves'],
             slot={'date': {'name': 'date', 'value': bday_date}},
         )
 
@@ -393,12 +394,40 @@ class TestAlexaServer(unittest.TestCase):
         response_data = json.loads(confirmation_response.get_data(as_text=True))
         self.assertTrue(response_data['response']['shouldEndSession'])
 
-    def test_question(self):
+    def test_question_loop(self):
         # initialize session state
-        self._initialize_session_state_db(curr_session_state='QUESTION_ITERATIONS')
+        self._initialize_session_state_db(curr_session_state='PATIENT_2ND_CONFIRMATION')
 
+        # define date
+        bday_date = '1990-10-10'
 
+        # load json format
+        body = construct_session_request_json(
+            intent='DateSlotIntent',
+            slot={'date': {'name': 'date', 'value': bday_date}},
+        )
 
+        # test that we can get response back
+        confirmation_response = self.app.post('/', data=json.dumps(body))
+        self._validate_state('QUESTION_ITERATIONS')
+
+        # construct json
+        body = construct_session_request_json(
+            intent='YesIntent',
+        )
+
+        # do while loop to iterate
+        while True:
+            # test that we can get response back
+            confirmation_response = self.app.post('/', data=json.dumps(body))
+            self.assertEqual(confirmation_response.status_code, 200)
+
+            # get response data
+            response_data = json.loads(confirmation_response.get_data(as_text=True))
+
+            # test if we should end
+            if response_data['response']['shouldEndSession']:
+                break
 
     def tearDown(self):
         self.db.session.remove()

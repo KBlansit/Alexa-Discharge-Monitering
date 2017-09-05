@@ -75,7 +75,7 @@ class IndicationQuestionOrder(Base):
         self,
         indication,
         next_item,
-        question,
+        question=None,
     ):
         self.indication = indication
         self.next_item = next_item
@@ -142,4 +142,4 @@ class UserAnswer(Base):
         self.answer_bool = answer_bool
 
     def __repr__(self):
-        return '<User: {}, Answer: {}>'.format(self.user, self.answer_bool)
+        return '<User: {}, Question: {}, Answer: {}>'.format(self.user, self.question, self.answer_bool)

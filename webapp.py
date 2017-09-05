@@ -77,14 +77,6 @@ def initialize_content():
     EFFECT:
         initializes session parameters
     """
-    # set question information
-    question_lst = QUESTION_CONTAINER.get_list_of_clinical_questions(CURR_PROCEDURE)
-    session.attributes['question_lst'] = question_lst
-    session.attributes['previous_question'] = None
-
-    # set session state to user identification
-    session.attributes['session_state'] = 'PATIENT_CONSENT'
-
     # add initialized flag to session attributes
     session.attributes['initialized'] = True
 
@@ -93,13 +85,6 @@ def initialize_content():
         'response_slot': None,
         'response_type': None,
     }
-
-    # initialize answers container
-    session.attributes['answer_dict'] = {}
-
-    # initialize fhir
-    session.attributes['FHIR'] = {}
-    session.attributes['FHIR']['subject'] = None
 
 def reset_question():
     """
@@ -186,8 +171,19 @@ def process_session():
             # get current position
             curr_pos = qry.one_or_none().curr_list_position
             if curr_pos.next_item is not None:
-                # add new question
+                # add question text
                 question_txt = curr_pos.question.q_text
+
+                # increment question
+                next_pos = curr_pos.next_item
+
+                # reinitialize session state to update
+                curr_sess = qry.one_or_none()
+                curr_sess.curr_list_position = next_pos
+
+                # add to database
+                db.session.commit()
+                db.session.close()
 
                 return question(question_txt)
             else:
@@ -198,30 +194,79 @@ def process_session():
             return statement(rslt_txt)
 
     elif state == 'QUESTION_ITERATIONS':
+        # get question and answer to record
+        if hasattr(qry.one_or_none().curr_list_position, 'previous_item'):
+            prev_question = qry.one_or_none().curr_list_position.previous_item[0].question
+        else:
+            raise AssertionError("Did not have a previous valid question")
+
+        curr_user = qry.one_or_none().user
+
         # record answer
         if session.attributes['response']['response_type'] == "BOOL_ANSWER":
-            session.attributes['answer_dict'][session.attributes['previous_question']] = session.attributes['response']['response_slot']
+             # create answer object
+             curr_answer = UserAnswer(
+                 user=curr_user,
+                 question=prev_question,
+                 answer_bool=session.attributes['response']['response_slot']
+             )
+        else:
+             raise AssertionError("Did not recieve valid type of answer: {}".\
+                format(session.attributes['response']['response_type']))
 
-        # determine is session progresses (next to last)
-        if len(session.attributes['question_lst']) == 1:
+        # add to session
+        db.session.add(curr_answer)
+
+        # get current position
+        curr_pos = qry.one_or_none().curr_list_position
+
+        # add question text
+        question_txt = curr_pos.question.q_text
+
+        # increment question
+        next_pos = curr_pos.next_item
+
+        # reinitialize session state to update
+        curr_sess = qry.one_or_none()
+        curr_sess.curr_list_position = next_pos
+
+        # determine if we should progress
+        if curr_pos.next_item is None:
             # progress session state
-            rslt[0].session_state = 'END_QUESTIONS'
+            curr_sess.session_state = 'END_QUESTIONS'
 
-            # add to database
-            db.session.commit()
-            db.session.close()
-
-        # determine question text
-        curr_question = session.attributes['question_lst'].pop()
-        session.attributes['previous_question'] = curr_question
-        question_txt = QUESTION_CONTAINER.get_clinical_question(curr_question)
+        # add to database
+        db.session.commit()
+        db.session.close()
 
         return question(question_txt)
 
     elif state == 'END_QUESTIONS':
+        # get last question for indication
+        curr_proc = qry.one_or_none().user.patient_procedure
+        prev_question = db.session.query(IndicationQuestionOrder).\
+            filter(
+                IndicationQuestionOrder.next_item==None,
+                IndicationQuestionOrder.indication==curr_proc,
+            ).one_or_none().question
+
+        # get current user
+        curr_user = qry.one_or_none().user
+
         # record answer
         if session.attributes['response']['response_type'] == "BOOL_ANSWER":
-            session.attributes['answer_dict'][session.attributes['previous_question']] = session.attributes['response']['response_slot']
+             # create answer object
+             curr_answer = UserAnswer(
+                 user=curr_user,
+                 question=prev_question,
+                 answer_bool=session.attributes['response']['response_slot']
+             )
+        else:
+             raise AssertionError("Did not recieve valid type of answer: {}".\
+                format(session.attributes['response']['response_type']))
+
+        # add to session
+        db.session.add(curr_answer)
 
         return statement("Great! I'll send these results to your doctor, and will\
                          contact you if there's any more information we need.")
