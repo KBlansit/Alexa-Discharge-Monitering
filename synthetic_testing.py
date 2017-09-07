@@ -22,6 +22,7 @@ def choose_run_type(cmd_args):
         # create app and db
         app, db = create_test_app()
 
+        # create tables
         db.create_all()
 
         # read in fixtures
