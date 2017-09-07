@@ -221,15 +221,15 @@ class TestAlexaServer(unittest.TestCase):
         self.db.create_all()
 
         # load test data
-        curr_f_user = "Jon"
+        curr_f_name = "Jon"
         curr_l_name = "Snow"
         curr_procedure = "ileostomy"
         curr_bday = datetime.strptime("1990-10-10", "%Y-%m-%d")
 
         # define test objects
         usr = User(
-            curr_f_user,
-            curr_f_user,
+            curr_f_name,
+            curr_l_name,
             curr_bday,
             curr_procedure,
         )

@@ -3,10 +3,13 @@
 # import libraries
 import yaml
 import argparse
+from datetime import datetime
 
 # import user defined libraries
 from webapp import create_app
 from add_fixtures import add_and_commit_fixtures
+
+from src.database import User
 
 def choose_run_type(cmd_args):
     """
@@ -14,7 +17,7 @@ def choose_run_type(cmd_args):
     """
     if cmd_args.postgresql:
         # create app and db
-        app, db = create_production_app(app_type="PROD")
+        app, db = create_app(app_type="PROD")
 
         # return app and db
         return app, db
@@ -24,6 +27,24 @@ def choose_run_type(cmd_args):
 
         # create tables
         db.create_all()
+
+        # load test data
+        curr_f_name = "Jon"
+        curr_l_name = "Snow"
+        curr_procedure = "ileostomy"
+        curr_bday = datetime.strptime("1990-10-10", "%Y-%m-%d")
+
+        # define test objects
+        usr = User(
+            curr_f_name,
+            curr_l_name,
+            curr_bday,
+            curr_procedure,
+        )
+
+        # add user and commit
+        db.session.add(usr)
+        db.session.commit()
 
         # read in fixtures
         path = "resources/application_settings.yaml"

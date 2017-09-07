@@ -5,7 +5,7 @@ import yaml
 
 # import user defined libraries
 from src.database import Question, IndicationQuestionOrder
-from webapp import create_migration_app
+from webapp import create_app
 
 def add_and_commit_fixtures(data, db):
     """
@@ -59,7 +59,7 @@ def add_and_commit_fixtures(data, db):
 
 def main():
     # create app and db
-    app, db = create_migration_app()
+    app, db = create_app(app_type="MIGRATION")
 
     # read in fixtures
     path = "resources/application_settings.yaml"
