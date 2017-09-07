@@ -1,1 +1,6 @@
 *.pyc
+
+migrations/
+
+resources/databse_info.yaml
+resources/migration_databse_info.yaml

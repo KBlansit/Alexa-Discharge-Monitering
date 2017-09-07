@@ -28,10 +28,48 @@ ask = Ask(route = '/')
 db = SQLAlchemy(metadata=metadata)
 
 # flask initialize
-def create_app():
+def create_production_app():
+    # load username and password
+    path = "resources/migration_databse_info.yaml"
+    with open(path, "r") as f:
+        data = yaml.load(f)
+
     # initialize flask
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = '{}://{}:{}@{}/{}'.format(
+        data['production']['databse_type'],
+        data['production']['username'],
+        data['production']['password'],
+        data['production']['server_name'],
+        data['production']['database_name'],
+    )
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
+
+    # bind app to db
+    db.app = app # your library is bad and you should feel bad...
+    db.init_app(app)
+
+    # initialize flask extentions
+    ask.init_app(app)
+
+    return app, db
+
+def create_migration_app():
+    # load username and password
+    path = "resources/migration_databse_info.yaml"
+    with open(path, "r") as f:
+        data = yaml.load(f)
+
+    # initialize flask
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = '{}://{}:{}@{}/{}'.format(
+        data['migrations']['databse_type'],
+        data['migrations']['username'],
+        data['migrations']['password'],
+        data['migrations']['server_name'],
+        data['migrations']['database_name'],
+    )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
 
@@ -343,5 +381,5 @@ def session_ended():
 
 if __name__ == '__main__':
     # run app
-    app, db = create_app()
+    app, db = create_production_app()
     app.run()

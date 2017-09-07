@@ -6,12 +6,12 @@ application_content:
           "Welcome to the discharge monitoring application. We're going to ask some
           personal questions. Is now a good time?"
         response_type:
-          "BOOL_ANSWER"
+          "Bool"
       user_identification:
         text:
           "I wanted to confirm that this was Jon. Is this correct?"
         response_type:
-          "BOOL_ANSWER"
+          "Bool"
       user_2nd_step_identification:
         text:
           "Could you confirm your birthdate"
@@ -29,45 +29,98 @@ application_content:
         text:
           ["Have you been able to walk around today?"]
         response_type:
-          "BOOL_ANSWER"
+          "Bool"
       pain_calves:
         text:
           ["Are you experiencing any pain or swelling in your cavles"]
         response_type:
-          "BOOL_ANSWER"
+          "Bool"
       food_eat:
         text:
           ["Have you been able to eat any meals?"]
         response_type:
-          "BOOL_ANSWER"
+          "Bool"
       drink_liquids:
         text:
           ["Have you been drinking liquids?"]
         response_type:
-          "BOOL_ANSWER"
+          "Bool"
       pain_change:
         text:
           ["Is your pain increased since yesterday?"]
         response_type:
-          "BOOL_ANSWER"
+          "Bool"
       urinating_regularly:
         text:
           ["Are you urinating regularly?"]
         response_type:
-          "BOOL_ANSWER"
+          "Bool"
       bowel_movement:
         text:
           ["Were you able to have a bowel movement today?"]
         response_type:
-          "BOOL_ANSWER"
+          "Bool"
       condition_change:
         text:
           ["Overall, do you feel better, worse or about the same as you did yesterday?"]
         response_type:
-          "BOOL_ANSWER"
+          "Bool"
 application_settings:
   questions_by_indication:
     ileostomy:
+      - "mobility"
+      - "pain_calves"
+      - "food_eat"
+      - "drink_liquids"
+      - "pain_change"
+      - "urinating_regularly"
+      - "bowel_movement"
+      - "condition_change"
+
+clinical_content:
+  ileostomy:
+    questions:
+      mobility:
+        text:
+          ["Have you been able to walk around today?"]
+        response_type:
+          "Bool"
+      pain_calves:
+        text:
+          ["Are you experiencing any pain or swelling in your cavles"]
+        response_type:
+          "Bool"
+      food_eat:
+        text:
+          ["Have you been able to eat any meals?"]
+        response_type:
+          "Bool"
+      drink_liquids:
+        text:
+          ["Have you been drinking liquids?"]
+        response_type:
+          "Bool"
+      pain_change:
+        text:
+          ["Is your pain increased since yesterday?"]
+        response_type:
+          "Bool"
+      urinating_regularly:
+        text:
+          ["Are you urinating regularly?"]
+        response_type:
+          "Bool"
+      bowel_movement:
+        text:
+          ["Were you able to have a bowel movement today?"]
+        response_type:
+          "Bool"
+      condition_change:
+        text:
+          ["Overall, do you feel better, worse or about the same as you did yesterday?"]
+        response_type:
+          "Bool"
+    order_list:
       - "mobility"
       - "pain_calves"
       - "food_eat"

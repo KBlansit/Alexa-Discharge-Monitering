@@ -74,8 +74,8 @@ class IndicationQuestionOrder(Base):
     def __init__(
         self,
         indication,
-        next_item,
-        question=None,
+        question,
+        next_item=None,
     ):
         self.indication = indication
         self.next_item = next_item
