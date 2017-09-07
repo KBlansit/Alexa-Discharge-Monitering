@@ -28,23 +28,42 @@ ask = Ask(route = '/')
 db = SQLAlchemy(metadata=metadata)
 
 # flask initialize
-def create_production_app():
-    # load username and password
-    path = "resources/migration_databse_info.yaml"
-    with open(path, "r") as f:
-        data = yaml.load(f)
+def create_app(app_type="PROD", verify_ask=True):
+    # verify we are making correct type of app
+    if app_type not in ["PROD", "MIGRATION", "TEST"]:
+        raise AssertionError("App type must be 'PROD', 'MIGRATION', or 'TEST'")
 
-    # initialize flask
+    if type(verify_ask) is not bool:
+        raise TypeError("verify_ask must be boolean true or false, got type {}".\
+            format(type(verify_ask)))
+
+    # initialize app
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = '{}://{}:{}@{}/{}'.format(
-        data['production']['databse_type'],
-        data['production']['username'],
-        data['production']['password'],
-        data['production']['server_name'],
-        data['production']['database_name'],
-    )
+
+    # PROD and MIGRATION apps need db info
+    if app_type in ["PROD", "MIGRATION"]:
+        # load username and password
+        path = "resources/migration_databse_info.yaml"
+        with open(path, "r") as f:
+            data = yaml.load(f)
+
+        # initialize flask
+        app.config['SQLALCHEMY_DATABASE_URI'] = '{}://{}:{}@{}/{}'.format(
+            data['migrations']['databse_type'],
+            data['migrations']['username'],
+            data['migrations']['password'],
+            data['migrations']['server_name'],
+            data['migrations']['database_name'],
+        )
+    else:
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+
+    # turn off track modifications
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
+
+    # if we don't verify ask (for testing), turn off
+    app.config['ASK_VERIFY_REQUESTS'] = verify_ask
+
 
     # bind app to db
     db.app = app # your library is bad and you should feel bad...
@@ -55,51 +74,7 @@ def create_production_app():
 
     return app, db
 
-def create_migration_app():
-    # load username and password
-    path = "resources/migration_databse_info.yaml"
-    with open(path, "r") as f:
-        data = yaml.load(f)
-
-    # initialize flask
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = '{}://{}:{}@{}/{}'.format(
-        data['migrations']['databse_type'],
-        data['migrations']['username'],
-        data['migrations']['password'],
-        data['migrations']['server_name'],
-        data['migrations']['database_name'],
-    )
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
-
-    # bind app to db
-    db.app = app # your library is bad and you should feel bad...
-    db.init_app(app)
-
-    # initialize flask extentions
-    ask.init_app(app)
-
-    return app, db
-
-def create_test_app():
-    # initialize flask
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['ASK_VERIFY_REQUESTS'] = False #HACK: remove for production
-
-    # bind app to db
-    db.app = app # your library is bad and you should feel bad...
-    db.init_app(app)
-
-    # initialize flask extentions
-    ask.init_app(app)
-
-    return app, db
-
-# HACK until FHIR integration:
-
+# HACK
 SETTINGS_PATH = ('resources/application_settings.yaml')
 QUESTION_CONTAINER = QuestionContainer(SETTINGS_PATH)
 

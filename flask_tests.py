@@ -17,7 +17,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 # load user defined libraries
-from webapp import ask, create_test_app
+from webapp import ask, create_app
 
 from src.Questionaire import QuestionContainer
 from src.fhir_utilities import read_json_patient, create_question_response
@@ -214,7 +214,7 @@ class TestAlexaServer(unittest.TestCase):
 
     def setUp(self):
         # initialize app and db objects
-        self.app, self.db = create_test_app()
+        self.app, self.db = create_app(app_type="TEST", verify_ask=False)
         self.app = self.app.test_client()
 
         # initialize db

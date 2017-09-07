@@ -12,7 +12,7 @@ def main():
     main function for migrations
     """
     # create app and db
-    app, db = create_migration_app()
+    app, db = create_app(app_type="MIGRATION")
 
     # add migrate command
     manager = Manager(app)

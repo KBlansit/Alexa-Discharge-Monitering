@@ -5,7 +5,7 @@ import yaml
 import argparse
 
 # import user defined libraries
-from webapp import create_test_app, create_production_app
+from webapp import create_app
 from add_fixtures import add_and_commit_fixtures
 
 def choose_run_type(cmd_args):
@@ -14,13 +14,13 @@ def choose_run_type(cmd_args):
     """
     if cmd_args.postgresql:
         # create app and db
-        app, db = create_production_app()
+        app, db = create_production_app(app_type="PROD")
 
         # return app and db
         return app, db
     else:
         # create app and db
-        app, db = create_test_app()
+        app, db = create_app(app_type="TEST", verify_ask=False)
 
         # create tables
         db.create_all()
