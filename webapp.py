@@ -103,12 +103,6 @@ def create_test_app():
 SETTINGS_PATH = ('resources/application_settings.yaml')
 QUESTION_CONTAINER = QuestionContainer(SETTINGS_PATH)
 
-CURR_USER = "Jon"
-CURR_L_NAME = "SNOW"
-CURR_PROCEDURE = "ileostomy"
-CURR_USER = "Jon"
-CURR_BDAY = datetime.strptime("1990-10-10", "%Y-%m-%d")
-
 # functions
 def initialize_content():
     """
@@ -198,7 +192,7 @@ def process_session():
         input_date = datetime.strptime(session.attributes['response']['response_slot'], "%Y-%m-%d")
 
         # determine how to respond to question
-        if input_date.date() == CURR_BDAY.date():
+        if input_date.date() == qry.one_or_none().user.patient_bday:
             # progress session state
             rslt.session_state = 'QUESTION_ITERATIONS'
 
@@ -281,7 +275,6 @@ def process_session():
 
     elif state == 'END_QUESTIONS':
         # get last question for indication
-        import pdb; pdb.set_trace()
         curr_proc = qry.one_or_none().user.patient_procedure
         prev_question = db.session.query(IndicationQuestionOrder).\
             filter(
