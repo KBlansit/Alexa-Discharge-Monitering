@@ -59,7 +59,7 @@ def main():
         db.session.add_all(q_dict.values())
         db.session.add_all(indication_order_dict.values())
 
-        db.session.commit()
+    db.session.commit()
 
 if __name__ == "__main__":
     main()
