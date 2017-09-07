@@ -27,7 +27,7 @@ def main():
             # add question to dict
             q_dict[q] = Question(
                 q_link_id=q,
-                q_text=q_info['text'],
+                q_text=q_info['text'][0],
                 q_type=q_info['response_type'],
             )
 
