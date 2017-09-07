@@ -41,7 +41,7 @@ def add_and_commit_fixtures(data, db):
 
             # add to dict as indicationquestionorder
             indication_order_dict[curr_val] = IndicationQuestionOrder(
-                indication=curr_val,
+                indication=condition,
                 question=q_dict[curr_val],
             )
 

@@ -281,6 +281,7 @@ def process_session():
 
     elif state == 'END_QUESTIONS':
         # get last question for indication
+        import pdb; pdb.set_trace()
         curr_proc = qry.one_or_none().user.patient_procedure
         prev_question = db.session.query(IndicationQuestionOrder).\
             filter(

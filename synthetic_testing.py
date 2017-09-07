@@ -38,6 +38,7 @@ def choose_run_type(cmd_args):
 
 def main():
     """
+    script to launch a synthetic test server
     """
     # parse command line args
     cmd_parse = argparse.ArgumentParser(description = 'Application for testing app in pseudo-production enviorment')
