@@ -7,14 +7,10 @@ import yaml
 from src.database import Question, IndicationQuestionOrder
 from webapp import create_migration_app
 
-def main():
-    # create app and db
-    app, db = create_migration_app()
-
-    # read in fixtures
-    path = "resources/application_settings.yaml"
-    with open(path, "r") as f:
-        data = yaml.load(f)
+def add_and_commit_fixtures(data, db):
+    """
+    adds and commits fixture data
+    """
 
     # iterate over clinical conditions
     for condition, content in data['clinical_content'].items():
@@ -60,6 +56,18 @@ def main():
         db.session.add_all(indication_order_dict.values())
 
     db.session.commit()
+
+def main():
+    # create app and db
+    app, db = create_migration_app()
+
+    # read in fixtures
+    path = "resources/application_settings.yaml"
+    with open(path, "r") as f:
+        data = yaml.load(f)
+
+    # call function to add and commit data
+    add_and_commit_fixtures(data, db)
 
 if __name__ == "__main__":
     main()
